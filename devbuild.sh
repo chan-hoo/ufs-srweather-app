@@ -15,7 +15,7 @@ OPTIONS
       compiler to use; default depends on platform
       (e.g. intel | gnu | cray | gccgfortran)
   -a, --app=APPLICATION
-      weather model application to build; for example, ATMAQ for RRFS-CMAQ
+      weather model application to build; for example, ATMAQ for Online-CMAQ
       (e.g. ATM | ATMAQ | ATMW | S2S | S2SW)
   --ccpp="CCPP_SUITE1,CCPP_SUITE2..."
       CCPP suites (CCPP_SUITES) to include in build; delimited with ','
@@ -186,14 +186,14 @@ if [ "${VERBOSE}" = true ] ; then
   settings
 fi
 
-# Check out external components for RRFS-CMAQ =============================
+# Check out external components for Online-CMAQ =============================
 if [ "${APPLICATION}" = "ATMAQ" ]; then
   if [ -d "${SRW_DIR}/src/arl_nexus" ]; then
     printf "Extra external components already exist. This step will be skipped.\n"
   else  
-    printf "... Replace regional workflow with the one for RRFS-CMAQ ...\n"
+    printf "... Replace regional workflow with the one for Online-CMAQ ...\n"
     rm -rf regional_workflow
-    printf "... Checking out extra external components for RRFS-CMAQ ...\n"
+    printf "... Checking out extra external components for Online-CMAQ ...\n"
     ./manage_externals/checkout_externals -e externals/Externals_AQM.cfg
   fi
 fi
