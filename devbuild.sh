@@ -91,6 +91,7 @@ COMPILER=""
 APPLICATION=""
 CCPP_SUITES=""
 RRFS="off"
+CANOPY=false
 ENABLE_OPTIONS=""
 DISABLE_OPTIONS=""
 BUILD_TYPE="RELEASE"
@@ -119,6 +120,8 @@ while :; do
     --ccpp|--ccpp=) usage_error "$1 requires argument." ;;
     --rrfs) RRFS="on" ;;
     --rrfs=*) usage_error "$1 argument ignored." ;;
+    --canopy) CANOPY=true ;;
+    --canopy=*) usage_error "$1 argument ignored." ;;
     --enable-options=?*) ENABLE_OPTIONS=${1#*=} ;;
     --enable-options|--enable-options=) usage_error "$1 requires argument." ;;
     --disable-options=?*) DISABLE_OPTIONS=${1#*=} ;;
@@ -192,8 +195,13 @@ if [ "${APPLICATION}" = "ATMAQ" ]; then
   else  
     printf "... Replace regional workflow with the one for Online-CMAQ ...\n"
     rm -rf regional_workflow
-    printf "... Checking out extra external components for Online-CMAQ ...\n"
     ./manage_externals/checkout_externals -e externals/Externals_AQM.cfg
+
+    if [ "${CANOPY}" = true ]; then
+      printf "... Replace ufs-weather-model with the canopy version ...\n"
+      rm -rf "${SRW_DIR}/src/ufs-weather-model"
+      ./manage_externals/checkout_externals -e externals/Externals_canopy.cfg
+    fi
   fi
 fi
 
