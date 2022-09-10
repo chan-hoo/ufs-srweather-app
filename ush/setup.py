@@ -349,7 +349,7 @@ def setup():
     # Define some other useful paths
     #
     global USHDIR, SCRIPTSDIR, JOBSDIR, SORCDIR, SRC_DIR, PARMDIR, MODULES_DIR
-    global EXECDIR, TEMPLATE_DIR, VX_CONFIG_DIR, METPLUS_CONF, MET_CONFIG
+    global EXECDIR, TEMPLATE_DIR, VX_CONFIG_DIR, METPLUS_CONF, MET_CONFIG, ARL_NEXUS_DIR
 
     USHDIR = os.path.join(SR_WX_APP_TOP_DIR, "ush")
     SCRIPTSDIR = os.path.join(SR_WX_APP_TOP_DIR, "scripts")
@@ -363,7 +363,7 @@ def setup():
     VX_CONFIG_DIR = os.path.join(TEMPLATE_DIR, "parm")
     METPLUS_CONF = os.path.join(TEMPLATE_DIR, "parm", "metplus")
     MET_CONFIG = os.path.join(TEMPLATE_DIR, "parm", "met")
-
+    ARL_NEXUS_DIR = os.path.join(SR_WX_APP_TOP_DIR,"sorc/arl_nexus")
     #
     # -----------------------------------------------------------------------
     #
@@ -429,9 +429,12 @@ def setup():
     #
     # -----------------------------------------------------------------------
     #
-    global PPN_RUN_FCST
+    global PPN_RUN_FCST, PPN_RUN_NEXUS
     ppn_run_fcst_default = NCORES_PER_NODE // OMP_NUM_THREADS_RUN_FCST
     PPN_RUN_FCST = PPN_RUN_FCST or ppn_run_fcst_default
+
+    ppn_run_nexus_default = NCORES_PER_NODE // OMP_NUM_THREADS_RUN_NEXUS
+    PPN_RUN_NEXUS = PPN_RUN_NEXUS or ppn_run_nexus_default
     #
     # -----------------------------------------------------------------------
     #
@@ -473,24 +476,6 @@ def setup():
     global USE_MERRA_CLIMO
     if CCPP_PHYS_SUITE == "FV3_GFS_v15_thompson_mynn_lam3km":
         USE_MERRA_CLIMO = True
-    #
-    # -----------------------------------------------------------------------
-    #
-    # Set CPL to TRUE/FALSE based on FCST_MODEL.
-    #
-    # -----------------------------------------------------------------------
-    #
-    global CPL
-    if FCST_MODEL == "ufs-weather-model":
-        CPL = False
-    elif FCST_MODEL == "fv3gfs_aqm":
-        CPL = True
-    else:
-        print_err_msg_exit(
-            f'''
-            The coupling flag CPL has not been specified for this value of FCST_MODEL:
-              FCST_MODEL = \"{FCST_MODEL}\"'''
-        )
     #
     # -----------------------------------------------------------------------
     #
@@ -554,36 +539,31 @@ def setup():
     #
     # -----------------------------------------------------------------------
     # Check cycle increment for cycle frequency (cycl_freq).
-    # only if INCR_CYCL_FREQ < 24.
-    # -----------------------------------------------------------------------
+    #-----------------------------------------------------------------------
     #
+    cycl_intv=(24//i)
     if INCR_CYCL_FREQ < 24 and i > 1:
-        cycl_intv = 24 // i
-        if cycl_intv != INCR_CYCL_FREQ:
-            print_err_msg_exit(
-                f"""
-                The number of CYCL_HRS does not match with that expected by INCR_CYCL_FREQ:
-                  INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
-                  cycle interval by the number of CYCL_HRS = {cycl_intv}
-                  CYCL_HRS = {CYCL_HRS} """
-            )
-
-        for itmp in range(1, i):
-            itm1 = itmp - 1
-            cycl_next_itmp = CYCL_HRS[itm1] + INCR_CYCL_FREQ
-            if cycl_next_itmp != CYCL_HRS[itmp]:
-                print_err_msg_exit(
-                    f'''
-                    Element {itmp} of CYCL_HRS does not match with the increment of cycle
-                    frequency INCR_CYCL_FREQ:
-                      CYCL_HRS = {CYCL_HRS}
-                      INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
-                      CYCL_HRS[{itmp}] = \"{CYCL_HRS[itmp]}\"'''
-                )
+      if cycl_intv != INCR_CYCL_FREQ:
+        print_err_msg_exit(f'''
+            The number of CYCL_HRS does not match with that expected by INCR_CYCL_FREQ:
+              INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
+              cycle interval by the number of CYCL_HRS = {cycl_intv}
+              CYCL_HRS = {CYCL_HRS} ''')
+    
+      for itmp in range(1,i):
+        itm1=itmp-1
+        cycl_next_itmp=CYCL_HRS[itm1] + INCR_CYCL_FREQ
+        if cycl_next_itmp != CYCL_HRS[itmp]:
+          print_err_msg_exit(f'''
+            Element {itmp} of CYCL_HRS does not match with the increment of cycle
+            frequency INCR_CYCL_FREQ:
+              CYCL_HRS = {CYCL_HRS}
+              INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
+              CYCL_HRS[{itmp}] = \"{CYCL_HRS[itmp]}\"''')
     #
-    # -----------------------------------------------------------------------
+    #-----------------------------------------------------------------------
     #
-    # Call a function to generate the array ALL_CDATES containing the cycle
+    # Call a function to generate the array ALL_CDATES containing the cycle 
     # dates/hours for which to run forecasts.  The elements of this array
     # will have the form YYYYMMDDHH.  They are the starting dates/times of
     # the forecasts that will be run in the experiment.  Then set NUM_CYCLES
@@ -591,23 +571,23 @@ def setup():
     #
     # -----------------------------------------------------------------------
     #
+    global NUM_CYCLES, CYCL_DELT
 
-    ALL_CDATES = set_cycle_dates(
-        date_start=DATE_FIRST_CYCL,
-        date_end=DATE_LAST_CYCL,
-        cycle_hrs=CYCL_HRS,
-        incr_cycl_freq=INCR_CYCL_FREQ,
-    )
-
-    NUM_CYCLES = len(ALL_CDATES)
-
+    ALL_CDATES = set_cycle_dates( \
+      date_start=DATE_FIRST_CYCL,
+      date_end=DATE_LAST_CYCL,
+      cycle_hrs=CYCL_HRS,
+      incr_cycl_freq=cycl_intv)
+    
+    NUM_CYCLES=len(ALL_CDATES)
+    CYCL_DELT = f"{cycl_intv:02d}:00:00"
+    
     if NUM_CYCLES > 90:
-        ALL_CDATES = None
-        print_info_msg(
-            f"""
-            Too many cycles in ALL_CDATES to list, redefining in abbreviated form."
-            ALL_CDATES="{DATE_FIRST_CYCL}{CYCL_HRS[0]}...{DATE_LAST_CYCL}{CYCL_HRS[-1]}"""
-        )
+      ALL_CDATES=None
+      print_info_msg(f'''
+        Too many cycles in ALL_CDATES to list, redefining in abbreviated form."
+        ALL_CDATES="{DATE_FIRST_CYCL}{CYCL_HRS[0]}...{DATE_LAST_CYCL}{CYCL_HRS[-1]}''')
+
     #
     # -----------------------------------------------------------------------
     #
@@ -948,7 +928,9 @@ def setup():
     # -----------------------------------------------------------------------
     #
     POST_OUTPUT_DOMAIN_NAME = POST_OUTPUT_DOMAIN_NAME or PREDEF_GRID_NAME
-    POST_OUTPUT_DOMAIN_NAME = lowercase(POST_OUTPUT_DOMAIN_NAME)
+
+    if type(POST_OUTPUT_DOMAIN_NAME) != int:
+      POST_OUTPUT_DOMAIN_NAME = lowercase(POST_OUTPUT_DOMAIN_NAME)
 
     if POST_OUTPUT_DOMAIN_NAME is None:
         if PREDEF_GRID_NAME is None:
@@ -1005,6 +987,7 @@ def setup():
     global DATA_TABLE_TMPL_FN, DIAG_TABLE_TMPL_FN, FIELD_TABLE_TMPL_FN, MODEL_CONFIG_TMPL_FN, NEMS_CONFIG_TMPL_FN
     global DATA_TABLE_TMPL_FP, DIAG_TABLE_TMPL_FP, FIELD_TABLE_TMPL_FP, MODEL_CONFIG_TMPL_FP, NEMS_CONFIG_TMPL_FP
     global FV3_NML_BASE_SUITE_FP, FV3_NML_YAML_CONFIG_FP, FV3_NML_BASE_ENS_FP
+    global AQM_RC_TMPL_FN, USER_AQM_RC_DIR, AQM_RC_TMPL_FP
 
     dot_ccpp_phys_suite_or_null = f".{CCPP_PHYS_SUITE}"
 
@@ -1017,7 +1000,8 @@ def setup():
     FIELD_TABLE_FN = "field_table"
     MODEL_CONFIG_FN = "model_configure"
     NEMS_CONFIG_FN = "nems.configure"
-    # ----------------------------------
+    AQM_RC_FN = "aqm.rc"
+    #----------------------------------
 
     DATA_TABLE_TMPL_FN = DATA_TABLE_TMPL_FN or DATA_TABLE_FN
     DIAG_TABLE_TMPL_FN = (
@@ -1028,6 +1012,8 @@ def setup():
     )
     MODEL_CONFIG_TMPL_FN = MODEL_CONFIG_TMPL_FN or MODEL_CONFIG_FN
     NEMS_CONFIG_TMPL_FN = NEMS_CONFIG_TMPL_FN or NEMS_CONFIG_FN
+    AQM_RC_TMPL_FN = AQM_RC_TMPL_FN or AQM_RC_FN
+    USER_AQM_RC_DIR = USER_AQM_RC_DIR or TEMPLATE_DIR
 
     DATA_TABLE_TMPL_FP = os.path.join(TEMPLATE_DIR, DATA_TABLE_TMPL_FN)
     DIAG_TABLE_TMPL_FP = os.path.join(TEMPLATE_DIR, DIAG_TABLE_TMPL_FN)
@@ -1037,6 +1023,7 @@ def setup():
     FV3_NML_BASE_ENS_FP = os.path.join(EXPTDIR, FV3_NML_BASE_ENS_FN)
     MODEL_CONFIG_TMPL_FP = os.path.join(TEMPLATE_DIR, MODEL_CONFIG_TMPL_FN)
     NEMS_CONFIG_TMPL_FP = os.path.join(TEMPLATE_DIR, NEMS_CONFIG_TMPL_FN)
+    AQM_RC_TMPL_FP = os.path.join(USER_AQM_RC_DIR, AQM_RC_TMPL_FN)
     #
     # -----------------------------------------------------------------------
     #
@@ -1914,6 +1901,7 @@ def setup():
         "SFC_CLIMO_INPUT_DIR": SFC_CLIMO_INPUT_DIR,
         "TOPO_DIR": TOPO_DIR,
         "UPP_DIR": UPP_DIR,
+        "ARL_NEXUS_DIR": ARL_NEXUS_DIR,
         "EXPTDIR": EXPTDIR,
         "LOGDIR": LOGDIR,
         "CYCLE_BASEDIR": CYCLE_BASEDIR,
@@ -1936,11 +1924,13 @@ def setup():
         "FIELD_TABLE_FN": FIELD_TABLE_FN,
         "MODEL_CONFIG_FN": MODEL_CONFIG_FN,
         "NEMS_CONFIG_FN": NEMS_CONFIG_FN,
+        "AQM_RC_FN": AQM_RC_FN,
         "DATA_TABLE_TMPL_FN": DATA_TABLE_TMPL_FN,
         "DIAG_TABLE_TMPL_FN": DIAG_TABLE_TMPL_FN,
         "FIELD_TABLE_TMPL_FN": FIELD_TABLE_TMPL_FN,
         "MODEL_CONFIG_TMPL_FN": MODEL_CONFIG_TMPL_FN,
         "NEMS_CONFIG_TMPL_FN": NEMS_CONFIG_TMPL_FN,
+        "AQM_RC_TMPL_FN": AQM_RC_TMPL_FN,
         "DATA_TABLE_TMPL_FP": DATA_TABLE_TMPL_FP,
         "DIAG_TABLE_TMPL_FP": DIAG_TABLE_TMPL_FP,
         "FIELD_TABLE_TMPL_FP": FIELD_TABLE_TMPL_FP,
@@ -1949,6 +1939,7 @@ def setup():
         "FV3_NML_BASE_ENS_FP": FV3_NML_BASE_ENS_FP,
         "MODEL_CONFIG_TMPL_FP": MODEL_CONFIG_TMPL_FP,
         "NEMS_CONFIG_TMPL_FP": NEMS_CONFIG_TMPL_FP,
+        "AQM_RC_TMPL_FP": AQM_RC_TMPL_FP,
         "CCPP_PHYS_SUITE_FN": CCPP_PHYS_SUITE_FN,
         "CCPP_PHYS_SUITE_IN_CCPP_FP": CCPP_PHYS_SUITE_IN_CCPP_FP,
         "CCPP_PHYS_SUITE_FP": CCPP_PHYS_SUITE_FP,
@@ -2010,15 +2001,6 @@ def setup():
     #
     settings.update(
         {
-            #
-            # -----------------------------------------------------------------------
-            #
-            # Flag in the \"{MODEL_CONFIG_FN}\" file for coupling the ocean model to
-            # the weather model.
-            #
-            # -----------------------------------------------------------------------
-            #
-            "CPL": CPL,
             #
             # -----------------------------------------------------------------------
             #

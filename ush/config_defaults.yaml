@@ -230,9 +230,9 @@ platform:
   # the valid time in the metadata for files valid from 19 - 00 UTC (or 
   # files under the '00' directory). The script to pull the CCPA data 
   # from the NOAA HPSS has an example of how to account for this as well
-  # as organizing the data into a more intuitive format: 
+  # as organizing the data into a more intuitive format:
   # scripts/exregional_get_ccpa_files.sh. When a fix is provided, it will
-  # be accounted for in the exregional_get_ccpa_files.sh script.
+  # be accounted for in the exregional_get_ccpa_files.sh script. 
   #
   # MRMS_OBS_DIR:
   # User-specified location of top-level directory where MRMS composite
@@ -348,7 +348,7 @@ workflow:
   # EXPT_BASEDIR:
   # The base directory in which the experiment directory will be created.  
   # If this is not specified or if it is set to an empty string, it will
-  # default to ${SR_WX_APP_TOP_DIR}/../expt_dirs.  
+  # default to ${SR_WX_APP_TOP_DIR}/../expt_dirs.
   #
   # EXPT_SUBDIR:
   # The name that the experiment directory (without the full path) will
@@ -1428,10 +1428,6 @@ task_run_fcst:
   # which the top level routine in the dynamics is called as well as the 
   # frequency with which the physics is called."
   #
-  # CPL: parameter for coupling
-  # (set automatically based on FCST_MODEL in ush/setup.sh)
-  # (ufs-weather-model:FALSE, fv3gfs_aqm:TRUE)
-  #
   # RESTART_INTERVAL:
   # frequency of the output restart files (unit:hour). 
   # Default=0: restart files are produced at the end of a forecast run
@@ -2249,3 +2245,144 @@ global:
   #
   #-----------------------------------------------------------------------
   #
+#----------------------------
+# CPL_AQM config parameters
+#-----------------------------
+cpl_aqm_parm:
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Set coupling parameters
+  #
+  # CPL_AQM:
+  # Coupling flag for air quality modeling
+  #
+  #-----------------------------------------------------------------------
+  #
+  CPL_AQM: false
+  #
+  #-----------------------------------------------------------------------
+  #
+  # Set task flag, name, parallel parameters for air quality modeling
+  #
+  #-----------------------------------------------------------------------
+  #
+  RUN_TASK_ADD_AQM_ICS: false
+  RUN_TASK_ADD_AQM_LBCS: false
+  RUN_TASK_RUN_NEXUS: false
+
+  ADD_AQM_ICS_TN: "add_aqm_ics"
+  NNODES_ADD_AQM_ICS: 1
+  PPN_ADD_AQM_ICS: 1
+  WTIME_ADD_AQM_ICS: 00:30:00
+  MAXTRIES_ADD_AQM_ICS: 2
+
+  ADD_AQM_LBCS_TN: "add_aqm_lbcs"
+  NNODES_ADD_AQM_LBCS: 1
+  PPN_ADD_AQM_LBCS: 24
+  WTIME_ADD_AQM_LBCS: 00:30:00
+  MAXTRIES_ADD_AQM_LBCS: 2
+
+  RUN_NEXUS_TN: "run_nexus"
+  NNODES_RUN_NEXUS: 4
+  PPN_RUN_NEXUS: "" # will be calculated from NCORES_PER_NODE and OMP_NUM_THREADS in setup.py
+  WTIME_RUN_NEXUS: 00:30:00
+  MAXTRIES_RUN_NEXUS: 2
+  KMP_AFFINITY_RUN_NEXUS: "scatter"
+  OMP_NUM_THREADS_RUN_NEXUS: 2
+  OMP_STACKSIZE_RUN_NEXUS: "1024m"
+#
+#-----------------------------------------------------------------------
+#
+# Parameters for additional files for air quality modeling
+#
+# AQM_RC_TMPL_FN:
+# Template file name of resource file for NOAA Air Quality Model (AQM)
+#
+# USER_AQM_RC_DIR:
+# Path to the directory containg user's own AQM resource file
+# If blank, TEMPLATE_DIR will be specified.
+# 
+# AQM_CONFIG_DIR:
+# Configuration directory for AQM
+# 
+# AQM_BIO_DIR:
+# Path to the directory containing AQM bio files
+# 
+# AQM_BIO_FILE:
+# File name of AQM BIO file
+#
+# AQM_CANOPY_DIR:
+# Path to the directory containing AQM canopy files
+# 
+# AQM_CANOPY_FILE:
+# File name of AQM CANOPY file
+#
+# AQM_CANOPY_FILE_SUFFIX:
+# Suffix and extension of AQM CANOPY file
+# 
+# AQM_FIRE_DIR:
+# Path to the directory containing AQM fire files
+# 
+# AQM_FIRE_FILE:
+# File name of AQM FIRE file
+# 
+# AQM_FIRE_FILE_SUFFIX:
+# Suffix and extension of AQM FIRE file
+# 
+# AQM_RC_FIRE_FREQUENCY:
+# Fire frequency in aqm.rc
+# 
+# AQM_LBCS_DIR:
+# Path to the directory containing chemical LBC files
+# 
+# AQM_LBCS_FILES:
+# File name of chemical LBCs
+#
+# AQM_GEFS_DIR:
+# Path to the directory containing GEFS aerosol LBC files
+#
+# AQM_GEFS_CYC:
+# Cycle of the GEFS aerosol LBC files
+# 
+# RUN_ADD_AQM_GEFS_LBCS:
+# Add GEFS aerosol LBCs to chemical LBCs
+# 
+# NEXUS_INPUT_DIR:
+# Same as GRID_DIR but for the the air quality emission generation task.
+# Should be blank for the default value specified in setup.sh
+# 
+# NEXUS_FIX_DIR:
+# Directory containing grid_spec files as the input file of nexus
+# 
+# NEXUS_GRID_FN:
+# File name of the input grid_spec file of nexus
+#
+#-----------------------------------------------------------------------
+#
+  USER_AQM_RC_DIR: ""
+  AQM_RC_TMPL_FN: "aqm.rc"
+  AQM_CONFIG_DIR: ""
+  AQM_BIO_DIR: ""
+  AQM_BIO_FILE: "BEIS_SARC401.ncf"
+  AQM_CANOPY_DIR: ""
+  AQM_CANOPY_FILE: "gfs.t12z.geo"
+  AQM_CANOPY_FILE_SUFFIX: ".canopy_regrid.nc"
+  AQM_FIRE_DIR: ""
+  AQM_FIRE_FILE: "GBBEPx_C401GRID.emissions_v003"
+  AQM_FIRE_FILE_SUFFIX: ".nc"
+  AQM_RC_FIRE_FREQUENCY: "static"
+  AQM_LBCS_DIR: ""
+  AQM_LBCS_FILES: "gfs_bndy_chen_<MM>.tile7.000.nc"
+  AQM_GEFS_DIR: ""
+  AQM_GEFS_CYC: 0
+
+  RUN_ADD_AQM_CHEM_LBCS: true
+  RUN_ADD_AQM_GEFS_LBCS: false
+
+  NEXUS_INPUT_DIR: ""
+  NEXUS_FIX_DIR: ""
+  NEXUS_GRID_FN: "grid_spec_GSD_HRRR_25km.nc"
+
+  RESTART_WORKFLOW: false
+  RESTART_CYCLE_DIR: "/path/to/restart/cycle/dir"

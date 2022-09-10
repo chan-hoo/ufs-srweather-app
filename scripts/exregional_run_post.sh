@@ -125,8 +125,8 @@ to the temporary work directory (tmp_dir):
   tmp_dir = \"${tmp_dir}\"
 ===================================================================="
 else
-  if [ ${FCST_MODEL} = "fv3gfs_aqm" ]; then
-    post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam_cmaq.txt"
+  if [ ${CPL_AQM} = "TRUE" ]; then
+    post_config_fp="${SR_WX_APP_TOP_DIR}/sorc/AQM-utils/parm/postxconfig-NT-fv3lam_cmaq.txt"
   else
     post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam.txt"
   fi
@@ -214,11 +214,6 @@ post_mn=${post_time:10:2}
 #
 # Create the input namelist file to the post-processor executable.
 #
-if [ ${FCST_MODEL} = "fv3gfs_aqm" ]; then
-  post_itag_add="aqfcmaq_on=.true.,"
-else
-  post_itag_add=""
-fi
 cat > itag <<EOF
 &model_inputs
 fileName='${dyn_file}'
@@ -230,7 +225,7 @@ fileNameFlux='${phy_file}'
 /
 
  &NAMPGB
- KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,${post_itag_add}
+ KPO=47,PO=1000.,975.,950.,925.,900.,875.,850.,825.,800.,775.,750.,725.,700.,675.,650.,625.,600.,575.,550.,525.,500.,475.,450.,425.,400.,375.,350.,325.,300.,275.,250.,225.,200.,175.,150.,125.,100.,70.,50.,30.,20.,10.,7.,5.,3.,2.,1.,
  /
 EOF
 #
@@ -299,7 +294,11 @@ post_renamed_fn_suffix="f${fhr}${post_mn_or_null}.${POST_OUTPUT_DOMAIN_NAME}.gri
 cd_vrfy "${postprd_dir}"
 basetime=$( $DATE_UTIL --date "$yyyymmdd $hh" +%y%j%H%M )
 symlink_suffix="_${basetime}f${fhr}${post_mn}"
-fids=( "prslev" "natlev" )
+if [ ${CPL_AQM} = "TRUE" ]; then
+  fids=( "cmaq" )
+else
+  fids=( "prslev" "natlev" )
+fi
 for fid in "${fids[@]}"; do
   FID=$(echo_uppercase $fid)
   post_orig_fn="${FID}.${post_fn_suffix}"

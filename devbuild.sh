@@ -250,13 +250,12 @@ if [ "${APPLICATION}" = "ATMAQ" ]; then
   if [ -d "${SRW_DIR}/sorc/arl_nexus" ]; then
     printf "Extra external components already exist. This step will be skipped.\n"
   else  
-    printf "... Replace regional workflow with the one for Online-CMAQ ...\n"
-    rm -rf regional_workflow
+    printf "... Checking out extra components for Online-CMAQ ...\n"
     ./manage_externals/checkout_externals -e externals/Externals_AQM.cfg
 
     if [ "${CANOPY}" = true ]; then
       printf "... Replace ufs-weather-model with the canopy version ...\n"
-      rm -rf "${SRW_DIR}/src/ufs-weather-model"
+      rm -rf "${SRW_DIR}/sorc/ufs-weather-model"
       ./manage_externals/checkout_externals -e externals/Externals_canopy.cfg
     fi
   fi

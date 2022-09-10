@@ -146,7 +146,11 @@ Call to \"module use\" command failed."
 # Load the .local module file if available for the given task
 #
 modulefile_local="${task_name}.local"
+
 if [ -f ${modules_dir}/${modulefile_local} ]; then
+  if [ "${task_name}" = "add_aqm_ics" ]; then
+    source "${SR_WX_APP_TOP_DIR}/etc/lmod-setup.sh"
+  fi
   module load "${modulefile_local}" || print_err_msg_exit "\
   Loading .local module file (in directory specified by mod-
   ules_dir) for the specified task (task_name) failed:

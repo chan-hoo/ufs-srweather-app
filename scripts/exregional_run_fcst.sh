@@ -106,6 +106,17 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# Get year, month, day, and hour of the the external model forecast.
+#
+#-----------------------------------------------------------------------
+#
+yyyymmdd=${cdate:0:8}
+yymmdd=${cdate:2:6}
+hh=${cdate:8:2}
+#
+#
+#-----------------------------------------------------------------------
+#
 # Set the forecast run directory.
 #
 #-----------------------------------------------------------------------
@@ -406,10 +417,6 @@ create_symlink_to_file target="${FIELD_TABLE_FP}" \
                        symlink="${run_dir}/${FIELD_TABLE_FN}" \
                        relative="${relative_link_flag}"
 
-create_symlink_to_file target="${NEMS_CONFIG_FP}" \
-                       symlink="${run_dir}/${NEMS_CONFIG_FN}" \
-                       relative="${relative_link_flag}"
-
 create_symlink_to_file target="${FIELD_DICT_FP}" \
                        symlink="${run_dir}/${FIELD_DICT_FN}" \
                        relative="${relative_link_flag}"
@@ -423,7 +430,11 @@ if [ ${WRITE_DOPOST} = "TRUE" ]; then
   CUSTOM_POST_CONFIG_FP = \"${CUSTOM_POST_CONFIG_FP}\"
 ===================================================================="
   else
-    post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam.txt"
+    if [ "${CPL_AQM}" = "TRUE" ]; then
+      post_config_fp="${SR_WX_APP_TOP_DIR}/sorc/AQM-utils/parm/postxconfig-NT-fv3lam_cmaq.txt"
+    else
+      post_config_fp="${UPP_DIR}/parm/postxconfig-NT-fv3lam.txt"
+    fi
     print_info_msg "
 ====================================================================
   post_config_fp = \"${post_config_fp}\"
@@ -433,6 +444,41 @@ if [ ${WRITE_DOPOST} = "TRUE" ]; then
   cp_vrfy ${post_config_fp} ./postxconfig-NT.txt
   cp_vrfy ${UPP_DIR}/parm/params_grib2_tbl_new .
 fi
+
+if [ "${CPL_AQM}" = "TRUE" ]; then
+#
+#-----------------------------------------------------------------------
+#
+# Setup air quality model cold/warm start
+#
+#-----------------------------------------------------------------------
+#
+  init_concentrations="false"
+  if [ "${RESTART_WORKFLOW}" = "FALSE" ] && [ "${cdate}" = "${DATE_FIRST_CYCL:0:10}" ]; then
+    init_concentrations="true"
+  fi
+#
+#-----------------------------------------------------------------------
+#
+# Call the function that creates the aqm.rc file within each
+# cycle directory.
+#
+#-----------------------------------------------------------------------
+#
+  python3 $USHDIR/create_aqm_rc_file.py \
+    --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+    --cdate "$cdate" \
+    --run-dir "${run_dir}" \
+    --init-concentration "${init_concentrations}" \
+    || print_err_msg_exit "\
+Call to function to create an aqm.rc file for the current
+cycle's (cdate) run directory (run_dir) failed:
+  cdate = \"${cdate}\"
+  run_dir = \"${run_dir}\""
+fi
+#
+#-----------------------------------------------------------------------
+#
 
 if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TRUE ] || [ "${DO_SHUM}" = TRUE ] || \
    [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
@@ -484,6 +530,21 @@ Call to function to create a diag table file for the current cycle's
 #
 #-----------------------------------------------------------------------
 #
+# Call the function that creates the NEMS configuration file within each
+# cycle directory.
+#
+#-----------------------------------------------------------------------
+#
+python3 $USHDIR/create_nems_configure_file.py \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --run-dir "${run_dir}" \
+  || print_err_msg_exit "\
+Call to function to create a NEMS configuration file for the current
+cycle's (cdate) run directory (run_dir) failed:
+  run_dir = \"${run_dir}\""
+#
+#-----------------------------------------------------------------------
+#
 # Run the FV3-LAM model.  Note that we have to launch the forecast from
 # the current cycle's directory because the FV3 executable will look for
 # input files in the current directory.  Since those files have been
@@ -505,8 +566,6 @@ code."
 #
 if [ ${WRITE_DOPOST} = "TRUE" ]; then
 
-  yyyymmdd=${cdate:0:8}
-  hh=${cdate:8:2}
   cyc=$hh
   fmn="00"
 

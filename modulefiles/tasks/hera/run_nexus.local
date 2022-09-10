@@ -1,0 +1,10 @@
+#%Module
+## Module file for run_nexus task.
+#############################################################
+
+## Load NCO
+module load nco/4.9.3
+
+## Load ufswm python environment
+module load hpc-miniconda3/4.6.14
+module load ufswm/1.0.0
