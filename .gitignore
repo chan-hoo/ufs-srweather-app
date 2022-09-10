@@ -1,15 +1,13 @@
 bin/
+exec/
 build/
 include/
 lib/
-regional_workflow/
 share/
-src/*/ 
-
-*.[aox]
-*.mod
-*.so
-*.exe
+sorc/*/ 
+ush/__pycache__/
+ush/config.yaml
+ush/python_utils/__pycache__/
+ush/*.swp
 
 *.swp
-*.out
