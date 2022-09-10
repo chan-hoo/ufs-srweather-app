@@ -748,14 +748,14 @@ def generate_FV3LAM_wflow():
         "target_lon": LON_CTR,
         "target_lat": LAT_CTR,
         "nrows_blend": HALO_BLEND,
-    #
-    # Question:
-    # For a ESGgrid type grid, what should stretch_fac be set to?  This depends
-    # on how the FV3 code uses the stretch_fac parameter in the namelist file.
-    # Recall that for a ESGgrid, it gets set in the function set_gridparams_ESGgrid(.sh)
-    # to something like 0.9999, but is it ok to set it to that here in the
-    # FV3 namelist file?
-    #
+        #
+        # Question:
+        # For a ESGgrid type grid, what should stretch_fac be set to?  This depends
+        # on how the FV3 code uses the stretch_fac parameter in the namelist file.
+        # Recall that for a ESGgrid, it gets set in the function set_gridparams_ESGgrid(.sh)
+        # to something like 0.9999, but is it ok to set it to that here in the
+        # FV3 namelist file?
+        #
         "stretch_fac": STRETCH_FAC,
         "npx": npx,
         "npy": npy,
