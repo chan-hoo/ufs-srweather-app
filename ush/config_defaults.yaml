@@ -232,7 +232,7 @@ platform:
   # from the NOAA HPSS has an example of how to account for this as well
   # as organizing the data into a more intuitive format:
   # scripts/exregional_get_ccpa_files.sh. When a fix is provided, it will
-  # be accounted for in the exregional_get_ccpa_files.sh script. 
+  # be accounted for in the exregional_get_ccpa_files.sh script.
   #
   # MRMS_OBS_DIR:
   # User-specified location of top-level directory where MRMS composite

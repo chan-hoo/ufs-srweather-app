@@ -544,22 +544,26 @@ def setup():
     cycl_intv=(24//i)
     if INCR_CYCL_FREQ < 24 and i > 1:
       if cycl_intv != INCR_CYCL_FREQ:
-        print_err_msg_exit(f'''
-            The number of CYCL_HRS does not match with that expected by INCR_CYCL_FREQ:
-              INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
-              cycle interval by the number of CYCL_HRS = {cycl_intv}
-              CYCL_HRS = {CYCL_HRS} ''')
+          print_err_msg_exit(
+              f"""
+              The number of CYCL_HRS does not match with that expected by INCR_CYCL_FREQ:
+                INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
+                cycle interval by the number of CYCL_HRS = {cycl_intv}
+                CYCL_HRS = {CYCL_HRS} """
+          )
     
       for itmp in range(1,i):
-        itm1=itmp-1
-        cycl_next_itmp=CYCL_HRS[itm1] + INCR_CYCL_FREQ
-        if cycl_next_itmp != CYCL_HRS[itmp]:
-          print_err_msg_exit(f'''
-            Element {itmp} of CYCL_HRS does not match with the increment of cycle
-            frequency INCR_CYCL_FREQ:
-              CYCL_HRS = {CYCL_HRS}
-              INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
-              CYCL_HRS[{itmp}] = \"{CYCL_HRS[itmp]}\"''')
+          itm1=itmp-1
+          cycl_next_itmp=CYCL_HRS[itm1] + INCR_CYCL_FREQ
+          if cycl_next_itmp != CYCL_HRS[itmp]:
+              print_err_msg_exit(
+                  f'''
+                  Element {itmp} of CYCL_HRS does not match with the increment of cycle
+                  frequency INCR_CYCL_FREQ:
+                    CYCL_HRS = {CYCL_HRS}
+                    INCR_CYCL_FREQ = {INCR_CYCL_FREQ}
+                    CYCL_HRS[{itmp}] = \"{CYCL_HRS[itmp]}\"'''
+              )
     #
     #-----------------------------------------------------------------------
     #
@@ -573,21 +577,23 @@ def setup():
     #
     global NUM_CYCLES, CYCL_DELT
 
-    ALL_CDATES = set_cycle_dates( \
-      date_start=DATE_FIRST_CYCL,
-      date_end=DATE_LAST_CYCL,
-      cycle_hrs=CYCL_HRS,
-      incr_cycl_freq=cycl_intv)
+    ALL_CDATES = set_cycle_dates(
+        date_start=DATE_FIRST_CYCL,
+        date_end=DATE_LAST_CYCL,
+        cycle_hrs=CYCL_HRS,
+        incr_cycl_freq=cycl_intv,
+    )
     
     NUM_CYCLES=len(ALL_CDATES)
     CYCL_DELT = f"{cycl_intv:02d}:00:00"
     
     if NUM_CYCLES > 90:
-      ALL_CDATES=None
-      print_info_msg(f'''
-        Too many cycles in ALL_CDATES to list, redefining in abbreviated form."
-        ALL_CDATES="{DATE_FIRST_CYCL}{CYCL_HRS[0]}...{DATE_LAST_CYCL}{CYCL_HRS[-1]}''')
-
+        ALL_CDATES = None
+        print_info_msg(
+            f"""
+            Too many cycles in ALL_CDATES to list, redefining in abbreviated form."
+            ALL_CDATES="{DATE_FIRST_CYCL}{CYCL_HRS[0]}...{DATE_LAST_CYCL}{CYCL_HRS[-1]}"""
+        )
     #
     # -----------------------------------------------------------------------
     #

@@ -760,7 +760,7 @@ def generate_FV3LAM_wflow():
         "npx": npx,
         "npy": npy,
         "layout": [LAYOUT_X, LAYOUT_Y],
-        "bc_update_interval": LBC_SPEC_INTVL_HRS
+        "bc_update_interval": LBC_SPEC_INTVL_HRS,
     })
     if ( CCPP_PHYS_SUITE == "FV3_GFS_2017_gfdl_mp" or
          CCPP_PHYS_SUITE == "FV3_GFS_2017_gfdlmp_regional" or
@@ -787,7 +787,7 @@ def generate_FV3LAM_wflow():
         "n_var_spp": N_VAR_SPP,
         "n_var_lndp": N_VAR_LNDP,
         "lndp_type": LNDP_TYPE,
-        "fhcyc": FHCYC_LSM_SPP_OR_NOT
+        "fhcyc": FHCYC_LSM_SPP_OR_NOT,
     })
     if CPL_AQM:
         gfs_physics_nml_dict.update({
