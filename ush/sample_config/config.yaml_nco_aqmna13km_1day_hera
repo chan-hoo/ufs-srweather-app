@@ -3,7 +3,7 @@ metadata:
 user:
   RUN_ENVIR: nco
   MACHINE: hera
-  ACCOUNT: fv3-cam
+  ACCOUNT: naqfc
 platform:
   DOMAIN_PREGEN_BASEDIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA
 workflow:

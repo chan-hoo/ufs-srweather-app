@@ -3,7 +3,7 @@ metadata:
 user:
   RUN_ENVIR: community
   MACHINE: hera
-  ACCOUNT: fv3-cam
+  ACCOUNT: naqfc
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3
