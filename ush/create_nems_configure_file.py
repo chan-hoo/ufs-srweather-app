@@ -134,20 +134,4 @@ if __name__ == "__main__":
         run_dir=args.run_dir, 
     )
 
-class Testing(unittest.TestCase):
-    def test_create_nems_configure_file(self):
-        path = os.path.join(os.getenv("USHDIR"), "test_data")
-        self.assertTrue(create_nems_configure_file(run_dir=path))
 
-    def setUp(self):
-        USHDIR = os.path.dirname(os.path.abspath(__file__))
-        NEMS_CONFIG_FN="nems.configure"
-        NEMS_CONFIG_TMPL_FP = os.path.join(USHDIR, "templates", NEMS_CONFIG_TMPL_FN)
-        set_env_var("DEBUG", True)
-        set_env_var("VERBOSE", True)
-        set_env_var("USHDIR", USHDIR)
-        set_env_var("NEMS_CONFIG_FN", NEMS_CONFIG_FN)
-        set_env_var("NEMS_CONFIG_TMPL_FP", NEMS_CONFIG_TMPL_FP)
-        set_env_var("DT_ATMOS", 1)
-        set_env_var("PRINT_ESMF", False)
-        set_env_var("CPL_AQM", False)

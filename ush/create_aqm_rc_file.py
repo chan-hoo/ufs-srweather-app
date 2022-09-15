@@ -163,25 +163,4 @@ if __name__ == "__main__":
         init_concentrations=str_to_type(args.init_concentrations), 
     )
 
-class Testing(unittest.TestCase):
-    def test_create_aqm_rc_file(self):
-        path = os.path.join(os.getenv("USHDIR"), "test_data")
-        self.assertTrue(\
-                create_aqm_rc_file( \
-                      run_dir=path,
-                      cdate=datetime(2021,1,1),
-                      init_concentrations=True) )
-    def setUp(self):
-        USHDIR = os.path.dirname(os.path.abspath(__file__))
-        AQM_RC_FN="aqm.rc"
-        AQM_RC_TMPL_FP = os.path.join(USHDIR, "templates", AQM_RC_TMPL_FN)
 
-        set_env_var("DEBUG", True)
-        set_env_var("VERBOSE", True)
-        set_env_var("USHDIR", USHDIR)
-        set_env_var("AQM_RC_FN", AQM_RC_FN)
-        set_env_var("AQM_RC_TMPL_FP", AQM_RC_TMPL_FP)
-        set_env_var("AQM_CONFIG_DIR",AQM_CONFIG_DIR)
-        set_env_var("init_concentrations", True)
-        set_env_var("AQM_BIO_DIR", AQM_BIO_DIR)
-        set_env_var("AQM_RC_FIRE_FREQUENCY", AQM_RC_FIRE_FREQUENCY)
