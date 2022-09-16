@@ -65,7 +65,7 @@ cpl_aqm_parm:
   #USER_AQM_RC_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/sample_config
   AQM_RC_TMPL_FN: aqm.rc
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
-  AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio"
+  AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_SARC401.ncf
   AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C401/Reprocessed
   AQM_FIRE_FILE: GBBEPx_C401GRID.emissions_v003
