@@ -252,8 +252,8 @@ if [ "${APPLICATION}" = "ATMAQ" ]; then
   else  
     printf "... Checking out extra components for Online-CMAQ ...\n"
 
-    printf "... Replace ufs-weather-model with a temporary fix ...\n"
-    rm -rf "${SRW_DIR}/sorc/ufs-weather-model"
+#    printf "... Replace ufs-weather-model with a temporary fix ...\n"
+#    rm -rf "${SRW_DIR}/sorc/ufs-weather-model"
 
     ./manage_externals/checkout_externals -e externals/Externals_AQM.cfg
 
