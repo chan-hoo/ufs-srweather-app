@@ -606,7 +606,11 @@ if [ ${WRITE_DOPOST} = "TRUE" ]; then
 
     basetime=$( $DATE_UTIL --date "$yyyymmdd $hh" +%y%j%H%M )
     symlink_suffix="_${basetime}f${fhr}${post_mn}"
-    fids=( "prslev" "natlev" )
+    if [ "${CPL_AQM}" = "TRUE" ]; then
+      fids=( "all" )
+    else
+      fids=( "prslev" "natlev" )
+    fi
     for fid in "${fids[@]}"; do
       FID=$(echo_uppercase $fid)
       post_orig_fn="${FID}.${post_fn_suffix}"
