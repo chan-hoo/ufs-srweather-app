@@ -4,7 +4,7 @@ build/
 include/
 lib/
 share/
-sorc/*/ 
+sorc/*/
 ush/__pycache__/
 ush/config.yaml
 ush/python_utils/__pycache__/
