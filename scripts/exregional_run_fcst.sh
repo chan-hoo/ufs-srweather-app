@@ -607,7 +607,7 @@ if [ ${WRITE_DOPOST} = "TRUE" ]; then
     basetime=$( $DATE_UTIL --date "$yyyymmdd $hh" +%y%j%H%M )
     symlink_suffix="_${basetime}f${fhr}${post_mn}"
     if [ "${CPL_AQM}" = "TRUE" ]; then
-      fids=( "all" )
+      fids=( "cmaq" )
     else
       fids=( "prslev" "natlev" )
     fi
