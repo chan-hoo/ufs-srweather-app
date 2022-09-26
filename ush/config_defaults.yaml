@@ -2312,11 +2312,20 @@ cpl_aqm_parm:
 # AQM_BIO_FILE:
 # File name of AQM BIO file
 #
+# AQM_FENGSHA_DIR:
+# Path to the directory containing AQM Fengsha file
+#
+# AQM_FENGSHA_FILE_PREFIX:
+# Frefix of AQM Fengsha file
+#
+# AQM_FENGSHA_FILE_SUFFIX:
+# Suffix and extension of AQM Fengsha file
+#
 # AQM_CANOPY_DIR:
 # Path to the directory containing AQM canopy files
 # 
 # AQM_CANOPY_FILE:
-# File name of AQM CANOPY file
+# File name of AQM canopy file
 #
 # AQM_CANOPY_FILE_SUFFIX:
 # Suffix and extension of AQM CANOPY file
@@ -2365,6 +2374,9 @@ cpl_aqm_parm:
   AQM_CONFIG_DIR: ""
   AQM_BIO_DIR: ""
   AQM_BIO_FILE: "BEIS_SARC401.ncf"
+  AQM_FENGSHA_DIR: ""
+  AQM_FENGSHA_FILE_PREFIX: "FENGSHA_p8_10km_inputs"
+  AQM_FENGSHA_FILE_SUFFIX: ".nc"
   AQM_CANOPY_DIR: ""
   AQM_CANOPY_FILE: "gfs.t12z.geo"
   AQM_CANOPY_FILE_SUFFIX: ".canopy_regrid.nc"
