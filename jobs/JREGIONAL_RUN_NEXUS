@@ -8,7 +8,8 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
+. $USHdir/job_preamble.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -17,7 +18,7 @@
 #
 #-----------------------------------------------------------------------
 #
-. $USHDIR/get_extrn_mdl_file_dir_info.sh
+. $USHdir/get_extrn_mdl_file_dir_info.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -26,7 +27,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u -x; } > /dev/null 2>&1
+{ save_shell_opts; . $USHdir/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -62,39 +63,40 @@ using NEXUS which will output for FV3 (in NetCDF format).
 #
 #-----------------------------------------------------------------------
 #
-NEXUS_WORKDIR="${CYCLE_DIR}/NEXUS"
-mkdir_vrfy -p "${NEXUS_WORKDIR}"
-
-NEXUS_WORKDIR_INPUT="${NEXUS_WORKDIR}/inputs"
-mkdir_vrfy -p "${NEXUS_WORKDIR_INPUT}"
+if [ $RUN_ENVIR = "nco" ]; then
+    export INPUT_DATA="${COMIN}"
+else
+    export INPUT_DATA="${COMIN}${SLASH_ENSMEM_SUBDIR}/INPUT"
+fi
+mkdir_vrfy -p "${INPUT_DATA}"
 #
 #-----------------------------------------------------------------------
 #
-# Call the ex-script for this J-job and pass to it the necessary varia-
-# bles.
+# Set the run directory
 #
 #-----------------------------------------------------------------------
 #
-#EXTRN_MDL_FNS_str="( "$( printf "\"%s\" " "${EXTRN_MDL_FNS[@]}" )")"
-
-time $SCRIPTSDIR/exregional_run_nexus.sh \
-  CYCLE_DATE="${CDATE}" \
-  NEXUS_WORKDIR="${NEXUS_WORKDIR}" \
-  NEXUS_WORKDIR_INPUT="${NEXUS_WORKDIR_INPUT}" || \
+DATA="${DATA:-${COMIN}${SLASH_ENSMEM_SUBDIR}}"
+mkdir_vrfy -p "${DATA}"
+#
+#
+#-----------------------------------------------------------------------
+#
+# Call the ex-script for this J-job.
+#
+#-----------------------------------------------------------------------
+#
+time $SCRIPTSdir/exregional_run_nexus.sh || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #
 #-----------------------------------------------------------------------
 #
-# Print exit message.
+# Run job postamble.
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "
-========================================================================
-Exiting script:  \"${scrfunc_fn}\"
-In directory:    \"${scrfunc_dir}\"
-========================================================================"
+job_postamble
 #
 #-----------------------------------------------------------------------
 #

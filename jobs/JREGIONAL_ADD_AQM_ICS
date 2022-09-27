@@ -18,7 +18,8 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
+. $USHdir/job_preamble.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -27,7 +28,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; . $USHdir/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -64,12 +65,21 @@ which the model needs.
 #
 #-----------------------------------------------------------------------
 #
-ics_dir="${CYCLE_DIR}${SLASH_ENSMEM_SUBDIR}/INPUT"
-mkdir_vrfy -p "${ics_dir}"
-
-workdir="${ics_dir}/tmp_AQM_ICS"
-check_for_preexist_dir_file "$workdir" "delete"
-mkdir_vrfy $workdir
+if [ $RUN_ENVIR = "nco" ]; then
+    export INPUT_DATA="${COMIN}"
+else
+    export INPUT_DATA="${COMIN}${SLASH_ENSMEM_SUBDIR}/INPUT"
+fi
+mkdir_vrfy -p "${INPUT_DATA}"
+#
+#-----------------------------------------------------------------------
+#
+# Set the run directory
+#
+#-----------------------------------------------------------------------
+#
+DATA="${DATA:-${COMIN}${SLASH_ENSMEM_SUBDIR}}"
+mkdir_vrfy -p "${DATA}"
 #
 #-----------------------------------------------------------------------
 #
@@ -77,23 +87,17 @@ mkdir_vrfy $workdir
 #
 #-----------------------------------------------------------------------
 #
-$SCRIPTSDIR/exregional_add_aqm_ics.sh \
-  ics_dir="${ics_dir}" \
-  workdir="${workdir}" || \
+$SCRIPTSdir/exregional_add_aqm_ics.sh || \
 print_err_msg_exit "\
 Call to ex-script corresponding to J-job \"${scrfunc_fn}\" failed."
 #
 #-----------------------------------------------------------------------
 #
-# Print exit message.
+# Run job postamble.
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "
-========================================================================
-Exiting script:  \"${scrfunc_fn}\"
-In directory:    \"${scrfunc_dir}\"
-========================================================================"
+job_postamble
 #
 #-----------------------------------------------------------------------
 #

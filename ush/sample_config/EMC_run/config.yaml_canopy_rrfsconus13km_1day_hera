@@ -9,8 +9,6 @@ workflow:
   CRON_RELAUNCH_INTVL_MNTS: 3
 #  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
   EXPT_SUBDIR: aqm_canopy_conus13_1day
-  EXEC_SUBDIR: exec
-  NET: aqm
   CCPP_PHYS_SUITE: FV3_GFS_v16
   DATE_FIRST_CYCL: '20190805'
   DATE_LAST_CYCL: '20190805'
@@ -22,6 +20,8 @@ workflow:
   COMPILER: intel
   DIAG_TABLE_TMPL_FN: diag_table_aqm
   FIELD_TABLE_TMPL_FN: field_table_aqm
+nco:
+  NET: aqm
 workflow_switches:
   RUN_TASK_MAKE_GRID: true
   RUN_TASK_MAKE_OROG: true
@@ -63,7 +63,6 @@ cpl_aqm_parm:
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
-  #USER_AQM_RC_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/sample_config
   AQM_RC_TMPL_FN: aqm.rc_canopy
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio

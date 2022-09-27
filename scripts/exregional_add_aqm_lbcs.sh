@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; . $USHdir/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -46,28 +46,6 @@ This is the ex-script for the task that generates chemical and GEFS
 lateral boundary conditions.
 ========================================================================"
 #
-#-----------------------------------------------------------------------
-#
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "lbcs_dir" "workdir" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
 # Set OpenMP variables.
 #
 #-----------------------------------------------------------------------
@@ -82,7 +60,7 @@ export OMP_STACKSIZE=${OMP_STACKSIZE_MAKE_LBCS}
 #
 #-----------------------------------------------------------------------
 #
-source $USHDIR/source_machine_file.sh
+. ${MACHINE_FILE}
 eval ${PRE_TASK_CMDS}
 
 nprocs=$(( NNODES_ADD_AQM_LBCS*PPN_ADD_AQM_LBCS ))
@@ -92,7 +70,6 @@ if [ -z "${RUN_CMD_UTILS:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_UTILS for your platform"
 else
-  RUN_CMD_UTILS=$(eval echo ${RUN_CMD_UTILS})
   print_info_msg "$VERBOSE" "
   All executables will be submitted with command \'${RUN_CMD_UTILS}\'."
 fi
@@ -104,7 +81,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy $workdir
+DATA="${DATA}/tmp_AQM_LBCS"
+mkdir_vrfy -p "$DATA"
+cd_vrfy $DATA
 #
 #-----------------------------------------------------------------------
 #
@@ -112,8 +91,8 @@ cd_vrfy $workdir
 #
 #-----------------------------------------------------------------------
 #
-yyyymmdd="${CDATE:0:8}"
-mm="${CDATE:4:2}"
+yyyymmdd="${PDY}"
+mm="${PDY:4:2}"
 
 if [ ${RUN_ADD_AQM_CHEM_LBCS} = "TRUE" ]; then
 
@@ -134,8 +113,8 @@ The chemical LBC files do not exist:
 
   for hr in 0 ${LBC_SPEC_FCST_HRS[@]}; do
     fhr=$( printf "%03d" "${hr}" )
-    if [ -r ${lbcs_dir}/gfs_bndy.tile7.${fhr}.nc ]; then
-        ncks -A ${CHEM_BOUNDARY_CONDITION_FILE} ${lbcs_dir}/gfs_bndy.tile7.${fhr}.nc
+    if [ -r ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.f${fhr}.nc ]; then
+        ncks -A ${CHEM_BOUNDARY_CONDITION_FILE} ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.f${fhr}.nc
     fi
   done
 
@@ -153,9 +132,9 @@ fi
 #
 if [ ${RUN_ADD_AQM_GEFS_LBCS} = "TRUE" ]; then
 
-  cp_vrfy ${lbcs_dir}/gfs_bndy.tile7.???.nc $workdir
+  cp_vrfy ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.???.nc $DATA
 
-  RUN_CYC="${CDATE:8:2}"
+  RUN_CYC="${cyc}"
 
   GEFS_CYC_DIFF=$( printf "%02d" "$(( ${RUN_CYC} - ${AQM_GEFS_CYC} ))" )
 
@@ -168,8 +147,8 @@ cat > gefs2lbc-nemsio.ini <<EOF
  tstepdiff=${GEFS_CYC_DIFF}
  dtstep=${LBC_SPEC_INTVL_HRS}
  bndname='aothrj','aecj','aorgcj','asoil','numacc','numcor'
- mofile='${AQM_GEFS_DIR}/$yyyymmdd/${AQM_GEFS_CYC}/gfs.t00z.atmf','.nemsio'
- lbcfile='${lbcs_dir}/gfs_bndy.tile7.','.nc'
+ mofile='${AQM_GEFS_DIR}/${PDY}/${AQM_GEFS_CYC}/gfs.t00z.atmf','.nemsio'
+ lbcfile='${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.f','.nc'
  topofile='${OROG_DIR}/${CRES}_oro_data.tile7.halo4.nc'
 &end
 
@@ -194,7 +173,7 @@ Species converting Factor
 EOF
 
   exec_fn="gefs2lbc_para"
-  exec_fp="$EXECDIR/${exec_fn}"
+  exec_fp="$EXECdir/${exec_fn}"
   if [ ! -f "${exec_fp}" ]; then
     print_err_msg_exit "\
 The executable (exec_fp) for GEFS LBCs does not exist:
@@ -208,7 +187,8 @@ Please ensure that you've built this executable."
 #
 #----------------------------------------------------------------------
 #
-  ${RUN_CMD_UTILS} -n ${NUMTS} ${exec_fp} || \
+  PREP_STEP
+  eval ${RUN_CMD_UTILS} -n ${NUMTS} ${exec_fp} ${REDIRECT_OUT_ERR} || \
     print_err_msg_exit "\
 Call to executable (exec_fp) to generate chemical and GEFS LBCs
 file for RRFS-CMAQ failed:

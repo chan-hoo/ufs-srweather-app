@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; . $USHdir/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -49,25 +49,13 @@ tial or boundary condition files for the FV3 will be generated.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "ics_dir" "workdir" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
 # Check if restart file exists
 #
 #-----------------------------------------------------------------------
 #
 rst_dir=${PREV_CYCLE_DIR}/RESTART
 rst_file=fv_tracer.res.tile1.nc
-fv_tracer_file=${rst_dir}/${CDATE:0:8}.${CDATE:8:2}0000.${rst_file}
+fv_tracer_file=${rst_dir}/${PDY}.${cyc}0000.${rst_file}
 print_info_msg "
   Looking for tracer restart file: \"${fv_tracer_file}\""
 if [ ! -r ${fv_tracer_file} ]; then
@@ -76,9 +64,9 @@ if [ ! -r ${fv_tracer_file} ]; then
     rst_date=$( printf "%04d%02d%02d%02d" ${rst_info[@]:0:4} )
     print_info_msg "
   Tracer file not found. Checking available restart date:
-    requested date: \"${CDATE}\"
+    requested date: \"${PDY}${cyc}\"
     available date: \"${rst_date}\""
-    if [ "${rst_date}" = "${CDATE}" ] ; then
+    if [ "${rst_date}" = "${PDY}${cyc}" ] ; then
       fv_tracer_file=${rst_dir}/${rst_file}
       if [ -r ${fv_tracer_file} ]; then
         print_info_msg "
@@ -97,7 +85,9 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${workdir}
+DATA="${DATA}/tmp_AQM_ICS"
+mkdir_vrfy -p "$DATA"
+cd_vrfy $DATA
 #
 #-----------------------------------------------------------------------
 #
@@ -140,7 +130,7 @@ print_info_msg "
 #
 #-----------------------------------------------------------------------
 #
-gfs_ic_file=${ics_dir}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
+gfs_ic_file=${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
 wrk_ic_file=gfs.nc
 
 print_info_msg "

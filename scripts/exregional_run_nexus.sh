@@ -8,7 +8,7 @@
 #-----------------------------------------------------------------------
 #
 . ${GLOBAL_VAR_DEFNS_FP}
-. $USHDIR/source_util_funcs.sh
+. $USHdir/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -17,7 +17,7 @@
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -u +x; } > /dev/null 2>&1
+{ save_shell_opts; . $USHdir/preamble.sh; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -47,28 +47,6 @@ This is the ex-script for the task that runs NEXUS.
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
-# should consist of a set of name-value pairs of the form arg1="value1",
-# etc).
-#
-#-----------------------------------------------------------------------
-#
-valid_args=( "CYCLE_DATE" "NEXUS_WORKDIR" "NEXUS_WORKDIR_INPUT" )
-process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
-#
-#-----------------------------------------------------------------------
-#
 # Set OpenMP variables.
 #
 #-----------------------------------------------------------------------
@@ -83,7 +61,7 @@ export OMP_STACKSIZE=${OMP_STACKSIZE_RUN_NEXUS}
 #
 #-----------------------------------------------------------------------
 #
-source $USHDIR/source_machine_file.sh
+. ${MACHINE_FILE}
 eval ${PRE_TASK_CMDS}
 
 nprocs=$(( NNODES_RUN_NEXUS*PPN_RUN_NEXUS ))
@@ -105,7 +83,13 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cd_vrfy ${NEXUS_WORKDIR}
+DATA="${DATA}/tmp_NEXUS"
+mkdir_vrfy -p "$DATA"
+
+DATAinput="${DATA}/input"
+mkdir_vrfy -p "$DATAinput"
+
+cd_vrfy $DATA
 #
 #-----------------------------------------------------------------------
 #
@@ -113,9 +97,9 @@ cd_vrfy ${NEXUS_WORKDIR}
 #
 #-----------------------------------------------------------------------
 #
-cp_vrfy ${EXECDIR}/nexus ${NEXUS_WORKDIR}
-cp_vrfy ${ARL_NEXUS_DIR}/config/cmaq/*.rc ${NEXUS_WORKDIR}
-cp_vrfy ${NEXUS_FIX_DIR}/${NEXUS_GRID_FN} ${NEXUS_WORKDIR}/grid_spec.nc
+cp_vrfy ${EXECdir}/nexus ${DATA}
+cp_vrfy ${ARL_NEXUS_DIR}/config/cmaq/*.rc ${DATA}
+cp_vrfy ${NEXUS_FIX_DIR}/${NEXUS_GRID_FN} ${DATA}/grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -124,10 +108,10 @@ cp_vrfy ${NEXUS_FIX_DIR}/${NEXUS_GRID_FN} ${NEXUS_WORKDIR}/grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
-mm="${CYCLE_DATE:4:2}"
-dd="${CYCLE_DATE:6:2}"
-hh="${CYCLE_DATE:8:2}"
-yyyymmdd="${CYCLE_DATE:0:8}"
+mm="${PDY:4:2}"
+dd="${PDY:6:2}"
+hh="${cyc}"
+yyyymmdd="${PDY}"
 # Note: a timezone offset is used to compute the end date. Consequently,
 # the code below will only work for forecast lengths up to 24 hours.
 start_date=$( date --utc --date "${yyyymmdd} ${hh}" "+%Y%m%d%H" )
@@ -164,7 +148,7 @@ NEXUS_INPUT_BASE_DIR=${NEXUS_INPUT_DIR}
 #
 cp_vrfy ${ARL_NEXUS_DIR}/utils/python/nexus_time_parser.py .
 echo ${start_date} ${end_date} # ${cyc}
-./nexus_time_parser.py -f ${NEXUS_WORKDIR}/HEMCO_sa_Time.rc -s $start_date -e $end_date
+./nexus_time_parser.py -f ${DATA}/HEMCO_sa_Time.rc -s $start_date -e $end_date
 
 #
 #---------------------------------------------------------------------
@@ -172,7 +156,7 @@ echo ${start_date} ${end_date} # ${cyc}
 # set the root directory to the temporary directory
 #
 cp_vrfy ${ARL_NEXUS_DIR}/utils/python/nexus_root_parser.py .
-./nexus_root_parser.py -f ${NEXUS_WORKDIR}/NEXUS_Config.rc -d ${NEXUS_WORKDIR_INPUT}
+./nexus_root_parser.py -f ${DATA}/NEXUS_Config.rc -d ${DATAinput}
 
 #
 #----------------------------------------------------------------------
@@ -181,70 +165,70 @@ cp_vrfy ${ARL_NEXUS_DIR}/utils/python/nexus_root_parser.py .
 if [ "${NEI2016}" = "TRUE" ]; then #NEI2016
     cp_vrfy ${ARL_NEXUS_DIR}/utils/python/nexus_nei2016_linker.py .
     cp_vrfy ${ARL_NEXUS_DIR}/utils/python/nexus_nei2016_control_tilefix.py .
-    mkdir_vrfy -p ${NEXUS_WORKDIR_INPUT}/NEI2016v1
-    mkdir_vrfy -p ${NEXUS_WORKDIR_INPUT}/NEI2016v1/v2020-07
-    mkdir_vrfy -p ${NEXUS_WORKDIR_INPUT}/NEI2016v1/v2020-07/${mm}
-    mkdir_vrfy -p ${NEXUS_WORKDIR_INPUT}/NEI2016v1/v2022-07
-    mkdir_vrfy -p ${NEXUS_WORKDIR_INPUT}/NEI2016v1/v2022-07/${mm}
-    ./nexus_nei2016_linker.py --src_dir ${NEXUS_INPUT_BASE_DIR} --date ${yyyymmdd} --work_dir ${NEXUS_WORKDIR_INPUT} -v "v2020-07"
-    ./nexus_nei2016_linker.py --src_dir ${NEXUS_INPUT_BASE_DIR} --date ${yyyymmdd} --work_dir ${NEXUS_WORKDIR_INPUT} -v "v2022-07"
+    mkdir_vrfy -p ${DATAinput}/NEI2016v1
+    mkdir_vrfy -p ${DATAinput}/NEI2016v1/v2020-07
+    mkdir_vrfy -p ${DATAinput}/NEI2016v1/v2020-07/${mm}
+    mkdir_vrfy -p ${DATAinput}/NEI2016v1/v2022-07
+    mkdir_vrfy -p ${DATAinput}/NEI2016v1/v2022-07/${mm}
+    ./nexus_nei2016_linker.py --src_dir ${NEXUS_INPUT_BASE_DIR} --date ${yyyymmdd} --work_dir ${DATAinput} -v "v2020-07"
+    ./nexus_nei2016_linker.py --src_dir ${NEXUS_INPUT_BASE_DIR} --date ${yyyymmdd} --work_dir ${DATAinput} -v "v2022-07"
     ./nexus_nei2016_control_tilefix.py -f NEXUS_Config.rc -d ${yyyymmdd}
 fi
 
 if [ "${TIMEZONES}" = "TRUE" ]; then # TIME ZONES
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/TIMEZONES ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/TIMEZONES ${DATAinput}/
 fi
 
 if [ "${MASKS}" = "TRUE" ]; then # MASKS
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MASKS ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MASKS ${DATAinput}/
 fi
 
 if [ "${CEDS}" = "TRUE" ]; then #CEDS
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/CEDS ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/CEDS ${DATAinput}/
 fi
 
 if [ "${HTAP2010}" = "TRUE" ]; then #CEDS2014
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/HTAP ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/HTAP ${DATAinput}/
 fi
 
 if [ "${OMIHTAP}" = "TRUE" ]; then #CEDS2014
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/OMI-HTAP_2019 ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/OMI-HTAP_2019 ${DATAinput}/
 fi
 
 if [ "${NOAAGMD}" = "TRUE" ]; then #NOAA_GMD
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/NOAA_GMD ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/NOAA_GMD ${DATAinput}/
 fi
 
 if [ "${SOA}" = "TRUE" ]; then #SOA
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/SOA ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/SOA ${DATAinput}/
 fi
 
 if [ "${EDGAR}" = "TRUE" ]; then #EDGARv42
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/EDGARv42 ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/EDGARv42 ${DATAinput}/
 fi
 
 if [ "${MEGAN}" = "TRUE" ]; then #MEGAN
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MEGAN ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MEGAN ${DATAinput}/
 fi
 
 if [ "${OLSON_MAP}" = "TRUE" ]; then #OLSON_MAP
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/OLSON_MAP ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/OLSON_MAP ${DATAinput}/
 fi
 
 if [ "${Yuan_XLAI}" = "TRUE" ]; then #Yuan_XLAI
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/Yuan_XLAI ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/Yuan_XLAI ${DATAinput}/
 fi
 
 if [ "${GEOS}" = "TRUE" ]; then #GEOS
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/GEOS_0.5x0.625 ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/GEOS_0.5x0.625 ${DATAinput}/
 fi
 
 if [ "${AnnualScalar}" = "TRUE" ]; then #ANNUAL_SCALAR
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/AnnualScalar ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/AnnualScalar ${DATAinput}/
 fi
 
 if [ "${MODIS_XLAI}" = "TRUE" ]; then #MODIS_XLAI
-    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MODIS_XLAI ${NEXUS_WORKDIR_INPUT}/
+    ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MODIS_XLAI ${DATAinput}/
 fi
 
 
@@ -253,7 +237,8 @@ fi
 #
 # Execute NEXUS
 #
-${RUN_CMD_UTILS} ${EXECDIR}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc || \
+PREP_STEP
+eval ${RUN_CMD_UTILS} ${EXECdir}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc ${REDIRECT_OUT_ERR} || \
 print_err_msg_exit "\
 Call to execute nexus standalone for the FV3LAM failed."
 
@@ -263,7 +248,7 @@ Call to execute nexus standalone for the FV3LAM failed."
 # make nexus output pretty
 #
 cp_vrfy ${ARL_NEXUS_DIR}/utils/python/make_nexus_output_pretty.py .
-./make_nexus_output_pretty.py --src ${NEXUS_WORKDIR}/NEXUS_Expt_ugly.nc --grid ${NEXUS_WORKDIR}/grid_spec.nc -o ${NEXUS_WORKDIR}/NEXUS_Expt_pretty.nc -t ${NEXUS_WORKDIR}/HEMCO_sa_Time.rc
+./make_nexus_output_pretty.py --src ${DATA}/NEXUS_Expt_ugly.nc --grid ${DATA}/grid_spec.nc -o ${DATA}/NEXUS_Expt_pretty.nc -t ${DATA}/HEMCO_sa_Time.rc
 
 #
 #-----------------------------------------------------------------------
@@ -285,11 +270,6 @@ NEXUS has successfully generated emissions files in netcdf format!!!!
 Exiting script:  \"${scrfunc_fn}\"
 In directory:    \"${scrfunc_dir}\"
 ========================================================================"
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
 #
 #-----------------------------------------------------------------------
 #

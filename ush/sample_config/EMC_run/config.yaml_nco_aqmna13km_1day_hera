@@ -11,13 +11,6 @@ workflow:
   CRON_RELAUNCH_INTVL_MNTS: 3
 #  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
   EXPT_SUBDIR: aqm.v7.0.c7
-  EXEC_SUBDIR: exec
-  NET: aqm
-  model_ver: v7.0
-  RUN: aqm_test
-#  COMIN: /scratch1/NCEPDEV/rstprod/com/gfs/prod
-  STMP: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/NCO_OUTPUT/stmp
-  PTMP: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/NCO_OUTPUT/ptmp
   CCPP_PHYS_SUITE: FV3_GFS_v16
   DATE_FIRST_CYCL: '20200915'
   DATE_LAST_CYCL: '20200915'
@@ -29,18 +22,22 @@ workflow:
   COMPILER: intel
   DIAG_TABLE_TMPL_FN: diag_table_aqm
   FIELD_TABLE_TMPL_FN: field_table_aqm
+nco:
+  NET: aqm
+  model_ver: v7.0
+  RUN: aqm_test
+  OPSROOT: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/NCO_OUTPUT
 workflow_switches:
-#  RUN_TASK_MAKE_GRID: true
-#  RUN_TASK_MAKE_OROG: true
-#  RUN_TASK_MAKE_SFC_CLIMO: true
+  RUN_TASK_MAKE_GRID: false
+  RUN_TASK_MAKE_OROG: false
+  RUN_TASK_MAKE_SFC_CLIMO: false
   RUN_TASK_RUN_POST: true
-  RUN_TASK_GET_OBS_CCPA: false
-  RUN_TASK_GET_OBS_MRMS: false
-  RUN_TASK_GET_OBS_NDAS: false
-  RUN_TASK_VX_GRIDSTAT: false
-  RUN_TASK_VX_POINTSTAT: false
-  RUN_TASK_VX_ENSGRID: false
-  RUN_TASK_VX_ENSPOINT: false
+task_make_grid:
+  GRID_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA/AQM_NA_13km
+task_make_orog:
+  OROG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA/AQM_NA_13km
+task_make_sfc_climo:
+  SFC_CLIMO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA/AQM_NA_13km
 task_get_extrn_ics:
   EXTRN_MDL_NAME_ICS: FV3GFS
 #  FV3GFS_FILE_FMT_ICS: grib2
@@ -72,7 +69,6 @@ cpl_aqm_parm:
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
-  #USER_AQM_RC_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/sample_config
   AQM_RC_TMPL_FN: aqm.rc
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio

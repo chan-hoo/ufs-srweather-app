@@ -38,7 +38,7 @@ OPTIONS
   --install-dir=INSTALL_DIR
       installation prefix
   --bin-dir=BIN_DIR
-      installation binary directory name ("bin" by default; any name is available)
+      installation binary directory name ("exec" by default; any name is available)
   --build-type=BUILD_TYPE
       build type; defaults to RELEASE
       (e.g. DEBUG | RELEASE | RELWITHDEBINFO)
@@ -106,7 +106,7 @@ BIN_DIR="${SRW_DIR}/bin"
 MACHINE_SETUP=${SRW_DIR}/src/UFS_UTILS/sorc/machine-setup.sh
 BUILD_DIR="${SRW_DIR}/build"
 INSTALL_DIR=${SRW_DIR}
-BIN_DIR="bin" #change this to "exec" for NCO mode later
+BIN_DIR="exec"
 COMPILER=""
 APPLICATION=""
 CCPP_SUITES=""
