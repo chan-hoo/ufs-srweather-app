@@ -514,7 +514,7 @@ print_info_msg "$VERBOSE" "
 \"Shaving\" grid file with wide halo to obtain grid file without halo..."
 
 nml_fn="input.shave.grid.halo0"
-shaved_fp="${tmpdir}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo0.nc"
+shaved_fp="${DATA}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo0.nc"
 printf "%s %s %s %s %s\n" \
   $NX $NY "0" \"${unshaved_fp}\" \"${shaved_fp}\" \
   > ${nml_fn}
