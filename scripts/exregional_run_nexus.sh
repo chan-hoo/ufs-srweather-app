@@ -259,6 +259,14 @@ cp_vrfy ${ARL_NEXUS_DIR}/utils/run_nco_combine_ant_bio.sh .
 ./run_nco_combine_ant_bio.sh NEXUS_Expt_pretty.nc NEXUS_Expt.nc
 
 #
+#-----------------------------------------------------------------------
+#
+# Move NEXUS output to INPUT_DATA directory.
+#
+#-----------------------------------------------------------------------
+#
+mv_vrfy ${DATA}/NEXUS_Expt.nc ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.NEXUS_Expt.nc
+#
 # Print message indicating successful completion of script.
 #
 #-----------------------------------------------------------------------

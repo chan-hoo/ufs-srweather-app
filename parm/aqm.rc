@@ -48,7 +48,7 @@ anthro_format: netcdf
 #anthro_path:
 
 # emissions file name
-anthro_file: NEXUS/NEXUS_Expt.nc
+anthro_file: INPUT/NEXUS_Expt.nc
 
 # emissions time dependency
 # supported settings are:
