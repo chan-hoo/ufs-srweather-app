@@ -97,24 +97,22 @@ mm="${PDY:4:2}"
 if [ ${RUN_ADD_AQM_CHEM_LBCS} = "TRUE" ]; then
 
   ext_lbcs_file=${AQM_LBCS_FILES}
-  ext_lbcs_file=${ext_lbcs_file//<MM>/${mm}}
+  chem_lbcs_fn=${ext_lbcs_file//<MM>/${mm}}
 
-  CHEM_BOUNDARY_CONDITION_FILE=${ext_lbcs_file}
-
-  FULL_CHEMICAL_BOUNDARY_FILE=${AQM_LBCS_DIR}/${CHEM_BOUNDARY_CONDITION_FILE}
-  if [ -f ${FULL_CHEMICAL_BOUNDARY_FILE} ]; then
+  chem_lbcs_fp=${AQM_LBCS_DIR}/${chem_lbcs_fn}
+  if [ -f ${chem_lbcs_fp} ]; then
     #Copy the boundary condition file to the current location
-    cp_vrfy ${FULL_CHEMICAL_BOUNDARY_FILE} .
+    cp_vrfy ${chem_lbcs_fp} .
   else
     print_err_msg_exit "\
 The chemical LBC files do not exist:
-  CHEM_BOUNDARY_CONDITION_FILE = \"${CHEM_BOUNDARY_CONDITION_FILE}\""
+  CHEM_BOUNDARY_CONDITION_FILE = \"${chem_lbcs_fp}\""
   fi
 
   for hr in 0 ${LBC_SPEC_FCST_HRS[@]}; do
     fhr=$( printf "%03d" "${hr}" )
     if [ -r ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.f${fhr}.nc ]; then
-        ncks -A ${CHEM_BOUNDARY_CONDITION_FILE} ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.f${fhr}.nc
+        ncks -A ${chem_lbcs_fn} ${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_bndy.tile7.f${fhr}.nc
     fi
   done
 
@@ -193,6 +191,7 @@ Please ensure that you've built this executable."
 Call to executable (exec_fp) to generate chemical and GEFS LBCs
 file for RRFS-CMAQ failed:
   exec_fp = \"${exec_fp}\""
+  POST_STEP
 
   print_info_msg "
 ========================================================================
