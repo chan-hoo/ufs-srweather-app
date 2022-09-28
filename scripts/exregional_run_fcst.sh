@@ -547,11 +547,11 @@ fi
 #
 python3 $USHdir/create_nems_configure_file.py \
   --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
-  --run-dir "${run_dir}" \
+  --run-dir "${DATA}" \
   || print_err_msg_exit "\
 Call to function to create a NEMS configuration file for the current
-cycle's (cdate) run directory (run_dir) failed:
-  run_dir = \"${run_dir}\""
+cycle's (cdate) run directory (DATA) failed:
+  DATA = \"${DATA}\""
 #
 #-----------------------------------------------------------------------
 #
