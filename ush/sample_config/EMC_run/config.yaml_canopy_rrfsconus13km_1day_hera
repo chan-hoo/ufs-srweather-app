@@ -9,12 +9,12 @@ workflow:
   CRON_RELAUNCH_INTVL_MNTS: 3
 #  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
   EXPT_SUBDIR: aqm_canopy_conus13_1day
-  CCPP_PHYS_SUITE: FV3_GFS_v16
-  DATE_FIRST_CYCL: '20190805'
-  DATE_LAST_CYCL: '20190805'
+  CCPP_PHYS_SUITE: FV3_GFS_v15p2
+  DATE_FIRST_CYCL: '20190801'
+  DATE_LAST_CYCL: '20190801'
   CYCL_HRS:
     - 12
-  FCST_LEN_HRS: 6
+  FCST_LEN_HRS: 24
   PREEXISTING_DIR_METHOD: rename
   VERBOSE: true
   COMPILER: intel
@@ -46,8 +46,8 @@ task_run_fcst:
   LAYOUT_X: 16
   LAYOUT_Y: 10
   BLOCKSIZE: 32
-  RESTART_INTERVAL: 12
-  WTIME_RUN_FCST: 01:00:00
+  RESTART_INTERVAL: 24
+  WTIME_RUN_FCST: 01:30:00
   QUILTING: true
   PRINT_ESMF: false
   PREDEF_GRID_NAME: RRFS_CONUScompact_13km
@@ -70,9 +70,9 @@ cpl_aqm_parm:
   AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy
   AQM_CANOPY_FILE: gfs.t12z.geo
   AQM_CANOPY_FILE_SUFFIX: .canopy_regrid.nc
-  AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C775/Reprocessed
+  AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/Jianping.Huang/Data/emissions/GSCE/GBBEPx.in.C775/Reprocessed
   AQM_FIRE_FILE: Hourly_Emissions_regrid_rrfs_13km
-  AQM_FIRE_FILE_SUFFIX: _new48_v2.nc
+  AQM_FIRE_FILE_SUFFIX: _h72.nc
   AQM_RC_FIRE_FREQUENCY: hourly
   AQM_LBCS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/LBCS/RRFS_CONUS_13km_no_blending
   AQM_LBCS_FILES: gfs_bndy_chem_<MM>.tile7.000.nc
@@ -80,5 +80,5 @@ cpl_aqm_parm:
   NEXUS_INPUT_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/nexus
   NEXUS_FIX_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/nexus/fix
   NEXUS_GRID_FN: grid_spec_RRFS_CONUScompact_13km.nc
-#  RESTART_WORKFLOW: true
-#  RESTART_CYCLE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/restart/RRFS_CONUS_13km/2019080612
+  COLDSTART: false
+  WARMSTART_CYCLE_DIR: /scratch2/NCEPDEV/stmp3/Jianping.Huang/expt_dirs/uwm_aqm_cs_canopy_a/2019073112

@@ -2385,5 +2385,5 @@ cpl_aqm_parm:
   NEXUS_FIX_DIR: ""
   NEXUS_GRID_FN: "grid_spec_GSD_HRRR_25km.nc"
 
-  RESTART_WORKFLOW: false
-  RESTART_CYCLE_DIR: "/path/to/restart/cycle/dir"
+  COLDSTART: true
+  WARMSTART_CYCLE_DIR: "/path/to/warm/start/cycle/dir"
