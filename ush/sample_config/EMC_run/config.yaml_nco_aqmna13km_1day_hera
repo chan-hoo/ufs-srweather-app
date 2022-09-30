@@ -4,8 +4,6 @@ user:
   RUN_ENVIR: nco
   MACHINE: hera
   ACCOUNT: naqfc
-platform:
-  DOMAIN_PREGEN_BASEDIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3

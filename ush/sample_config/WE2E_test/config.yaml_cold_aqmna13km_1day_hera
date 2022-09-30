@@ -27,13 +27,6 @@ workflow_switches:
   RUN_TASK_MAKE_OROG: true
   RUN_TASK_MAKE_SFC_CLIMO: true
   RUN_TASK_RUN_POST: true
-  RUN_TASK_GET_OBS_CCPA: false
-  RUN_TASK_GET_OBS_MRMS: false
-  RUN_TASK_GET_OBS_NDAS: false
-  RUN_TASK_VX_GRIDSTAT: false
-  RUN_TASK_VX_POINTSTAT: false
-  RUN_TASK_VX_ENSGRID: false
-  RUN_TASK_VX_ENSPOINT: false
 task_get_extrn_ics:
   EXTRN_MDL_NAME_ICS: FV3GFS
 #  FV3GFS_FILE_FMT_ICS: grib2
