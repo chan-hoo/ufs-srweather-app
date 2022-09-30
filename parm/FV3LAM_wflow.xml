@@ -119,9 +119,9 @@ Directories and files.
 <!ENTITY EXPTDIR                  "{{ exptdir }}">
 
 {%- if run_envir == "nco"  %}
-<!ENTITY DYN_DIR  "{{ comout_basedir }}/{{ run }}.@Y@m@d/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.dyn">
-<!ENTITY PHY_DIR  "{{ comout_basedir }}/{{ run }}.@Y@m@d/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.phy">
-<!ENTITY COMIN_DIR "{{ comin_basedir }}/{{ run }}.@Y@m@d">
+<!ENTITY DYN_DIR  "{{ comout_basedir }}/{{ run }}.@Y@m@d/@H/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.dyn">
+<!ENTITY PHY_DIR  "{{ comout_basedir }}/{{ run }}.@Y@m@d/@H/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.phy">
+<!ENTITY COMIN_DIR "{{ comin_basedir }}/{{ run }}.@Y@m@d/@H">
 {%- else %}
 <!ENTITY DYN_DIR  "{{ comout_basedir }}/@Y@m@d@H{{ slash_ensmem_subdir }}/dyn">
 <!ENTITY PHY_DIR  "{{ comout_basedir }}/@Y@m@d@H{{ slash_ensmem_subdir }}/phy">
