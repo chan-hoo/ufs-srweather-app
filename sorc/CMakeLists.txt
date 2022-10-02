@@ -15,6 +15,12 @@ message(STATUS "BUILD_RRFS_UTILS ........ ${BUILD_RRFS_UTILS}")
 message(STATUS "BUILD_NEXUS ............. ${BUILD_NEXUS}")
 message(STATUS "BUILD_AQM_UTILS ......... ${BUILD_AQM_UTILS}")
 
+if (BUILD_UFS)
+  set(UFS_DEPEND "ufs-weather-model")
+else()
+  set(UFS_DEPEND "")
+endif()
+
 # Build UFS weather model
 if (BUILD_UFS)
   list(APPEND TARGET_LIST UFS)
@@ -90,7 +96,7 @@ if(BUILD_UFS_UTILS)
   )
 
   ExternalProject_Add(UFS_UTILS
-    DEPENDS ufs-weather-model
+    DEPENDS ${UFS_DEPEND}
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/UFS_UTILS
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/UFS_UTILS
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
@@ -105,7 +111,7 @@ if (BUILD_UPP)
   list(APPEND TARGET_LIST UPP)
 
   ExternalProject_Add(UPP
-    DEPENDS ufs-weather-model
+    DEPENDS ${UFS_DEPEND}
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/UPP
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/UPP
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
@@ -134,7 +140,6 @@ if (BUILD_RRFS_UTILS)
   list(APPEND TARGET_LIST RRFS_UTILS)
 
   ExternalProject_Add(RRFS_UTILS
-    DEPENDS ufs-weather-model
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/rrfs_utl
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/rrfs_utl
     INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
@@ -150,7 +155,7 @@ if (CPL_AQM)
     list(APPEND TARGET_LIST NEXUS)
 
     ExternalProject_Add(arl_nexus
-      DEPENDS ufs-weather-model
+      DEPENDS ${UFS_DEPEND}
       PREFIX ${CMAKE_CURRENT_BINARY_DIR}/arl_nexus
       SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/arl_nexus
       INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
@@ -163,7 +168,7 @@ if (CPL_AQM)
     list(APPEND TARGET_LIST AQM_UTILS)
 
     ExternalProject_Add(AQM-utils
-      DEPENDS ufs-weather-model
+      DEPENDS ${UFS_DEPEND}
       PREFIX ${CMAKE_CURRENT_BINARY_DIR}/AQM-utils
       SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/AQM-utils
       INSTALL_DIR ${CMAKE_INSTALL_PREFIX}
