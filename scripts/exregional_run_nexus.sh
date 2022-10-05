@@ -241,7 +241,7 @@ PREP_STEP
 eval ${RUN_CMD_UTILS} ${EXECdir}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc ${REDIRECT_OUT_ERR} || \
 print_err_msg_exit "\
 Call to execute nexus standalone for the FV3LAM failed."
-
+POST_STEP
 #
 #-----------------------------------------------------------------------
 #
