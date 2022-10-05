@@ -121,11 +121,11 @@ Directories and files.
 {%- if run_envir == "nco"  %}
 <!ENTITY DYN_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/@H/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.dyn</cyclestr>">
 <!ENTITY PHY_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/@H/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.phy</cyclestr>">
-<!ENTITY COMIN_DIR "{{ comin_basedir }}/<cyclestr>{{ run }}.@Y@m@d/@H</cyclestr>">
+<!ENTITY COMIN_DIR "{{ comin_basedir }}/{{ run }}.@Y@m@d/@H">
 {%- else %}
 <!ENTITY DYN_DIR  "{{ comout_basedir }}/<cyclestr>@Y@m@d@H{{ slash_ensmem_subdir }}/dyn</cyclestr>">
 <!ENTITY PHY_DIR  "{{ comout_basedir }}/<cyclestr>@Y@m@d@H{{ slash_ensmem_subdir }}/phy</cyclestr>">
-<!ENTITY COMIN_DIR "{{ comin_basedir }}/<cyclestr>@Y@m@d@H{{ slash_ensmem_subdir }}</cyclestr>">
+<!ENTITY COMIN_DIR "{{ comin_basedir }}/@Y@m@d@H{{ slash_ensmem_subdir }}">
 {%- endif %}
 
 {%- if run_envir == "nco"  %}
@@ -339,7 +339,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_run_nexus }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&RUN_NEXUS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&RUN_NEXUS_TN;_@Y@m@d@H&LOGEXT;</cyclestr></join>
+    <join>&LOGDIR;/&RUN_NEXUS_TN;<cyclestr>_@Y@m@d@H&LOGEXT;</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -526,7 +526,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_add_aqm_ics }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&ADD_AQM_EXTRN_ICS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ADD_AQM_EXTRN_ICS_TN;_@Y@m@d@H&LOGEXT;</cyclestr></join>
+    <join>&LOGDIR;/&ADD_AQM_EXTRN_ICS_TN;<cyclestr>_@Y@m@d@H&LOGEXT;</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -560,7 +560,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_add_aqm_ics }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&ADD_AQM_ICS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ADD_AQM_ICS_TN;_@Y@m@d@H&LOGEXT;</cyclestr></join>
+    <join>&LOGDIR;/&ADD_AQM_ICS_TN;<cyclestr>_@Y@m@d@H&LOGEXT;</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
@@ -595,7 +595,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_add_aqm_lbcs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
     <jobname>&ADD_AQM_LBCS_TN;</jobname>
-    <join><cyclestr>&LOGDIR;/&ADD_AQM_LBCS_TN;_@Y@m@d@H&LOGEXT;</cyclestr></join>
+    <join>&LOGDIR;/&ADD_AQM_LBCS_TN;<cyclestr>_@Y@m@d@H&LOGEXT;</cyclestr></join>
 
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
