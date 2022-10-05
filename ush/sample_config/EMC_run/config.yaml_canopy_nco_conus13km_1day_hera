@@ -1,5 +1,5 @@
 metadata:
-  description: config for Online-CMAQ, RRFS_CONUScompact_13km, canopy, 1cycle a day
+  description: config for Online-CMAQ, RRFS_CONUScompact_13km, 1cycle a day
 user:
   RUN_ENVIR: community
   MACHINE: hera
@@ -7,7 +7,7 @@ user:
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3
-#  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
+#    EXPT_BASEDIR: /scratch1/NCEPDEV/stmp4/Patrick.C.Campbell/expt_dirs
   EXPT_SUBDIR: aqm_canopy_conus13_1day
   CCPP_PHYS_SUITE: FV3_GFS_v15p2
   DATE_FIRST_CYCL: '20190801'
@@ -60,7 +60,10 @@ cpl_aqm_parm:
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_RRFScmaq_C775.ncf
-  AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy/CONUS13km
+  AQM_FENGSHA_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/FENGSHA
+  AQM_FENGSHA_FILE_PREFIX: FENGSHA_p8_10km_inputs
+  AQM_FENGSHA_FILE_SUFFIX: .nc
+  AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy
   AQM_CANOPY_FILE: gfs.t12z.geo
   AQM_CANOPY_FILE_SUFFIX: .canopy_regrid.nc
   AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/Jianping.Huang/Data/emissions/GSCE/GBBEPx.in.C775/Reprocessed
