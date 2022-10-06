@@ -1,7 +1,7 @@
 metadata:
   description: config for Online-CMAQ, RRFS_CONUScompact_13km, 1cycle a day
 user:
-  RUN_ENVIR: nco
+  RUN_ENVIR: community
   MACHINE: hera
   ACCOUNT: naqfc
 workflow:
