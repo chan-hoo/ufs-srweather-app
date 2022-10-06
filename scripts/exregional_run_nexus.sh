@@ -61,7 +61,6 @@ export OMP_STACKSIZE=${OMP_STACKSIZE_RUN_NEXUS}
 #
 #-----------------------------------------------------------------------
 #
-. ${MACHINE_FILE}
 eval ${PRE_TASK_CMDS}
 
 nprocs=$(( NNODES_RUN_NEXUS*PPN_RUN_NEXUS ))
