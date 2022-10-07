@@ -1,20 +1,20 @@
 metadata:
-  description: config for Online-CMAQ, AQM_NA_13km, NCO mode, 1cycle a day
+  description: config for Online-CMAQ, RRFS_CONUScompact_13km, Community mode, 1cycle a day
 user:
-  RUN_ENVIR: nco
+  RUN_ENVIR: community
   MACHINE: hera
   ACCOUNT: naqfc
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3
-#  EXPT_BASEDIR: /scratch1/NCEPDEV/stmp4/Patrick.C.Campbell/expt_dirs
-  EXPT_SUBDIR: aqm_canopy_na13_1day
+#    EXPT_BASEDIR: /scratch1/NCEPDEV/stmp4/Patrick.C.Campbell/expt_dirs
+  EXPT_SUBDIR: aqm_canopy_conus13_1day
   CCPP_PHYS_SUITE: FV3_GFS_v15p2
-  DATE_FIRST_CYCL: '20200915'
-  DATE_LAST_CYCL: '20200915'
+  DATE_FIRST_CYCL: '20190801'
+  DATE_LAST_CYCL: '20190801'
   CYCL_HRS:
     - 12
-  FCST_LEN_HRS: 6
+  FCST_LEN_HRS: 24
   PREEXISTING_DIR_METHOD: rename
   VERBOSE: true
   COMPILER: intel
@@ -22,20 +22,11 @@ workflow:
   FIELD_TABLE_TMPL_FN: field_table_aqm
 nco:
   NET: aqm
-  model_ver: v7.0
-  RUN: aqm_test
-  OPSROOT: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/NCO_OUTPUT
 workflow_switches:
-  RUN_TASK_MAKE_GRID: false
-  RUN_TASK_MAKE_OROG: false
-  RUN_TASK_MAKE_SFC_CLIMO: false
+  RUN_TASK_MAKE_GRID: true
+  RUN_TASK_MAKE_OROG: true
+  RUN_TASK_MAKE_SFC_CLIMO: true
   RUN_TASK_RUN_POST: true
-task_make_grid:
-  GRID_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA/AQM_NA_13km
-task_make_orog:
-  OROG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA/AQM_NA_13km
-task_make_sfc_climo:
-  SFC_CLIMO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/DOMAIN_DATA/AQM_NA_13km
 task_get_extrn_ics:
   EXTRN_MDL_NAME_ICS: FV3GFS
 #  FV3GFS_FILE_FMT_ICS: grib2
@@ -45,16 +36,14 @@ task_get_extrn_lbcs:
 #  FV3GFS_FILE_FMT_LBCS: grib2
 task_run_fcst:
   DT_ATMOS: 180
-  LAYOUT_X: 50
-  LAYOUT_Y: 34
-  BLOCKSIZE: 16
-  RESTART_INTERVAL: 12
-  WTIME_RUN_FCST: 02:00:00
+  LAYOUT_X: 16
+  LAYOUT_Y: 10
+  BLOCKSIZE: 32
+  RESTART_INTERVAL: 24
+  WTIME_RUN_FCST: 01:30:00
   QUILTING: true
   PRINT_ESMF: false
-  PREDEF_GRID_NAME: AQM_NA_13km
-task_run_post:
-  POST_OUTPUT_DOMAIN_NAME: 793
+  PREDEF_GRID_NAME: RRFS_CONUScompact_13km
 global:
   DO_ENSEMBLE: false
   NUM_ENS_MEMBERS: 2
@@ -67,7 +56,7 @@ cpl_aqm_parm:
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
-  AQM_RC_TMPL_FN: aqm.rc
+  AQM_RC_TMPL_FN: aqm.rc_canopy
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_RRFScmaq_C775.ncf
@@ -77,15 +66,15 @@ cpl_aqm_parm:
   AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy
   AQM_CANOPY_FILE: gfs.t12z.geo
   AQM_CANOPY_FILE_SUFFIX: .canopy_regrid.nc
-  AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/Jianping.Huang/Data/emissions/GSCE/RAVE.in.793/RAVE_RT
-  AQM_FIRE_FILE: Hourly_Emissions_regrid_NA_13km
+  AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/Jianping.Huang/Data/emissions/GSCE/GBBEPx.in.C775/Reprocessed
+  AQM_FIRE_FILE: Hourly_Emissions_regrid_rrfs_13km
   AQM_FIRE_FILE_SUFFIX: _h72.nc
   AQM_RC_FIRE_FREQUENCY: hourly
-  AQM_LBCS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ_NA13km/LBCS/RRFS_NA13km_GEOS5_v2
-  AQM_LBCS_FILES: geos5_bndy_v2.c793.2013<MM>.nc
+  AQM_LBCS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/LBCS/RRFS_CONUS_13km_no_blending
+  AQM_LBCS_FILES: gfs_bndy_chem_<MM>.tile7.000.nc
   AQM_GEFS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/GEFS_aerosol
-  NEXUS_INPUT_DIR: /scratch2/NCEPDEV/naqfc/Jianping.Huang/emissions/nexus
+  NEXUS_INPUT_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/nexus
   NEXUS_FIX_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/nexus/fix
-  NEXUS_GRID_FN: grid_spec_793.nc
-  RESTART_WORKFLOW: true
-  RESTART_CYCLE_DIR: /scratch2/NCEPDEV/stmp3/Jianping.Huang/NCO_OUTPUT/stmp/tmpnwprd/aqm_test_a/2020091412
+  NEXUS_GRID_FN: grid_spec_RRFS_CONUScompact_13km.nc
+  COLDSTART: false
+  WARMSTART_CYCLE_DIR: /scratch2/NCEPDEV/stmp3/Jianping.Huang/expt_dirs/uwm_aqm_cs_canopy_a/2019073112
