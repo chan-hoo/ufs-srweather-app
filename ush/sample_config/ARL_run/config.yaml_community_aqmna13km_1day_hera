@@ -1,14 +1,14 @@
 metadata:
-  description: config for Online-CMAQ, AQM_NA_13km, NCO mode, 1cycle a day
+  description: config for Online-CMAQ, AQM_NA_13km, Community mode, 1cycle a day
 user:
-  RUN_ENVIR: nco
+  RUN_ENVIR: community
   MACHINE: hera
   ACCOUNT: naqfc
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3
-#  EXPT_BASEDIR: /scratch1/NCEPDEV/stmp4/Patrick.C.Campbell/expt_dirs
-  EXPT_SUBDIR: aqm_canopy_na13_1day
+#  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
+  EXPT_SUBDIR: aqm.v7.0.c7
   CCPP_PHYS_SUITE: FV3_GFS_v15p2
   DATE_FIRST_CYCL: '20200915'
   DATE_LAST_CYCL: '20200915'
