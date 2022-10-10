@@ -22,7 +22,7 @@ Parameters needed by the job scheduler.
 <!--
 Workflow task names.
 -->
-<!ENTITY SLURM_NATIVE_CMD          "{{ slurm_native_cmd }}">
+<!ENTITY SCHED_NATIVE_CMD          "{{ sched_native_cmd }}">
 <!ENTITY MAKE_GRID_TN              "{{ make_grid_tn }}">
 <!ENTITY MAKE_OROG_TN              "{{ make_orog_tn }}">
 <!ENTITY MAKE_SFC_CLIMO_TN         "{{ make_sfc_climo_tn }}">
@@ -235,7 +235,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_make_grid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&MAKE_GRID_TN;</jobname>
     <join>&LOGDIR;/&MAKE_GRID_TN;&LOGEXT;</join>
@@ -261,7 +261,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_make_orog }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&MAKE_OROG_TN;</jobname>
     <join>&LOGDIR;/&MAKE_OROG_TN;&LOGEXT;</join>
@@ -295,7 +295,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_make_sfc_climo }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&MAKE_SFC_CLIMO_TN;</jobname>
     <join>&LOGDIR;/&MAKE_SFC_CLIMO_TN;&LOGEXT;</join>
@@ -363,7 +363,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_get_extrn_ics }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&GET_EXTRN_ICS_TN;</jobname>
     <join>&LOGDIR;/&GET_EXTRN_ICS_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -390,7 +390,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_get_extrn_lbcs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&GET_EXTRN_LBCS_TN;</jobname>
     <join>&LOGDIR;/&GET_EXTRN_LBCS_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -427,7 +427,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_make_ics }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&MAKE_ICS_TN;{{ uscore_ensmem_name }}</jobname>
     <join>&LOGDIR;/&MAKE_ICS_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -476,7 +476,7 @@ MODULES_RUN_TASK_FP script.
     <walltime>{{ wtime_make_lbcs }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&MAKE_LBCS_TN;{{ uscore_ensmem_name }}</jobname>
     <join>&LOGDIR;/&MAKE_LBCS_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -622,12 +622,16 @@ MODULES_RUN_TASK_FP script.
   {%- if machine in ["JET", "HERA", "LINUX"]  %}
     <cores>{{ ncores_run_fcst }}</cores>
     <native>{{ native_run_fcst }}</native>
+  {%- elif machine in ["WCOSS2"]  %}
+    <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}:tpp={{ omp_num_threads_run_fcst }}</nodes>
+    <native>&SCHED_NATIVE_CMD;</native>
+    <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- else %}
     <nodes>{{ nnodes_run_fcst }}:ppn={{ ppn_run_fcst }}</nodes>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- endif %}
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <walltime>{{ wtime_run_fcst }}</walltime>
     <jobname>&RUN_FCST_TN;{{ uscore_ensmem_name }}</jobname>
@@ -701,7 +705,7 @@ later below for other output times.
       <walltime>{{ wtime_run_post }}</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
     {%- if machine in ["GAEA"]  %}
-      <native>&SLURM_NATIVE_CMD;</native>
+      <native>&SCHED_NATIVE_CMD;</native>
     {%- endif %}
       <jobname>&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#</jobname>
       <join>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -759,7 +763,7 @@ for other output times.
         <walltime>{{ wtime_run_post }}</walltime>
         <nodesize>&NCORES_PER_NODE;</nodesize>
       {%- if machine in ["GAEA"]  %}
-        <native>&SLURM_NATIVE_CMD;</native>
+        <native>&SCHED_NATIVE_CMD;</native>
       {%- endif %}
         <jobname>&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#</jobname>
 	<join>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -822,7 +826,7 @@ always zero).
         <walltime>{{ wtime_run_post }}</walltime>
         <nodesize>&NCORES_PER_NODE;</nodesize>
       {%- if machine in ["GAEA"]  %}
-        <native>&SLURM_NATIVE_CMD;</native>
+        <native>&SCHED_NATIVE_CMD;</native>
       {%- endif %}
         {%- if sub_hourly_post %}
         <jobname>&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#</jobname>
@@ -894,7 +898,7 @@ the <task> tag to be identical to the ones above for other output times.
       <walltime>{{ wtime_run_post }}</walltime>
       <nodesize>&NCORES_PER_NODE;</nodesize>
     {%- if machine in ["GAEA"]  %}
-      <native>&SLURM_NATIVE_CMD;</native>
+      <native>&SCHED_NATIVE_CMD;</native>
     {%- endif %}
       <jobname>&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#</jobname>
       <join>&LOGDIR;/&RUN_POST_TN;{{ uscore_ensmem_name }}_f#fhr##fmn#<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -937,7 +941,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_get_obs_ccpa }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&GET_OBS_CCPA_TN;</jobname>
     <join>&LOGDIR;/&GET_OBS_CCPA_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -967,7 +971,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_get_obs_mrms }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&GET_OBS_MRMS_TN;</jobname>
     <join>&LOGDIR;/&GET_OBS_MRMS_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -998,7 +1002,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_get_obs_ndas }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&GET_OBS_NDAS_TN;</jobname>
     <join>&LOGDIR;/&GET_OBS_NDAS_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1027,7 +1031,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_GRIDSTAT_TN;</jobname>
     <join>&LOGDIR;/&VX_GRIDSTAT_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1081,7 +1085,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_GRIDSTAT_REFC_TN;</jobname>
     <join>&LOGDIR;/&VX_GRIDSTAT_REFC_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1134,7 +1138,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_GRIDSTAT_RETOP_TN;</jobname>
     <join>&LOGDIR;/&VX_GRIDSTAT_RETOP_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1187,7 +1191,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_GRIDSTAT_03h_TN;</jobname>
     <join>&LOGDIR;/&VX_GRIDSTAT_03h_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1226,7 +1230,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_GRIDSTAT_06h_TN;</jobname>
     <join>&LOGDIR;/&VX_GRIDSTAT_06h_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1265,7 +1269,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_gridstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_GRIDSTAT_24h_TN;</jobname>
     <join>&LOGDIR;/&VX_GRIDSTAT_24h_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1304,7 +1308,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_pointstat }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_POINTSTAT_TN;</jobname>
     <join>&LOGDIR;/&VX_POINTSTAT_TN;{{ uscore_ensmem_name }}<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1360,7 +1364,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1395,7 +1399,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_03h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_03h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1430,7 +1434,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_06h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_06h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1465,7 +1469,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_24h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_24h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1499,7 +1503,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_REFC_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_REFC_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1532,7 +1536,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_RETOP_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_RETOP_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1564,7 +1568,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_MEAN_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_MEAN_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1598,7 +1602,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_PROB_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_PROB_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1632,7 +1636,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_MEAN_03h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_MEAN_03h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1666,7 +1670,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_PROB_03h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_PROB_03h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1701,7 +1705,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_MEAN_06h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_MEAN_06h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1735,7 +1739,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_PROB_06h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_PROB_06h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1770,7 +1774,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_MEAN_24h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_MEAN_24h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1804,7 +1808,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_PROB_24h_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_PROB_24h_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1838,7 +1842,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_PROB_REFC_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_PROB_REFC_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1871,7 +1875,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_ensgrid_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSGRID_PROB_RETOP_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSGRID_PROB_RETOP_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1905,7 +1909,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_enspoint }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSPOINT_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSPOINT_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1936,7 +1940,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_enspoint_mean }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSPOINT_MEAN_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSPOINT_MEAN_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>
@@ -1967,7 +1971,7 @@ the <task> tag to be identical to the ones above for other output times.
     <walltime>{{ wtime_vx_enspoint_prob }}</walltime>
     <nodesize>&NCORES_PER_NODE;</nodesize>
   {%- if machine in ["GAEA"]  %}
-    <native>&SLURM_NATIVE_CMD;</native>
+    <native>&SCHED_NATIVE_CMD;</native>
   {%- endif %}
     <jobname>&VX_ENSPOINT_PROB_TN;</jobname>
     <join>&LOGDIR;/&VX_ENSPOINT_PROB_TN;<cyclestr>_@Y@m@d@H</cyclestr>&LOGEXT;</join>

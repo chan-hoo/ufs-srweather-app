@@ -190,7 +190,7 @@ def generate_FV3LAM_wflow():
             "partition_fcst": PARTITION_FCST,
             "queue_fcst": QUEUE_FCST,
             "machine": MACHINE,
-            "slurm_native_cmd": SLURM_NATIVE_CMD,
+            "sched_native_cmd": SCHED_NATIVE_CMD,
             "workflow_id": WORKFLOW_ID,
             #
             # Run environment
@@ -273,6 +273,10 @@ def generate_FV3LAM_wflow():
             "ncores_run_fcst": PE_MEMBER01,
             "native_run_fcst": f"--cpus-per-task {OMP_NUM_THREADS_RUN_FCST} --exclusive",
             "native_run_nexus": f"--cpus-per-task {OMP_NUM_THREADS_RUN_NEXUS}",
+            #
+            # Number of OpenMP threads for the run_fcst task
+            #
+            "omp_num_threads_run_fcst": OMP_NUM_THREADS_RUN_FCST,
             #
             # Number of logical processes per node for each task.  If running without
             # threading, this is equal to the number of MPI processes per node.
@@ -1119,7 +1123,7 @@ def generate_FV3LAM_wflow():
             following line can be added to the user's crontab (use \"crontab -e\" to
             edit the cron table):
 
-            */3 * * * * cd {EXPTDIR} && ./launch_FV3LAM_wflow.sh called_from_cron=\"TRUE\"
+            */{CRON_RELAUNCH_INTVL_MNTS} * * * * cd {EXPTDIR} && ./launch_FV3LAM_wflow.sh called_from_cron=\"TRUE\"
             """
         )
     #
