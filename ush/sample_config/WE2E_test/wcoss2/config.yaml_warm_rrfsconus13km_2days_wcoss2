@@ -1,13 +1,13 @@
 metadata:
-  description: config for Online-CMAQ, RRFS_CONUScompact_13km, warm start, 1cycle/day for 2days
+  description: config for Online-CMAQ, RRFS_CONUScompact_13km, warm start, 1cycle/day for 2days, on WCOSS2
 user:
   RUN_ENVIR: community
-  MACHINE: hera
-  ACCOUNT: naqfc
+  MACHINE: wcoss2
+  ACCOUNT: AQM-DEV
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3
-#  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
+#  EXPT_BASEDIR: /lfs/h2/emc/lam/noscrub/chan-hoo.jeon/expt_dirs
   EXPT_SUBDIR: aqm_warm_conus13_2days
   CCPP_PHYS_SUITE: FV3_GFS_v16
   DATE_FIRST_CYCL: '20190806'
@@ -53,25 +53,27 @@ cpl_aqm_parm:
   RUN_TASK_ADD_AQM_ICS: true
   RUN_TASK_ADD_AQM_LBCS: true
   RUN_TASK_RUN_NEXUS: true
+  NNODES_RUN_NEXUS: 4
+  PPN_RUN_NEXUS: 20
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
   AQM_RC_TMPL_FN: aqm.rc
-  AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
-  AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
+  AQM_CONFIG_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/aqm/epa/data
+  AQM_BIO_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_RRFScmaq_C775.ncf
-  AQM_FENGSHA_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/FENGSHA
+  AQM_FENGSHA_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/FENGSHA
   AQM_FENGSHA_FILE_PREFIX: FENGSHA_p8_10km_inputs
   AQM_FENGSHA_FILE_SUFFIX: .nc  
-  AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C775/Reprocessed
+  AQM_FIRE_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C775/Reprocessed
   AQM_FIRE_FILE: Hourly_Emissions_regrid_rrfs_13km
   AQM_FIRE_FILE_SUFFIX: _new48_v2.nc
   AQM_RC_FIRE_FREQUENCY: hourly
-  AQM_LBCS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/LBCS/RRFS_CONUS_13km_no_blending
+  AQM_LBCS_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/LBCS/RRFS_CONUS_13km_no_blending
   AQM_LBCS_FILES: gfs_bndy_chem_<MM>.tile7.000.nc
-  AQM_GEFS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/GEFS_aerosol
-  NEXUS_INPUT_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/nexus
-  NEXUS_FIX_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/nexus/fix
+  AQM_GEFS_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/GEFS_aerosol
+  NEXUS_INPUT_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/nexus_emissions
+  NEXUS_FIX_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/nexus/fix
   NEXUS_GRID_FN: grid_spec_RRFS_CONUScompact_13km.nc
   COLDSTART: false
-  WARMSTART_CYCLE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/restart/RRFS_CONUS_13km/2019080612
+  WARMSTART_CYCLE_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/restart/RRFS_CONUS_13km/2019080612

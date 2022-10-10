@@ -230,14 +230,13 @@ if [ "${MODIS_XLAI}" = "TRUE" ]; then #MODIS_XLAI
     ln_vrfy -sf ${NEXUS_INPUT_BASE_DIR}/MODIS_XLAI ${DATAinput}/
 fi
 
-
 #
 #----------------------------------------------------------------------
 #
 # Execute NEXUS
 #
 PREP_STEP
-eval ${RUN_CMD_UTILS} ${EXECdir}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc ${REDIRECT_OUT_ERR} || \
+eval ${RUN_CMD_NEXUS} ${EXECdir}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc ${REDIRECT_OUT_ERR} || \
 print_err_msg_exit "\
 Call to execute nexus standalone for the FV3LAM failed."
 POST_STEP

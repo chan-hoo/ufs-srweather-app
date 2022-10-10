@@ -185,12 +185,16 @@ platform:
   # The run command for post-processing (UPP). Can be left blank for smaller 
   # domains, in which case UPP will run without MPI.
   #
+  # RUN_CMD_NEXUS:
+  # The run command for ARL-NEXUS.
+  #
   #-----------------------------------------------------------------------
   #
   RUN_CMD_SERIAL: ""
   RUN_CMD_UTILS: ""
   RUN_CMD_FCST: ""
   RUN_CMD_POST: ""
+  RUN_CMD_NEXUS: ""
 
   #
   #-----------------------------------------------------------------------

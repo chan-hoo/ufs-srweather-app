@@ -19,6 +19,7 @@ platform:
   RUN_CMD_POST: srun
   RUN_CMD_SERIAL: time
   RUN_CMD_UTILS: srun
+  RUN_CMD_NEXUS: srun
   ENV_INIT_SCRIPTS_FPS:
     - /etc/profile
   PRE_TASK_CMDS: '{ ulimit -s unlimited; ulimit -a; }'
