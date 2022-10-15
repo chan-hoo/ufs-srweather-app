@@ -163,12 +163,10 @@ def generate_FV3LAM_wflow():
         d = DATE_FIRST_CYCL + timedelta(seconds=DT_ATMOS)
         time_str = d.strftime("%M:%S")
 
-        CYCL_FIRST = date_to_str(DATE_FIRST_CYCL,format="%Y%m%d%H") + "00"
-        if NUM_CYCLES == 1:
-            CYCL_NEXT = CYCL_FIRST
+        if DATE_FIRST_CYCL == DATE_LAST_CYCL:
+            CYCL_NEXT = date_to_str(DATE_FIRST_CYCL, format="%Y%m%d%H00")
         else:
-            CYCL_NEXT = date_to_str(DATE_FIRST_CYCL + timedelta(hours=INCR_CYCL_FREQ), format="%Y%m%d%H") + "00"
-        CYCL_LAST = date_to_str(DATE_LAST_CYCL,format="%Y%m%d%H") + "00"
+            CYCL_NEXT = date_to_str(DATE_FIRST_CYCL + timedelta(hours=INCR_CYCL_FREQ), format="%Y%m%d%H00")
 
         # Dictionary of settings
         settings = {
@@ -436,9 +434,7 @@ def generate_FV3LAM_wflow():
               'run_nexus_tn': RUN_NEXUS_TN,
               'coldstart': COLDSTART,
               'warmstart_cycle_dir': WARMSTART_CYCLE_DIR,
-              'cycl_first': CYCL_FIRST,
               'cycl_next': CYCL_NEXT,
-              'cycl_last': CYCL_LAST,
               'run_task_add_aqm_ics': RUN_TASK_ADD_AQM_ICS,
               'run_task_add_aqm_lbcs': RUN_TASK_ADD_AQM_LBCS,
               'run_task_run_nexus': RUN_TASK_RUN_NEXUS,
