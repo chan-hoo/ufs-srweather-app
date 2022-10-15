@@ -177,9 +177,6 @@ fi
 modulefile_local="${task_name}.local"
 
 if [ -f ${modules_dir}/${modulefile_local} ]; then
-  if [ "${task_name}" = "add_aqm_ics" ]; then
-    source "${HOMEdir}/etc/lmod-setup.sh"
-  fi
   module load "${modulefile_local}" || print_err_msg_exit "\
   Loading .local module file (in directory specified by mod-
   ules_dir) for the specified task (task_name) failed:
@@ -190,7 +187,6 @@ fi
 
 module list
 
-
 # Modules that use conda and need an environment activated will set the
 # SRW_ENV variable to the name of the environment to be activated. That
 # must be done within the script, and not inside the module. Do that
@@ -199,6 +195,12 @@ module list
 if [ -n "${SRW_ENV:-}" ] ; then
   set +u
   conda activate ${SRW_ENV}
+  set -u
+fi
+
+if [ -n "${AQM_ENV:-}" ] ; then
+  set +u
+  source "${AQM_ENV_FP}/${AQM_ENV}/bin/activate"
   set -u
 fi
 
