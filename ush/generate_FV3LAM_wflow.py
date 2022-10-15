@@ -163,18 +163,12 @@ def generate_FV3LAM_wflow():
         d = DATE_FIRST_CYCL + timedelta(seconds=DT_ATMOS)
         time_str = d.strftime("%M:%S")
 
-        cycl_hrs_str = [f"{c:02d}" for c in CYCL_HRS]
-        cdate_first_cycl = DATE_FIRST_CYCL + timedelta(hours=CYCL_HRS[0])
-
-        CYCL_FIRST = date_to_str(DATE_FIRST_CYCL,format="%Y%m%d") + cycl_hrs_str[0] + "00"
+        CYCL_FIRST = date_to_str(DATE_FIRST_CYCL,format="%Y%m%d%H") + "00"
         if NUM_CYCLES == 1:
             CYCL_NEXT = CYCL_FIRST
         else:
-            if len(CYCL_HRS) == 1:
-                CYCL_NEXT = date_to_str(DATE_FIRST_CYCL + timedelta(hours=INCR_CYCL_FREQ), format="%Y%m%d")+cycl_hrs_str[0]+"00"
-            else:
-                CYCL_NEXT = date_to_str(DATE_FIRST_CYCL,format="%Y%m%d") + cycl_hrs_str[1] + "00"
-        CYCL_LAST = date_to_str(DATE_LAST_CYCL,format="%Y%m%d") + cycl_hrs_str[-1] + "00"
+            CYCL_NEXT = date_to_str(DATE_FIRST_CYCL + timedelta(hours=INCR_CYCL_FREQ), format="%Y%m%d%H") + "00"
+        CYCL_LAST = date_to_str(DATE_LAST_CYCL,format="%Y%m%d%H") + "00"
 
         # Dictionary of settings
         settings = {
@@ -409,10 +403,9 @@ def generate_FV3LAM_wflow():
             #
             # Parameters that determine the set of cycles to run.
             #
-            "date_first_cycl": date_to_str(DATE_FIRST_CYCL, format="%Y%m%d"),
-            "date_last_cycl": date_to_str(DATE_LAST_CYCL, format="%Y%m%d"),
-            "cdate_first_cycl": cdate_first_cycl,
-            "cycl_hrs": cycl_hrs_str,
+            "date_first_cycl": date_to_str(DATE_FIRST_CYCL, format="%Y%m%d%H00"),
+            "date_last_cycl": date_to_str(DATE_LAST_CYCL, format="%Y%m%d%H00"),
+            "cdate_first_cycl": DATE_FIRST_CYCL,
             "cycl_freq": f"{INCR_CYCL_FREQ:02d}:00:00",
             #
             # Forecast length (same for all cycles).
@@ -446,7 +439,6 @@ def generate_FV3LAM_wflow():
               'cycl_first': CYCL_FIRST,
               'cycl_next': CYCL_NEXT,
               'cycl_last': CYCL_LAST,
-              'cycl_delt': CYCL_DELT,
               'run_task_add_aqm_ics': RUN_TASK_ADD_AQM_ICS,
               'run_task_add_aqm_lbcs': RUN_TASK_ADD_AQM_LBCS,
               'run_task_run_nexus': RUN_TASK_RUN_NEXUS,
@@ -1137,7 +1129,7 @@ def generate_FV3LAM_wflow():
         NOMADS_script = os.path.join(USHdir, "NOMADS_get_extrn_mdl_files.h")
         run_command(
             f"""{NOMADS_script} {date_to_str(DATE_FIRST_CYCL,format="%Y%m%d")} \
-                      {CYCL_HRS} {NOMADS_file_type} {FCST_LEN_HRS} {LBC_SPEC_INTVL_HRS}"""
+                      {date_to_str(DATE_FIRST_CYCL,format="%H")} {NOMADS_file_type} {FCST_LEN_HRS} {LBC_SPEC_INTVL_HRS}"""
         )
 
 
