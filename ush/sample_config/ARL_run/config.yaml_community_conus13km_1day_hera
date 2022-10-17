@@ -10,10 +10,9 @@ workflow:
 #    EXPT_BASEDIR: /scratch1/NCEPDEV/stmp4/Patrick.C.Campbell/expt_dirs
   EXPT_SUBDIR: aqm_canopy_conus13_1day
   CCPP_PHYS_SUITE: FV3_GFS_v15p2
-  DATE_FIRST_CYCL: '20190801'
-  DATE_LAST_CYCL: '20190801'
-  CYCL_HRS:
-    - 12
+  DATE_FIRST_CYCL: '2019080112'
+  DATE_LAST_CYCL: '2019080112'
+  INCR_CYCL_FREQ: 24
   FCST_LEN_HRS: 24
   PREEXISTING_DIR_METHOD: rename
   VERBOSE: true
@@ -56,13 +55,15 @@ cpl_aqm_parm:
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
-  AQM_RC_TMPL_FN: aqm.rc_canopy
+  AQM_RC_TMPL_FN: aqm.rc
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_RRFScmaq_C775.ncf
+  DO_AQM_FENGSHA: true
   AQM_FENGSHA_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/FENGSHA
   AQM_FENGSHA_FILE_PREFIX: FENGSHA_p8_10km_inputs
   AQM_FENGSHA_FILE_SUFFIX: .nc
+  DO_AQM_CANOPY: true
   AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy
   AQM_CANOPY_FILE: gfs.t12z.geo
   AQM_CANOPY_FILE_SUFFIX: .canopy_regrid.nc

@@ -176,17 +176,14 @@ tasks; and the "FCST" type is used for the RUN_FCST_TN task.
 <workflow realtime="F" scheduler="&SCHED;" cyclethrottle="60">
 {# Double quotes are required inside the strftime! Expect an error from reading the template if using single quotes. #}
   <cycledef group="at_start">{{ cdate_first_cycl.strftime("%M %H %d %m %Y *") }}</cycledef>
-{% for c in cycl_hrs %}
   <cycledef group="forecast">
-  {%- set cdate_first=date_first_cycl ~ c ~ "00" -%}
-  {%- set cdate_last=date_last_cycl ~ c ~ "00" -%}
-  {{- cdate_first ~ " " ~ cdate_last ~ " " ~ cycl_freq -}}
+    {{- date_first_cycl ~ " " ~ date_last_cycl ~ " " ~ cycl_freq -}}
   </cycledef>
-{%- endfor %}
-{%- if cycl_next != cycl_first %}
-  <cycledef group="cycled">{{ cycl_next ~ " " ~ cycl_last ~ " " ~ cycl_delt }}</cycledef>
+{%- if cycl_next != date_first_cycl %}
+  <cycledef group="cycled">
+    {{- cycl_next ~ " " ~ date_last_cycl ~ " " ~ cycl_freq -}}
+  </cycledef>
 {%- endif %}
-
   <log>
   {%- if run_envir == "nco"  %}
     &LOGDIR;/FV3LAM_wflow_{{ workflow_id }}.log
@@ -572,15 +569,15 @@ MODULES_RUN_TASK_FP script.
     <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
     <envar><name>subcyc</name><value><cyclestr>@M</cyclestr></value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
-    <envar><name>PREV_CYCLE_DIR</name><value><cyclestr offset="-{{- cycl_delt -}}">&COMIN_DIR;</cyclestr></value></envar>
+    <envar><name>PREV_CYCLE_DIR</name><value><cyclestr offset="-{{- cycl_freq -}}">&COMIN_DIR;</cyclestr></value></envar>
     <envar><name>SLASH_ENSMEM_SUBDIR</name><value><cyclestr>{{ slash_ensmem_subdir }}</cyclestr></value></envar>
 
     <dependency>
       <and>
         <taskdep task="&MAKE_ICS_TN;"/>
         <or>
-          <datadep age="00:00:00:05"><cyclestr offset="-{{- cycl_delt -}}">&COMIN_DIR;</cyclestr>/RESTART/<cyclestr>@Y@m@d.@H@M@S.fv_tracer.res.tile1.nc</cyclestr></datadep>
-          <datadep age="00:00:00:05"><cyclestr offset="-{{- cycl_delt -}}">&COMIN_DIR;</cyclestr>/RESTART/fv_tracer.res.tile1.nc</datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-{{- cycl_freq -}}">&COMIN_DIR;</cyclestr>/RESTART/<cyclestr>@Y@m@d.@H@M@S.fv_tracer.res.tile1.nc</cyclestr></datadep>
+          <datadep age="00:00:00:05"><cyclestr offset="-{{- cycl_freq -}}">&COMIN_DIR;</cyclestr>/RESTART/fv_tracer.res.tile1.nc</datadep>
         </or>
       </and>
     </dependency>
@@ -662,11 +659,11 @@ MODULES_RUN_TASK_FP script.
           <taskdep task="&ADD_AQM_ICS_TN;"/>
 {%- if not coldstart %}
           <and>
-            <not><cycleexistdep cycle_offset="-{{- cycl_delt -}}"/></not>
+            <not><cycleexistdep cycle_offset="-{{- cycl_freq -}}"/></not>
             <taskdep task="&ADD_AQM_EXTRN_ICS_TN;"/>
           </and>
 {%- else %}
-          <not><cycleexistdep cycle_offset="-{{- cycl_delt -}}"/></not>
+          <not><cycleexistdep cycle_offset="-{{- cycl_freq -}}"/></not>
 {%- endif %}
         </or>
 {%- endif %}

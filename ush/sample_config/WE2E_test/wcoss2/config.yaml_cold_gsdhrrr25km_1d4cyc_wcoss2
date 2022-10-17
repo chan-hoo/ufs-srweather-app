@@ -9,14 +9,10 @@ workflow:
   CRON_RELAUNCH_INTVL_MNTS: 3
 #  EXPT_BASEDIR: /lfs/h2/emc/lam/noscrub/chan-hoo.jeon/expt_dirs
   EXPT_SUBDIR: aqm_hrrr25_1d4cyc
-  CCPP_PHYS_SUITE: FV3_GFS_v16
-  DATE_FIRST_CYCL: '20190805'
-  DATE_LAST_CYCL: '20190805'
-  CYCL_HRS:
-    - 00
-    - 06
-    - 12
-    - 18
+  CCPP_PHYS_SUITE: FV3_GFS_v15p2
+  DATE_FIRST_CYCL: '2019080500'
+  DATE_LAST_CYCL: '2019080518'
+  INCR_CYCL_FREQ: 6
   FCST_LEN_HRS: 6
   PREEXISTING_DIR_METHOD: rename
   VERBOSE: true
@@ -57,10 +53,12 @@ cpl_aqm_parm:
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
-  AQM_RC_TMPL_FN: aqm.rc_noDust
+  AQM_RC_TMPL_FN: aqm.rc
   AQM_CONFIG_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_SARC401.ncf
+  DO_AQM_FENGSHA: false
+  DO_AQM_CANOPY: false
   AQM_FIRE_DIR: /lfs/h2/emc/lam/noscrub/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C401/Reprocessed
   AQM_FIRE_FILE: GBBEPx_C401GRID.emissions_v003
   AQM_FIRE_FILE_SUFFIX: .nc

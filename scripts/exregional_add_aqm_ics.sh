@@ -94,44 +94,16 @@ cd_vrfy $DATA
 # Add air quality tracer variables from previous cycle's restart output
 # to atmosphere's initial condition file according to the steps below:
 #
-# a. Remove time dimension and microphysics tracers from previous cycle's
-#    restart file. 
-#
+# a. Python script to manipulate the files (see comments inside for
+#    details)
 # b. Remove checksum attribute to prevent overflow
 #
-# c. Rename dimensions and coordinates from restart file to match names
-#    in atmosphere's IC file
-#
-# d-i. GFS ICs are defined on one additional (top) layer than tracers in
-#    the restart file. We extract the top layer from the tracer file and
-#    set all tracers to 0 (via ncdiff), extend the number of vertical levels
-#    by 1 (ncap2), then add the 0-valued top layer. Note that the vertical
-#    dimension is set as record (UNLIMITED), then reset to fixed length
-#    in order to achieve this result using NCO tools
-#
-# j. Add the vertically-extended tracers to the GFS IC file
-#
-# k. Rename reulting file as the expected atmospheric IC file
-#
-#-----------------------------------------------------------------------
-#
-# Select ncap or ncap2 tool based on availability
-if   command -v ncap2 >/dev/null 2>&1 ; then
-  ncap_cmd=ncap2
-elif command -v ncap  >/dev/null 2>&1 ; then
-  ncap_cmd=ncap
-else
-  print_err_msg_exit "\
-  NCO Arithmetic Processor not found (neither ncap nor ncap2)"
-fi
-
-print_info_msg "
-  Found NCO Arithmetic Processor: ${ncap_cmd}"
+# c. Rename reulting file as the expected atmospheric IC file
 #
 #-----------------------------------------------------------------------
 #
 gfs_ic_file=${INPUT_DATA}/${NET}.${cycle}${dot_ensmem}.gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-wrk_ic_file=gfs.nc
+wrk_ic_file=${DATA}/gfs.nc
 
 print_info_msg "
   Adding air quality tracers to atmospheric initial condition file:
@@ -139,42 +111,19 @@ print_info_msg "
     FV3 IC file: \"${gfs_ic_file}\""
 
 cp_vrfy ${gfs_ic_file} ${wrk_ic_file}
+cp_vrfy ${HOMEdir}/sorc/AQM-utils/python_utils/add_aqm_ics.py add_aqm_ics.py
 
-exclude_vars="Time,graupel,ice_wat,liq_wat,o3mr,rainwat,snowwat,sphum"
-
-ncwa -a Time -C -x -v "${exclude_vars}" -O ${fv_tracer_file} tmp1.nc || print_err_msg_exit "\
-Call to NCWA returned with nonzero exit code."
+python3 add_aqm_ics.py --fv_tracer_file "${fv_tracer_file}" --wrk_ic_file "${wrk_ic_file}"
 
 ncatted -a checksum,,d,s, tmp1.nc  || print_err_msg_exit "\
 Call to NCATTED returned with nonzero exit code."
 
-ncrename -d xaxis_1,lon -v xaxis_1,lon \
-         -d yaxis_1,lat -v yaxis_1,lat \
-         -d zaxis_1,lev -v zaxis_1,lev \
-         -O tmp1.nc tmp2.nc || print_err_msg_exit "\
-Call to NCRENAME returned with nonzero exit code."
+mv_vrfy tmp1.nc ${gfs_ic_file}
 
-ncks --mk_rec_dmn lev -O -o tmp1.nc tmp2.nc || print_err_msg_exit "\
-Call to NCKS returned with nonzero exit code."
+rm_vrfy gfs.nc
 
-ncks -O -d lev,0,0 tmp1.nc tmp1_ptop.nc || print_err_msg_exit "\
-Call to NCKS returned with nonzero exit code."
-
-${ncap_cmd} -s 'lev=lev+1' tmp1.nc tmp1_pfull.nc || print_err_msg_exit "\
-Call to NCAP returned with nonzero exit code."
-
-ncrcat -O -o tmp1.nc tmp1_ptop.nc tmp1_pfull.nc || print_err_msg_exit "\
-Call to NCRCAT returned with nonzero exit code."
-
-ncks --fix_rec_dmn lev -C -O -o tmp2.nc tmp1.nc || print_err_msg_exit "\
-Call to NCKS returned with nonzero exit code."
- 
-ncks -A -C -x -v lon,lat,lev tmp2.nc ${wrk_ic_file} || print_err_msg_exit "\
-Call to NCKS returned with nonzero exit code."
-
-mv_vrfy ${wrk_ic_file} ${gfs_ic_file}
-
-rm_vrfy tmp1.nc tmp1_ptop.nc tmp1_pfull.nc tmp2.nc
+unset fv_tracer_file
+unset wrk_ic_file
 #
 #-----------------------------------------------------------------------
 #

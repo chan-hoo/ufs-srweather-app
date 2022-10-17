@@ -9,7 +9,6 @@
 #
 . ${GLOBAL_VAR_DEFNS_FP}
 . $USHdir/source_util_funcs.sh
-. $USHdir/init_env.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -63,16 +62,6 @@ where the arguments are defined as follows:
 "
 
 fi
-#
-#-----------------------------------------------------------------------
-#
-# Initialize the environment, e.g. by making available the "module" 
-# command as well as others.
-#
-#-----------------------------------------------------------------------
-#
-env_init_scripts_fps_str="( "$(printf "\"%s\" " "${ENV_INIT_SCRIPTS_FPS[@]}")")"
-init_env env_init_scripts_fps="${env_init_scripts_fps_str}"
 #
 #-----------------------------------------------------------------------
 #
@@ -177,9 +166,6 @@ fi
 modulefile_local="${task_name}.local"
 
 if [ -f ${modules_dir}/${modulefile_local} ]; then
-  if [ "${task_name}" = "add_aqm_ics" ]; then
-    source "${HOMEdir}/etc/lmod-setup.sh"
-  fi
   module load "${modulefile_local}" || print_err_msg_exit "\
   Loading .local module file (in directory specified by mod-
   ules_dir) for the specified task (task_name) failed:
@@ -190,7 +176,6 @@ fi
 
 module list
 
-
 # Modules that use conda and need an environment activated will set the
 # SRW_ENV variable to the name of the environment to be activated. That
 # must be done within the script, and not inside the module. Do that
@@ -199,6 +184,16 @@ module list
 if [ -n "${SRW_ENV:-}" ] ; then
   set +u
   conda activate ${SRW_ENV}
+  if [ $machine = "gaea" ]; then
+     conda deactivate
+     conda activate ${SRW_ENV}
+  fi
+  set -u
+fi
+
+if [ -n "${AQM_ENV:-}" ] ; then
+  set +u
+  source "${AQM_ENV_FP}/${AQM_ENV}/bin/activate"
   set -u
 fi
 

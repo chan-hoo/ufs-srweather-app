@@ -1,13 +1,12 @@
 metadata:
-  description: config for Online-CMAQ, GSD_HRRR_25km, 6hr forecast, 4cycles a day, on HERA
+  description: config for Online-CMAQ, GSD_HRRR_25km, 6hr forecast, 4cycles a day, on Orion
 user:
   RUN_ENVIR: community
-  MACHINE: hera
-  ACCOUNT: naqfc
+  MACHINE: orion
+  ACCOUNT: fv3-cam
 workflow:
   USE_CRON_TO_RELAUNCH: true
   CRON_RELAUNCH_INTVL_MNTS: 3
-#  EXPT_BASEDIR: /scratch2/NCEPDEV/stmp3/Chan-hoo.Jeon/expt_dirs
   EXPT_SUBDIR: aqm_hrrr25_1d4cyc
   CCPP_PHYS_SUITE: FV3_GFS_v15p2
   DATE_FIRST_CYCL: '2019080500'
@@ -28,11 +27,19 @@ workflow_switches:
   RUN_TASK_RUN_POST: true
 task_get_extrn_ics:
   EXTRN_MDL_NAME_ICS: FV3GFS
-#  FV3GFS_FILE_FMT_ICS: grib2
+  FV3GFS_FILE_FMT_ICS: grib2
+  USE_USER_STAGED_EXTRN_FILES: true
+  EXTRN_MDL_SOURCE_BASEDIR_ICS: /work/noaa/fv3-cam/RRFS_CMAQ/staged_data/${yyyymmddhh}
+  EXTRN_MDL_FILES_ICS: []
+  EXTRN_MDL_DATA_STORES: disk
 task_get_extrn_lbcs:
   EXTRN_MDL_NAME_LBCS: FV3GFS
   LBC_SPEC_INTVL_HRS: 6
-#  FV3GFS_FILE_FMT_LBCS: grib2
+  FV3GFS_FILE_FMT_LBCS: grib2
+  USE_USER_STAGED_EXTRN_FILES: true
+  EXTRN_MDL_SOURCE_BASEDIR_LBCS: /work/noaa/fv3-cam/RRFS_CMAQ/staged_data/${yyyymmddhh}
+  EXTRN_MDL_FILES_LBCS: []
+  EXTRN_MDL_DATA_STORES: disk
 task_run_fcst:
   RESTART_INTERVAL: 6
   WTIME_RUN_FCST: 00:30:00
@@ -52,18 +59,18 @@ cpl_aqm_parm:
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
   AQM_RC_TMPL_FN: aqm.rc
-  AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
-  AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
+  AQM_CONFIG_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/aqm/epa/data
+  AQM_BIO_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_SARC401.ncf
   DO_AQM_FENGSHA: false
   DO_AQM_CANOPY: false
-  AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C401/Reprocessed
+  AQM_FIRE_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/emissions/GSCE/GBBEPx.in.C401/Reprocessed
   AQM_FIRE_FILE: GBBEPx_C401GRID.emissions_v003
   AQM_FIRE_FILE_SUFFIX: .nc
   AQM_RC_FIRE_FREQUENCY: static
-  AQM_LBCS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/LBCS/boundary_conditions_v4
+  AQM_LBCS_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/LBCS/boundary_conditions_v4
   AQM_LBCS_FILES: gfs_bndy_chem_<MM>.tile7.000.nc
-  AQM_GEFS_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/GEFS_aerosol
-  NEXUS_INPUT_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/nexus
-  NEXUS_FIX_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/nexus/fix
+  AQM_GEFS_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/GEFS_aerosol
+  NEXUS_INPUT_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/emissions/nexus
+  NEXUS_FIX_DIR: /work/noaa/fv3-cam/RRFS_CMAQ/nexus/fix
   NEXUS_GRID_FN: grid_spec_GSD_HRRR_25km.nc

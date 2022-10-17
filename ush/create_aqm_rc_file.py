@@ -63,12 +63,12 @@ def create_aqm_rc_file(cdate, run_dir, init_concentrations):
     # Set parameters in the aqm.rc file.
     #
     aqm_rc_bio_file_fp=os.path.join(AQM_BIO_DIR, AQM_BIO_FILE)
+    aqm_fire_file_fn=AQM_FIRE_FILE+"_"+yyyymmdd+"_t"+hh+"z"+AQM_FIRE_FILE_SUFFIX
+    aqm_rc_fire_file_fp=os.path.join(AQM_FIRE_DIR, yyyymmdd, aqm_fire_file_fn)
     aqm_fengsha_file_fn=AQM_FENGSHA_FILE_PREFIX+"_"+PREDEF_GRID_NAME+AQM_FENGSHA_FILE_SUFFIX
     aqm_rc_fengsha_file_fp=os.path.join(AQM_FENGSHA_DIR, aqm_fengsha_file_fn)
     aqm_canopy_file_fn=AQM_CANOPY_FILE+"."+mm+AQM_CANOPY_FILE_SUFFIX
     aqm_rc_canopy_file_fp=os.path.join(AQM_CANOPY_DIR, PREDEF_GRID_NAME, aqm_canopy_file_fn)
-    aqm_fire_file_fn=AQM_FIRE_FILE+"_"+yyyymmdd+"_t"+hh+"z"+AQM_FIRE_FILE_SUFFIX
-    aqm_rc_fire_file_fp=os.path.join(AQM_FIRE_DIR, yyyymmdd, aqm_fire_file_fn)
     #
     #-----------------------------------------------------------------------
     #
@@ -79,14 +79,16 @@ def create_aqm_rc_file(cdate, run_dir, init_concentrations):
     #-----------------------------------------------------------------------
     #
     settings = {
-      "aqm_config_dir": AQM_CONFIG_DIR,
-      "init_concentrations": init_concentrations,
-      "aqm_rc_bio_file_fp": aqm_rc_bio_file_fp,
-      "aqm_bio_dir": AQM_BIO_DIR,
-      "aqm_rc_fengsha_file_fp": aqm_rc_fengsha_file_fp,
-      "aqm_rc_canopy_file_fp": aqm_rc_canopy_file_fp,
-      "aqm_rc_fire_file_fp": aqm_rc_fire_file_fp,
-      "aqm_rc_fire_frequency": AQM_RC_FIRE_FREQUENCY
+        "do_aqm_fengsha": DO_AQM_FENGSHA,
+        "do_aqm_canopy": DO_AQM_CANOPY,
+        "aqm_config_dir": AQM_CONFIG_DIR,
+        "init_concentrations": init_concentrations,
+        "aqm_rc_bio_file_fp": aqm_rc_bio_file_fp,
+        "aqm_bio_dir": AQM_BIO_DIR,
+        "aqm_rc_fire_file_fp": aqm_rc_fire_file_fp,
+        "aqm_rc_fire_frequency": AQM_RC_FIRE_FREQUENCY,
+        "aqm_rc_fengsha_file_fp": aqm_rc_fengsha_file_fp,
+        "aqm_rc_canopy_file_fp": aqm_rc_canopy_file_fp
     }
     settings_str = cfg_to_yaml_str(settings)
     
@@ -109,7 +111,17 @@ def create_aqm_rc_file(cdate, run_dir, init_concentrations):
     #-----------------------------------------------------------------------
     #
     try:
-        fill_jinja_template(["-q", "-u", settings_str, "-t", AQM_RC_TMPL_FP, "-o", aqm_rc_fp])
+        fill_jinja_template(
+            [
+                "-q", 
+                "-u", 
+                settings_str, 
+                "-t", 
+                AQM_RC_TMPL_FP, 
+                "-o", 
+                aqm_rc_fp,
+            ]
+        )
     except:
         print_err_msg_exit(
             dedent(
