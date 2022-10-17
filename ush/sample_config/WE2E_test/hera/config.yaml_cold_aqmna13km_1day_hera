@@ -61,12 +61,14 @@ cpl_aqm_parm:
   AQM_CONFIG_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/epa/data
   AQM_BIO_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/aqm/bio
   AQM_BIO_FILE: BEIS_RRFScmaq_C775.ncf
+  DO_AQM_FENGSHA: true
   AQM_FENGSHA_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/FENGSHA
   AQM_FENGSHA_FILE_PREFIX: FENGSHA_p8_10km_inputs
   AQM_FENGSHA_FILE_SUFFIX: .nc  
-#  AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy
-#  AQM_CANOPY_FILE: gfs.t12z.geo
-#  AQM_CANOPY_FILE_SUFFIX: .canopy_regrid.nc
+  DO_AQM_CANOPY: false
+  AQM_CANOPY_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/canopy
+  AQM_CANOPY_FILE: gfs.t12z.geo
+  AQM_CANOPY_FILE_SUFFIX: .canopy_regrid.nc
   AQM_FIRE_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/GSCE/RAVE.in.793/RAVE_RT
   AQM_FIRE_FILE: Hourly_Emissions_regrid_NA_13km
   AQM_FIRE_FILE_SUFFIX: _h72.nc
