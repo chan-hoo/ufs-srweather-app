@@ -185,7 +185,7 @@ platform:
   # The run command for post-processing (UPP). Can be left blank for smaller 
   # domains, in which case UPP will run without MPI.
   #
-  # RUN_CMD_NEXUS:
+  # RUN_CMD_AQM:
   # The run command for ARL-NEXUS.
   #
   #-----------------------------------------------------------------------
@@ -194,7 +194,7 @@ platform:
   RUN_CMD_UTILS: ""
   RUN_CMD_FCST: ""
   RUN_CMD_POST: ""
-  RUN_CMD_NEXUS: ""
+  RUN_CMD_AQM: ""
 
   #
   #-----------------------------------------------------------------------
@@ -2275,6 +2275,7 @@ cpl_aqm_parm:
   RUN_TASK_ADD_AQM_ICS: false
   RUN_TASK_ADD_AQM_LBCS: false
   RUN_TASK_RUN_NEXUS: false
+  RUN_TASK_RUN_PT_SOURCE: false
 
   ADD_AQM_ICS_TN: "add_aqm_ics"
   NNODES_ADD_AQM_ICS: 1
@@ -2296,6 +2297,16 @@ cpl_aqm_parm:
   KMP_AFFINITY_RUN_NEXUS: "scatter"
   OMP_NUM_THREADS_RUN_NEXUS: 2
   OMP_STACKSIZE_RUN_NEXUS: "1024m"
+
+  RUN_PT_SOURCE_TN: "run_pt_source"
+  NNODES_RUN_PT_SOURCE: ""  # will be calculated in the workflow generation scripts 
+  PPN_RUN_PT_SOURCE: "" # will be calculated from NCORES_PER_NODE and OMP_NUM_THREADS in setup.py
+  WTIME_RUN_PT_SOURCE: 00:30:00
+  MAXTRIES_RUN_PT_SOURCE: 2
+  KMP_AFFINITY_RUN_PT_SOURCE: "scatter"
+  OMP_NUM_THREADS_RUN_PT_SOURCE: 2
+  OMP_STACKSIZE_RUN_PT_SOURCE: "1024m"
+ 
 #
 #-----------------------------------------------------------------------
 #
@@ -2314,7 +2325,7 @@ cpl_aqm_parm:
 # File name of AQM BIO file
 #
 # DO_AQM_FENGSHA:
-# Flag turning on/off AQM Fengsha option
+# Flag turning on/off AQM Fengsha option in AQM_RC
 #
 # AQM_FENGSHA_DIR:
 # Path to the directory containing AQM Fengsha file
@@ -2326,7 +2337,7 @@ cpl_aqm_parm:
 # Suffix and extension of AQM Fengsha file
 #
 # DO_AQM_CANOPY
-# Flag turning on/off AQM canopy option
+# Flag turning on/off AQM canopy option in AQM_RC
 #
 # AQM_CANOPY_DIR:
 # Path to the directory containing AQM canopy files
@@ -2374,6 +2385,21 @@ cpl_aqm_parm:
 # NEXUS_GRID_FN:
 # File name of the input grid_spec file of nexus
 #
+# PT_SRC_BASE_DIR_CONUS:
+# Directory containing point source files for CONUS
+#
+# PT_SRC_BASE_DIR_HI:
+# Directory containing point source files for HI
+#
+# PT_SRC_BASE_DIR_AK:
+# Directory containing point source files for AK
+#
+# COLDSTART:
+# Flag turning on/off warm start
+#
+# WARMSTART_CYCLE_DIR
+# Path to the directory where RESTART dir is located for warm start
+#
 #-----------------------------------------------------------------------
 #
   AQM_RC_TMPL_FN: "aqm.rc"
@@ -2403,6 +2429,10 @@ cpl_aqm_parm:
   NEXUS_INPUT_DIR: ""
   NEXUS_FIX_DIR: ""
   NEXUS_GRID_FN: "grid_spec_GSD_HRRR_25km.nc"
+
+  PT_SRC_BASE_DIR_CONUS: "/path/to/point/source/base/directory/for/conus"
+  PT_SRC_BASE_DIR_HI: "/path/to/point/source/base/directory/for/hi"
+  PT_SRC_BASE_DIR_AK: "/path/to/point/source/base/directory/for/ak"
 
   COLDSTART: true
   WARMSTART_CYCLE_DIR: "/path/to/warm/start/cycle/dir"

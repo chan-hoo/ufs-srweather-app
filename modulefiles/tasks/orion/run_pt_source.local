@@ -2,7 +2,6 @@
 ## Module file for run_nexus task.
 #############################################################
 
-module load nco/4.9.3
-
 module unload miniconda3
+
 module load miniconda_online-cmaq

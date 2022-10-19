@@ -64,15 +64,17 @@ export OMP_STACKSIZE=${OMP_STACKSIZE_RUN_NEXUS}
 eval ${PRE_TASK_CMDS}
 
 nprocs=$(( NNODES_RUN_NEXUS*PPN_RUN_NEXUS ))
+ppn_run_aqm="${PPN_RUN_NEXUS}"
+omp_num_threads_run_aqm="${OMP_NUM_THREADS_RUN_NEXUS}"
 
-if [ -z "${RUN_CMD_UTILS:-}" ] ; then
+if [ -z "${RUN_CMD_AQM:-}" ] ; then
   print_err_msg_exit "\
   Run command was not set in machine file. \
-  Please set RUN_CMD_UTILS for your platform"
+  Please set RUN_CMD_AQM for your platform"
 else
-  RUN_CMD_UTILS=$(eval echo ${RUN_CMD_UTILS})
+  RUN_CMD_AQM=$(eval echo ${RUN_CMD_AQM})
   print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_UTILS}\'."
+  All executables will be submitted with command \'${RUN_CMD_AQM}\'."
 fi
 
 #
@@ -236,7 +238,7 @@ fi
 # Execute NEXUS
 #
 PREP_STEP
-eval ${RUN_CMD_NEXUS} ${EXECdir}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc ${REDIRECT_OUT_ERR} || \
+eval ${RUN_CMD_AQM} ${EXECdir}/nexus -c NEXUS_Config.rc -r grid_spec.nc -o NEXUS_Expt_ugly.nc ${REDIRECT_OUT_ERR} || \
 print_err_msg_exit "\
 Call to execute nexus standalone for the FV3LAM failed."
 POST_STEP

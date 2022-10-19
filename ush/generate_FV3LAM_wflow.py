@@ -270,6 +270,7 @@ def generate_FV3LAM_wflow():
             #
             "omp_num_threads_run_fcst": OMP_NUM_THREADS_RUN_FCST,
             "omp_num_threads_run_nexus": OMP_NUM_THREADS_RUN_NEXUS,
+            "omp_num_threads_run_pt_source": OMP_NUM_THREADS_RUN_PT_SOURCE,
             #
             # Number of logical processes per node for each task.  If running without
             # threading, this is equal to the number of MPI processes per node.
@@ -427,29 +428,35 @@ def generate_FV3LAM_wflow():
             "mrms_obs_dir": MRMS_OBS_DIR,
             "ndas_obs_dir": NDAS_OBS_DIR,
             #
-            # RRFS-CMAQ parameters
+            # AQM parameters
             #
  	      'add_aqm_ics_tn': ADD_AQM_ICS_TN,
               'add_aqm_lbcs_tn': ADD_AQM_LBCS_TN,
               'run_nexus_tn': RUN_NEXUS_TN,
+              'run_pt_source_tn': RUN_PT_SOURCE_TN,
               'coldstart': COLDSTART,
               'warmstart_cycle_dir': WARMSTART_CYCLE_DIR,
               'cycl_next': CYCL_NEXT,
               'run_task_add_aqm_ics': RUN_TASK_ADD_AQM_ICS,
               'run_task_add_aqm_lbcs': RUN_TASK_ADD_AQM_LBCS,
               'run_task_run_nexus': RUN_TASK_RUN_NEXUS,
+              'run_task_run_pt_source': RUN_TASK_RUN_PT_SOURCE,
               'nnodes_add_aqm_ics': NNODES_ADD_AQM_ICS,
               'nnodes_add_aqm_lbcs': NNODES_ADD_AQM_LBCS,
               'nnodes_run_nexus': NNODES_RUN_NEXUS,
+              'nnodes_run_pt_source': NNODES_RUN_PT_SOURCE,
               'ppn_add_aqm_ics': PPN_ADD_AQM_ICS,
               'ppn_add_aqm_lbcs': PPN_ADD_AQM_LBCS,
               'ppn_run_nexus': PPN_RUN_NEXUS,
+              'ppn_run_pt_source': PPN_RUN_PT_SOURCE,
               'wtime_add_aqm_ics': WTIME_ADD_AQM_ICS,
               'wtime_add_aqm_lbcs': WTIME_ADD_AQM_LBCS,
               'wtime_run_nexus': WTIME_RUN_NEXUS,
+              'wtime_run_pt_source': WTIME_RUN_PT_SOURCE,
               'maxtries_add_aqm_ics': MAXTRIES_ADD_AQM_ICS,
               'maxtries_add_aqm_lbcs': MAXTRIES_ADD_AQM_LBCS,
               'maxtries_run_nexus': MAXTRIES_RUN_NEXUS,
+              'maxtries_run_pt_source': MAXTRIES_RUN_PT_SOURCE,
             #
             # Ensemble-related parameters.
             #

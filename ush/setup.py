@@ -449,12 +449,15 @@ def setup():
     #
     # -----------------------------------------------------------------------
     #
-    global PPN_RUN_FCST, PPN_RUN_NEXUS
+    global PPN_RUN_FCST, PPN_RUN_NEXUS, PPN_RUN_PT_SOURCE
     ppn_run_fcst_default = NCORES_PER_NODE // OMP_NUM_THREADS_RUN_FCST
     PPN_RUN_FCST = PPN_RUN_FCST or ppn_run_fcst_default
 
     ppn_run_nexus_default = NCORES_PER_NODE // OMP_NUM_THREADS_RUN_NEXUS
     PPN_RUN_NEXUS = PPN_RUN_NEXUS or ppn_run_nexus_default
+
+    ppn_run_pt_source_default = NCORES_PER_NODE // OMP_NUM_THREADS_RUN_PT_SOURCE
+    PPN_RUN_PT_SOURCE = PPN_RUN_PT_SOURCE or ppn_run_pt_source_default
     #
     # -----------------------------------------------------------------------
     #
@@ -1622,8 +1625,9 @@ def setup():
     #
     # -----------------------------------------------------------------------
     #
-    global NNODES_RUN_FCST
+    global NNODES_RUN_FCST, NNODES_RUN_PT_SOURCE
     NNODES_RUN_FCST = (PE_MEMBER01 + PPN_RUN_FCST - 1) // PPN_RUN_FCST
+    NNODES_RUN_PT_SOURCE = ((LAYOUT_X * LAYOUT_Y) + PPN_RUN_PT_SOURCE -1) // PPN_RUN_PT_SOURCE
 
     #
     # -----------------------------------------------------------------------
