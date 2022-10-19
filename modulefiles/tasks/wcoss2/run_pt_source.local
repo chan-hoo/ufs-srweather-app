@@ -2,6 +2,3 @@
 
 module load intel/$::env(intel_ver)
 module load python/$::env(python_ver)
-module load udunits/$::env(udunits_ver)
-module load gsl/$::env(gsl_ver)
-module load nco/$::env(nco_ver)
