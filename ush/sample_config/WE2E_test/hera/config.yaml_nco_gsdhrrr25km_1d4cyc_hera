@@ -57,6 +57,7 @@ cpl_aqm_parm:
   RUN_TASK_ADD_AQM_ICS: true
   RUN_TASK_ADD_AQM_LBCS: true
   RUN_TASK_RUN_NEXUS: true
+  RUN_TASK_RUN_PT_SOURCE: true
   RUN_ADD_AQM_CHEM_LBCS: true
   RUN_ADD_AQM_GEFS_LBCS: true
   AQM_GEFS_CYC: 0
@@ -76,3 +77,6 @@ cpl_aqm_parm:
   NEXUS_INPUT_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/emissions/nexus
   NEXUS_FIX_DIR: /scratch2/NCEPDEV/naqfc/RRFS_CMAQ/nexus/fix
   NEXUS_GRID_FN: grid_spec_GSD_HRRR_25km.nc
+  PT_SRC_BASE_DIR_CONUS: /scratch1/RDARCH/rda-arl-gpu/YouHua.Tang/nei2016v1-pt/12US1
+  PT_SRC_BASE_DIR_HI: /scratch1/RDARCH/rda-arl-gpu/YouHua.Tang/nei2016v1-pt/3HI1
+  PT_SRC_BASE_DIR_AK: /scratch1/RDARCH/rda-arl-gpu/YouHua.Tang/nei2016v1-pt/9AK1

@@ -57,7 +57,7 @@ using NEXUS which will output for FV3 (in NetCDF format).
 if [ $RUN_ENVIR = "nco" ]; then
     export INPUT_DATA="${COMIN}"
 else
-    export INPUT_DATA="${COMIN}${SLASH_ENSMEM_SUBDIR}/INPUT"
+    export INPUT_DATA="${COMIN}${SLASH_ENSMEM_SUBDIR}"
 fi
 mkdir_vrfy -p "${INPUT_DATA}"
 #
