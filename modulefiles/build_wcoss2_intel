@@ -45,6 +45,8 @@ module load sigio/$::env(sigio_ver)
 module load sfcio/$::env(sfcio_ver)
 module load wrf_io/$::env(wrf_io_ver)
 
+module load wgrib2/$::env(wgrib2_ver)
+
 setenv CMAKE_C_COMPILER cc
 setenv CMAKE_CXX_COMPILER CC
 setenv CMAKE_Fortran_COMPILER ftn
