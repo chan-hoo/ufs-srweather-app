@@ -67,8 +67,7 @@ nprocs=$(( LAYOUT_X*LAYOUT_Y ))
 ppn_run_aqm="${PPN_RUN_PT_SOURCE}"
 omp_num_threads_run_aqm="${OMP_NUM_THREADS_RUN_PT_SOURCE}"
 nstep=$(( FCST_LEN_HRS+1 ))
-
-echo "TEST:nstep:" nstep
+yyyymmddhh="${PDY}${cyc}"
 
 if [ -z "${RUN_CMD_AQM:-}" ] ; then
   print_err_msg_exit "\
@@ -98,17 +97,16 @@ cd_vrfy $DATA
 #
 #-----------------------------------------------------------------------
 #
-if [ ! -s "${DATA}/PT/pt-${PDY}.nc" ]; then 
-  mkdir_vrfy -p PT
-  cd_vrfy PT
+if [ ! -s "${DATA}/pt-${yyyymmddhh}.nc" ]; then 
   cp_vrfy ${HOMEdir}/sorc/AQM-utils/python_utils/stack-pt-merge.py stack-pt-merge.py
-  python3 stack-pt-merge.py -s ${PDY} -n ${nstep} -conus ${PT_SRC_BASE_DIR_CONUS} -hi ${PT_SRC_BASE_DIR_HI} -ak ${PT_SRC_BASE_DIR_AK}
+  python3 stack-pt-merge.py -s ${yyyymmddhh} -n ${nstep} -conus ${PT_SRC_BASE_DIR_CONUS} -hi ${PT_SRC_BASE_DIR_HI} -ak ${PT_SRC_BASE_DIR_AK}
 
-  if [ ! -s "pt-${PDY}.nc" ]; then
+  if [ ! -s "${DATA}/pt-${yyyymmddhh}.nc" ]; then
     print_err_msg_exit "\
-The point source file pt-\"${PDY}\" was not generated."
+The point source file \"pt-${yyyymmddhh}.nc\" was not generated."
+  else
+    print_info_msg "The intermediate file \"pt-${yyyymmddhh}.nc\" exists."
   fi
-  cd_vrfy $DATA
 fi
 
 #
@@ -123,7 +121,16 @@ export NY=${ESGgrid_NY}
 export LAYOUT_X
 export LAYOUT_Y
 export TOPO="${NEXUS_FIX_DIR}/${NEXUS_GRID_FN}"
-export PT_IN="${DATA}/PT/pt-${PDY}.nc"
+export PT_IN="${DATA}/pt-${yyyymmddhh}.nc"
+
+#
+#----------------------------------------------------------------------
+#
+# Temporary output directory for PT_SOURCE executable
+#
+#-----------------------------------------------------------------------
+#
+mkdir_vrfy -p "${DATA}/PT"
 
 #
 #----------------------------------------------------------------------
@@ -133,7 +140,7 @@ export PT_IN="${DATA}/PT/pt-${PDY}.nc"
 #-----------------------------------------------------------------------
 #
 PREP_STEP
-eval ${RUN_CMD_NEXUS} ${EXECdir}/decomp-ptemis-mpi ${REDIRECT_OUT_ERR} || \
+eval ${RUN_CMD_AQM} ${EXECdir}/decomp-ptemis-mpi ${REDIRECT_OUT_ERR} || \
 print_err_msg_exit "\
 Call to execute PT_SOURCE for Online-CMAQ failed."
 POST_STEP
@@ -145,8 +152,7 @@ POST_STEP
 #
 #-----------------------------------------------------------------------
 #
-mkdir_vrfy -p "${INPUT_DATA}/PT"
-mv_vrfy "${DATA}/PT/pt-${PDY}.nc" "${INPUT_DATA}/PT/pt-${PDY}.nc"
+mv_vrfy "${DATA}/PT" ${INPUT_DATA}
 
 #
 #-----------------------------------------------------------------------
