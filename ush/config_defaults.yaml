@@ -2276,6 +2276,7 @@ cpl_aqm_parm:
   RUN_TASK_ADD_AQM_LBCS: false
   RUN_TASK_RUN_NEXUS: false
   RUN_TASK_RUN_PT_SOURCE: false
+  RUN_TASK_RUN_POST_STAT: false
 
   ADD_AQM_ICS_TN: "add_aqm_ics"
   NNODES_ADD_AQM_ICS: 1
@@ -2306,7 +2307,16 @@ cpl_aqm_parm:
   KMP_AFFINITY_RUN_PT_SOURCE: "scatter"
   OMP_NUM_THREADS_RUN_PT_SOURCE: 2
   OMP_STACKSIZE_RUN_PT_SOURCE: "1024m"
- 
+
+  RUN_POST_STAT_TN: "run_post_stat"
+  NNODES_RUN_POST_STAT: 1
+  PPN_RUN_POST_STAT: 1
+  WTIME_RUN_POST_STAT: 00:30:00
+  MAXTRIES_RUN_POST_STAT: 2
+  KMP_AFFINITY_RUN_POST_STAT: "scatter"
+  OMP_NUM_THREADS_RUN_POST_STAT: 1
+  OMP_STACKSIZE_RUN_POST_STAT: "2056M"
+
 #
 #-----------------------------------------------------------------------
 #
