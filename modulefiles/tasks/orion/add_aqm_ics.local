@@ -1,9 +1,0 @@
-#%Module#####################################################
-## Module file for add_aqm_ics task.
-#############################################################
-
-module load nco/4.9.3
-
-module unload miniconda3
-
-module load miniconda_online-cmaq

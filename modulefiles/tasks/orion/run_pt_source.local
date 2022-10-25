@@ -1,7 +1,0 @@
-#%Module
-## Module file for run_nexus task.
-#############################################################
-
-module unload miniconda3
-
-module load miniconda_online-cmaq

@@ -1,7 +1,0 @@
-#%Module#####################################################
-## Module file for run_pt_source task.
-#############################################################
-
-module unload miniconda3
-
-module load miniconda_online-cmaq

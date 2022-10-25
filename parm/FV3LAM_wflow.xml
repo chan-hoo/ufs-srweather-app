@@ -125,9 +125,15 @@ Directories and files.
 <!ENTITY EXPTDIR                  "{{ exptdir }}">
 
 {%- if run_envir == "nco"  %}
-<!ENTITY DYN_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/@H/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.dyn</cyclestr>">
-<!ENTITY PHY_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/@H/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.phy</cyclestr>">
+{%- if do_ensemble %}
+<!ENTITY DYN_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.dyn</cyclestr>">
+<!ENTITY PHY_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/{{ net }}.t@Hz.{{ ensmem_indx_name }}#{{ ensmem_indx_name }}#.phy</cyclestr>">
 <!ENTITY COMIN_DIR "{{ comin_basedir }}/{{ run }}.@Y@m@d/@H">
+{%- else %}
+<!ENTITY DYN_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/{{ net }}.t@Hz.dyn</cyclestr>">
+<!ENTITY PHY_DIR  "{{ comout_basedir }}/<cyclestr>{{ run }}.@Y@m@d/{{ net }}.t@Hz.phy</cyclestr>">
+<!ENTITY COMIN_DIR "{{ comin_basedir }}/{{ run }}.@Y@m@d/@H">
+{%- endif %}
 {%- else %}
 <!ENTITY DYN_DIR  "{{ comout_basedir }}/<cyclestr>@Y@m@d@H{{ slash_ensmem_subdir }}/dyn</cyclestr>">
 <!ENTITY PHY_DIR  "{{ comout_basedir }}/<cyclestr>@Y@m@d@H{{ slash_ensmem_subdir }}/phy</cyclestr>">
