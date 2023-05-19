@@ -5,7 +5,7 @@
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l {{ ecf_task_walltime }}
 #PBS -l {{ ecf_task_select }}
-#PBS -l {{ ecf_task_place }}
+#PBS -l {{ sched_native_cmd }}
 #PBS -l debug=true
 
 %include <head.h>

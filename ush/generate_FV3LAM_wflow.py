@@ -137,21 +137,21 @@ def generate_FV3LAM_wflow(ushdir, logfile: str = "log.generate_FV3LAM_wflow", de
     #
     # -----------------------------------------------------------------------
     #
-    exptdir = expt_config["workflow"]["EXPTDIR"]
-    wflow_launch_script_fp = expt_config["workflow"]["WFLOW_LAUNCH_SCRIPT_FP"]
-    wflow_launch_script_fn = expt_config["workflow"]["WFLOW_LAUNCH_SCRIPT_FN"]
-    log_info(
-        f"""
+        exptdir = expt_config["workflow"]["EXPTDIR"]
+        wflow_launch_script_fp = expt_config["workflow"]["WFLOW_LAUNCH_SCRIPT_FP"]
+        wflow_launch_script_fn = expt_config["workflow"]["WFLOW_LAUNCH_SCRIPT_FN"]
+        log_info(
+            f"""
         Creating symlink in the experiment directory (EXPTDIR) that points to the
         workflow launch script (WFLOW_LAUNCH_SCRIPT_FP):
           EXPTDIR = '{exptdir}'
           WFLOW_LAUNCH_SCRIPT_FP = '{wflow_launch_script_fp}'""",
         verbose=verbose,
-    )
+        )
 
-    create_symlink_to_file(
-        wflow_launch_script_fp, os.path.join(exptdir, wflow_launch_script_fn), False
-    )
+        create_symlink_to_file(
+            wflow_launch_script_fp, os.path.join(exptdir, wflow_launch_script_fn), False
+        )
     #
     # -----------------------------------------------------------------------
     #
@@ -165,11 +165,18 @@ def generate_FV3LAM_wflow(ushdir, logfile: str = "log.generate_FV3LAM_wflow", de
     # in the flattened expt_config dictionary
     # TODO: Reference all these variables in their respective
     # dictionaries, instead.
-    import_vars(dictionary=flatten_dict(expt_config))
-    export_vars(source_dict=flatten_dict(expt_config))
+        import_vars(dictionary=flatten_dict(expt_config))
+        export_vars(source_dict=flatten_dict(expt_config))
 
-    if USE_CRON_TO_RELAUNCH:
-        add_crontab_line()
+        if USE_CRON_TO_RELAUNCH:
+            add_crontab_line()
+
+    elif expt_config["platform"]["WORKFLOW_MANAGER"] == "ecflow":
+        exptdir = expt_config["workflow"]["EXPTDIR"]
+        mkdir_vrfy("-p", os.path.join(exptdir, "ecf"))
+        mkdir_vrfy("-p", os.path.join(exptdir, "ecf/scripts"))
+        mkdir_vrfy("-p", os.path.join(exptdir, "ecf/def"))
+        
 
     #
     # Copy or symlink fix files

@@ -2627,6 +2627,9 @@ cpl_aqm_parm:
 
   AQM_AIRNOW_HIST_DIR: "/path/to/historical/airnow/data/dir"
 
+ecflow:
+  taskgroups: ""
+
 rocoto:
   attrs: ""
   cycledefs: ""
