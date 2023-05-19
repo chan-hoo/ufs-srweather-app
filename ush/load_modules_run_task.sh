@@ -51,7 +51,7 @@ Usage:
 where the arguments are defined as follows:
 
   task_name:
-  The name of the rocoto task for which this script will load modules
+  The name of the workflow task for which this script will load modules
   and launch the J-job.
 
   jjob_fp
