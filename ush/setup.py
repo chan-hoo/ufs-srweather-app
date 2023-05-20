@@ -91,7 +91,7 @@ def load_config_for_setup(ushdir, default_config, user_config):
     invalid = check_structure_dict(cfg_u, cfg_d)
 
     # Task and metatask entries can be added arbitrarily under the
-    # rocoto section. Remove those from invalid if they exist
+    # wflow_manage section. Remove those from invalid if they exist
     for key in invalid.copy().keys():
         if key.split("_", maxsplit=1)[0] in ["task", "metatask"]:
             invalid.pop(key)
@@ -141,8 +141,7 @@ def load_config_for_setup(ushdir, default_config, user_config):
     # Load the constants file
     cfg_c = load_config_file(os.path.join(ushdir, "constants.yaml"))
 
-
-    # Load the rocoto workflow default file
+    # Load the workflow default file
     cfg_wflow = load_config_file(os.path.join(ushdir, os.pardir, "parm",
         "wflow", "default_workflow.yaml"))
 
@@ -150,24 +149,22 @@ def load_config_for_setup(ushdir, default_config, user_config):
     # unsetting a default value from an anchored default_task
     update_dict(cfg_wflow, cfg_wflow)
 
-
     # Take any user-specified taskgroups entry here.
-    taskgroups = cfg_u.get('rocoto', {}).get('tasks', {}).get('taskgroups')
+    taskgroups = cfg_u.get('wflow_manage', {}).get('tasks', {}).get('taskgroups')
     if taskgroups:
-        cfg_wflow['rocoto']['tasks']['taskgroups'] = taskgroups
+        cfg_wflow['wflow_manage']['tasks']['taskgroups'] = taskgroups
 
-    # Extend yaml here on just the rocoto section to include the
+    # Extend yaml here on just the wflow_manage section to include the
     # appropriate groups of tasks
     extend_yaml(cfg_wflow)
 
-
     # Put the entries expanded under taskgroups in tasks
-    rocoto_tasks = cfg_wflow["rocoto"]["tasks"]
-    cfg_wflow["rocoto"]["tasks"] = yaml.load(rocoto_tasks.pop("taskgroups"),Loader=yaml.SafeLoader)
+    wflow_manage_tasks = cfg_wflow["wflow_manage"]["tasks"]
+    cfg_wflow["wflow_manage"]["tasks"] = yaml.load(wflow_manage_tasks.pop("taskgroups"),Loader=yaml.SafeLoader)
 
     # Update wflow config from user one more time to make sure any of
     # the "null" settings are removed, i.e., tasks turned off.
-    update_dict(cfg_u.get('rocoto', {}), cfg_wflow["rocoto"])
+    update_dict(cfg_u.get('wflow_manage', {}), cfg_wflow["wflow_manage"])
 
     def add_jobname(tasks):
         """ Add the jobname entry for all the tasks in the workflow """
@@ -185,9 +182,8 @@ def load_config_for_setup(ushdir, default_config, user_config):
             elif task_type == "metatask":
                 add_jobname(task_settings)
 
-
     # Add jobname entry to each remaining task
-    add_jobname(cfg_wflow["rocoto"]["tasks"])
+    add_jobname(cfg_wflow["wflow_manage"]["tasks"])
 
     # Update default config with the constants, the machine config, and
     # then the user_config
@@ -343,7 +339,7 @@ def set_srw_paths(ushdir, expt_config):
 
 def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     """Function that validates user-provided configuration, and derives
-    a secondary set of parameters needed to configure a Rocoto-based SRW
+    a secondary set of parameters needed to configure a rocoto/ecflow
     workflow. The derived parameters use a set of required user-defined
     parameters defined by either config_defaults.yaml, a user-provided
     configuration file (config.yaml), or a YAML machine file.
@@ -418,7 +414,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
               fcst_len_hrs_max = {fcst_len_hrs_max}"""
         )
 
-
     #
     # -----------------------------------------------------------------------
     #
@@ -427,7 +422,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
     # -----------------------------------------------------------------------
     #
-
     expt_subdir = workflow_config.get("EXPT_SUBDIR", "")
     exptdir = workflow_config.get("EXPTDIR")
 
@@ -481,12 +475,11 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
     # -----------------------------------------------------------------------
     #
-
-    rocoto_config = expt_config.get('rocoto', {})
-    rocoto_tasks = rocoto_config.get("tasks")
-    run_make_grid = rocoto_tasks.get('task_make_grid') is not None
-    run_make_orog = rocoto_tasks.get('task_make_orog') is not None
-    run_make_sfc_climo = rocoto_tasks.get('task_make_sfc_climo') is not None
+    wflow_manage_config = expt_config.get('wflow_manage', {})
+    wflow_manage_tasks = wflow_manage_config.get("tasks")
+    run_make_grid = wflow_manage_tasks.get('task_make_grid') is not None
+    run_make_orog = wflow_manage_tasks.get('task_make_orog') is not None
+    run_make_sfc_climo = wflow_manage_tasks.get('task_make_sfc_climo') is not None
 
     # Necessary tasks are turned on
     pregen_basedir = expt_config["platform"].get("DOMAIN_PREGEN_BASEDIR")
@@ -528,16 +521,16 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # Remove all memory tags for platforms that do not support them
     remove_memory = expt_config["platform"].get("REMOVE_MEMORY")
     if remove_memory:
-        remove_tag(rocoto_tasks, "memory")
+        remove_tag(wflow_manage_tasks, "memory")
 
     for part in ['PARTITION_HPSS', 'PARTITION_DEFAULT', 'PARTITION_FCST']:
         partition = expt_config["platform"].get(part)
         if not partition:
-            remove_tag(rocoto_tasks, 'partition')
+            remove_tag(wflow_manage_tasks, 'partition')
 
     # When not running subhourly post, remove those tasks, if they exist
     if not expt_config.get("task_run_post", {}).get("SUB_HOURLY_POST"):
-        post_meta = rocoto_tasks.get("metatask_run_ens_post", {})
+        post_meta = wflow_manage_tasks.get("metatask_run_ens_post", {})
         post_meta.pop("metatask_run_sub_hourly_post", None)
         post_meta.pop("metatask_sub_hourly_last_hour_post", None)
 
@@ -722,7 +715,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
             last = date_last_cycl.replace(hour=hh).strftime("%Y%m%d%H")
             fcst_cdef.append(f'{first}00 {last}00 24:00:00')
 
-        rocoto_config['cycledefs']['long_forecast'] = fcst_cdef
+        wflow_manage_config['cycledefs']['long_forecast'] = fcst_cdef
 
     # check the availability of restart intervals for restart capability of forecast
     do_fcst_restart = fcst_config.get("DO_FCST_RESTART")
@@ -1120,10 +1113,10 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
         mkdir_vrfy(f' -p "{nco_config.get("DCOMROOT")}"')
         mkdir_vrfy(f' -p "{nco_config.get("EXTROOT")}"')
 
-        # Update the rocoto string for the fcst output location if
+        # Update the wflow_manage string for the fcst output location if
         # running an ensemble in nco mode
         if global_sect["DO_ENSEMBLE"]:
-            rocoto_config["entities"]["FCST_DIR"] = \
+            wflow_manage_config["entities"]["FCST_DIR"] = \
                 "{{ nco.DATAROOT }}/run_fcst_mem#mem#.{{ workflow.WORKFLOW_ID }}_@Y@m@d@H"
 
     if nco_config["DBNROOT"]:
@@ -1235,8 +1228,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
     # -----------------------------------------------------------------------
     #
-
-    task_defs = rocoto_config.get('tasks')
+    task_defs = wflow_manage_config.get('tasks')
 
     # Ensemble verification can only be run in ensemble mode
     do_ensemble = global_sect["DO_ENSEMBLE"]
@@ -1287,9 +1279,9 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
 
         return False
 
-    run_make_ics = dict_find(rocoto_tasks, "task_make_ics")
-    run_make_lbcs = dict_find(rocoto_tasks, "task_make_lbcs")
-    run_run_fcst = dict_find(rocoto_tasks, "task_run_fcst")
+    run_make_ics = dict_find(wflow_manage_tasks, "task_make_ics")
+    run_make_lbcs = dict_find(wflow_manage_tasks, "task_make_lbcs")
+    run_run_fcst = dict_find(wflow_manage_tasks, "task_run_fcst")
     run_any_coldstart_task = run_make_ics or \
                              run_make_lbcs or \
                              run_run_fcst
@@ -1501,20 +1493,20 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
         configuration file ('{user_config_fn}')."""
     )
 
-    # Final failsafe before writing rocoto yaml to ensure we don't have any invalid dicts
+    # Final failsafe before writing the workflow yaml for both rocoto and ecflow 
+    # to ensure we don't have any invalid dicts
     # (e.g. metatasks with no tasks, tasks with no associated commands)
-    clean_rocoto_dict(expt_config["rocoto"]["tasks"])
+    clean_wflow_manage_dict(expt_config["wflow_manage"]["tasks"])
 
-    rocoto_yaml_fp = workflow_config["ROCOTO_YAML_FP"]
-    with open(rocoto_yaml_fp, 'w') as f:
+    wflow_manage_yaml_fp = workflow_config["WFLOW_MANAGE_YAML_FP"]
+    with open(wflow_manage_yaml_fp, 'w') as f:
         yaml.Dumper.ignore_aliases = lambda *args : True
-        yaml.dump(expt_config.get("rocoto"), f, sort_keys=False)
+        yaml.dump(expt_config.get("wflow_manage"), f, sort_keys=False)
 
     var_defns_cfg = copy.deepcopy(expt_config)
-    del var_defns_cfg["rocoto"]
+    del var_defns_cfg["wflow_manage"]
     with open(global_var_defns_fp, "a") as f:
         f.write(cfg_to_shell_str(var_defns_cfg))
-
 
     #
     # -----------------------------------------------------------------------
@@ -1523,7 +1515,6 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     #
     # -----------------------------------------------------------------------
     #
-
     # loop through the flattened expt_config and check validity of params
     cfg_v = load_config_file(os.path.join(USHdir, "valid_param_vals.yaml"))
     for k, v in flatten_dict(expt_config).items():
@@ -1540,40 +1531,38 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
 
     return expt_config
 
-def clean_rocoto_dict(rocotodict):
-    """Removes any invalid entries from rocoto_dict. Examples of invalid entries are:
+def clean_wflow_manage_dict(wflow_manage_dict):
+    """Removes any invalid entries from wflow_manage_dict. Examples of invalid entries are:
 
     1. A task dictionary containing no "command" key
     2. A metatask dictionary containing no task dictionaries"""
 
     # Loop 1: search for tasks with no command key, iterating over metatasks
-    for key in list(rocotodict.keys()):
+    for key in list(wflow_manage_dict.keys()):
         if key.split("_", maxsplit=1)[0] == "metatask":
-            clean_rocoto_dict(rocotodict[key])
+            clean_wflow_manage_dict(wflow_manage_dict[key])
         elif key.split("_", maxsplit=1)[0] in ["task"]:
-            if not rocotodict[key].get("command"):
-                popped = rocotodict.pop(key)
+            if not wflow_manage_dict[key].get("command"):
+                popped = wflow_manage_dict.pop(key)
                 logging.warning(f"Invalid task {key} removed due to empty/unset run command")
                 logging.debug(f"Removed entry:\n{popped}")
 
     # Loop 2: search for metatasks with no tasks in them
-    for key in list(rocotodict.keys()):
+    for key in list(wflow_manage_dict.keys()):
         if key.split("_", maxsplit=1)[0] == "metatask":
             valid = False
-            for key2 in list(rocotodict[key].keys()):
+            for key2 in list(wflow_manage_dict[key].keys()):
                 if key2.split("_", maxsplit=1)[0] == "metatask":
-                    clean_rocoto_dict(rocotodict[key][key2])
+                    clean_wflow_manage_dict(wflow_manage_dict[key][key2])
                     #After above recursion, any nested empty metatasks will have popped themselves
-                    if rocotodict[key].get(key2):
+                    if wflow_manage_dict[key].get(key2):
                         valid = True
                 elif key2.split("_", maxsplit=1)[0] == "task":
                     valid = True
             if not valid:
-                popped = rocotodict.pop(key)
+                popped = wflow_manage_dict.pop(key)
                 logging.warning(f"Invalid/empty metatask {key} removed")
                 logging.debug(f"Removed entry:\n{popped}")
-
-
 
 #
 # -----------------------------------------------------------------------

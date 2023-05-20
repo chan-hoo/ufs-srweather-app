@@ -82,7 +82,7 @@ platform:
   # rocoto, this will be overwritten and set to "rocoto". If set
   # explicitly to rocoto along with the use of the MACHINE=linux target,
   # the configuration layer assumes a Slurm batch manager when generating
-  # the XML. Valid options: "rocoto" or "none"
+  # the XML. Valid options: "rocoto", "ecflow", or "none"
   #
   # NCORES_PER_NODE:
   # The number of cores available per node on the compute platform, now 
@@ -626,9 +626,9 @@ workflow:
   # to each workflow task) in order to make all the experiment variables 
   # available in those scripts.
   #
-  # ROCOTO_YAML_FN:
+  # WFLOW_MANAGE_YAML_FN:
   # Name of the YAML file containing the YAML workflow definition from
-  # which the Rocoto XML file is created.
+  # which the Rocoto XML file and ecflow job cards are created.
   #
   # EXTRN_MDL_VAR_DEFNS_FN:
   # Name of file (a shell script) containing the defintions of variables
@@ -691,13 +691,13 @@ workflow:
   FCST_MODEL: "ufs-weather-model"
   WFLOW_XML_FN: "FV3LAM_wflow.xml"
   GLOBAL_VAR_DEFNS_FN: "var_defns.sh"
-  ROCOTO_YAML_FN: "rocoto_defns.yaml"
+  WFLOW_DEFNS_YAML_FN: "wflow_defns.yaml"
   EXTRN_MDL_VAR_DEFNS_FN: "extrn_mdl_var_defns"
   WFLOW_LAUNCH_SCRIPT_FN: "launch_FV3LAM_wflow.sh"
   WFLOW_LAUNCH_LOG_FN: "log.launch_FV3LAM_wflow"
 
   GLOBAL_VAR_DEFNS_FP: '{{ [EXPTDIR, GLOBAL_VAR_DEFNS_FN] |path_join }}'
-  ROCOTO_YAML_FP: '{{ [EXPTDIR, ROCOTO_YAML_FN] |path_join }}'
+  WFLOW_DENFS_YAML_FP: '{{ [EXPTDIR, WFLOW_DENFS_YAML_FN] |path_join }}'
   WFLOW_LAUNCH_SCRIPT_FP: '{{ [user.USHdir, WFLOW_LAUNCH_SCRIPT_FN] |path_join }}'
   WFLOW_LAUNCH_LOG_FP: '{{ [EXPTDIR, WFLOW_LAUNCH_LOG_FN] |path_join }}'
   #
@@ -730,7 +730,7 @@ workflow:
   #
   #-----------------------------------------------------------------------
   #
-  FIXdir: '{{ EXPTDIR if rocoto.tasks.get("task_make_grid") else [user.HOMEdir, "fix"]|path_join }}'
+  FIXdir: '{{ EXPTDIR if wflow_manage.tasks.get("task_make_grid") else [user.HOMEdir, "fix"]|path_join }}'
   FIXam: '{{ [FIXdir, "fix_am"]|path_join }}'
   FIXclim: '{{ [FIXdir, "fix_clim"]|path_join }}'
   FIXlam: '{{ [FIXdir, "fix_lam"]|path_join }}'
@@ -856,8 +856,8 @@ workflow:
   # the last cycle hour.
   #
   # INCR_CYCL_FREQ:
-  # Increment in hours for Rocoto cycle frequency.
-  # Default is 24, which means cycle_freq=24:00:00
+  # Increment in hours for cycle frequency.
+  # Default is 24, which means cycle_freq=24:00:00 in Rocoto
   #
   # FCST_LEN_HRS:
   # The length of each forecast, in integer hours. The short forecast
@@ -1227,7 +1227,7 @@ task_make_grid:
   # 
   #-----------------------------------------------------------------------
   # 
-  GRID_DIR: '{{ [workflow.EXPTDIR, "grid"]|path_join if rocoto.tasks.get("task_make_grid") else "" }}'
+  GRID_DIR: '{{ [workflow.EXPTDIR, "grid"]|path_join if wflow_manage.tasks.get("task_make_grid") else "" }}'
   #
   #-----------------------------------------------------------------------
   #
@@ -1503,7 +1503,7 @@ task_make_orog:
   KMP_AFFINITY_MAKE_OROG: "disabled"
   OMP_NUM_THREADS_MAKE_OROG: 6
   OMP_STACKSIZE_MAKE_OROG: "2048m"
-  OROG_DIR: '{{ [workflow.EXPTDIR, "orog"]|path_join if rocoto.tasks.get("task_make_orog") else "" }}'
+  OROG_DIR: '{{ [workflow.EXPTDIR, "orog"]|path_join if wflow_manage.tasks.get("task_make_orog") else "" }}'
 
 #----------------------------
 # MAKE SFC CLIMO config parameters
@@ -1512,7 +1512,7 @@ task_make_sfc_climo:
   KMP_AFFINITY_MAKE_SFC_CLIMO: "scatter"
   OMP_NUM_THREADS_MAKE_SFC_CLIMO: 1
   OMP_STACKSIZE_MAKE_SFC_CLIMO: "1024m"
-  SFC_CLIMO_DIR: '{{ [workflow.EXPTDIR, "sfc_climo"]|path_join if rocoto.tasks.get("task_make_sfc_climo") else "" }}'
+  SFC_CLIMO_DIR: '{{ [workflow.EXPTDIR, "sfc_climo"]|path_join if wflow_manage.tasks.get("task_make_sfc_climo") else "" }}'
 
 #----------------------------
 # EXTRN ICS config parameters
@@ -2627,10 +2627,7 @@ cpl_aqm_parm:
 
   AQM_AIRNOW_HIST_DIR: "/path/to/historical/airnow/data/dir"
 
-ecflow:
-  taskgroups: ""
-
-rocoto:
+wflow_manage:
   attrs: ""
   cycledefs: ""
   entities: ""

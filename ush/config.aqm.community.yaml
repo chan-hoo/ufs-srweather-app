@@ -1,5 +1,5 @@
 metadata:
-  description: config for SRW-AQM, AQM_NA_13km, community mode, rocoto
+  description: config for SRW-AQM, AQM_NA_13km, community mode
 user:
   RUN_ENVIR: community
   MACHINE: [hera or wcoss2]
@@ -26,7 +26,7 @@ workflow:
   DO_REAL_TIME: false
 nco:
   NET: aqm
-rocoto:
+wflow_manage:
   tasks:
     taskgroups: '{{ ["parm/wflow/prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/aqm_all.yaml"]|include }}'
     task_aqm_ics_ext:

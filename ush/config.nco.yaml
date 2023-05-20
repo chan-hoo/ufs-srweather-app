@@ -34,7 +34,7 @@ task_plot_allvars:
   COMOUT_REF: ""
 task_run_post:
   POST_OUTPUT_DOMAIN_NAME: conus_25km
-rocoto:
+wflow_manage:
   tasks:
     taskgroups: '{{ ["parm/wflow/coldstart.yaml", "parm/wflow/post.yaml"]|include }}'
     metatask_run_ensemble:

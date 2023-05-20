@@ -112,10 +112,10 @@ def generate_FV3LAM_wflow(ushdir, logfile: str = "log.generate_FV3LAM_wflow", de
         #
         # Call the python script to generate the experiment's XML file
         #
-        rocoto_yaml_fp = expt_config["workflow"]["ROCOTO_YAML_FP"]
+        wflow_manage_yaml_fp = expt_config["workflow"]["WFLOW_MANAGE_YAML_FP"]
         args = ["-o", wflow_xml_fp,
                 "-t", template_xml_fp,
-                "-c", rocoto_yaml_fp ]
+                "-c", wflow_manage_yaml_fp ]
         if not debug:
             args.append("-q")
 
@@ -564,7 +564,7 @@ def generate_FV3LAM_wflow(ushdir, logfile: str = "log.generate_FV3LAM_wflow", de
     # the C-resolution of the grid), and this parameter is in most workflow
     # configurations is not known until the grid is created.
     #
-    if not expt_config['rocoto']['tasks'].get('task_make_grid'):
+    if not expt_config['wflow_manage']['tasks'].get('task_make_grid'):
 
         set_FV3nml_sfc_climo_filenames()
 
