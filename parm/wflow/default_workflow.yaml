@@ -1,7 +1,7 @@
 #
 # The defaults that cover a majority of our workflow test experiments.
 #
-rocoto:
+wflow_manage:
   entities:
     ACCOUNT: '{{ user.ACCOUNT }}'
     CCPA_OBS_DIR: '{{ platform.CCPA_OBS_DIR }}'

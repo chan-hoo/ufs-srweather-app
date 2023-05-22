@@ -87,7 +87,7 @@ task_point_source:
         text: '{{ task_make_grid.GRID_DIR }}/make_grid_task_complete.txt'
       streq:
         left: staged_grid
-        right: '{% if not rocoto.get("tasks", {}).get("task_make_grid") %}staged_grid{% endif %}'
+        right: '{% if not wflow_manage.get("tasks", {}).get("task_make_grid") %}staged_grid{% endif %}'
 
 task_aqm_ics_ext:
   <<: *default_aqm

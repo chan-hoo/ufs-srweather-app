@@ -98,7 +98,7 @@ metatask_run_ensemble:
             text: '{{ task_make_grid.GRID_DIR }}/make_grid_task_complete.txt'
           streq:
             left: staged_grid
-            right: '{% if not rocoto.get("tasks", {}).get("task_make_grid") %}staged_grid{% endif %}'
+            right: '{% if not wflow_manage.get("tasks", {}).get("task_make_grid") %}staged_grid{% endif %}'
         or_orog:
           datadep_orog:
             attrs:
@@ -106,7 +106,7 @@ metatask_run_ensemble:
             text: '{{ task_make_orog.OROG_DIR }}/make_orog_task_complete.txt'
           streq:
             left: staged_orog
-            right: '{% if not rocoto.get("tasks", {}).get("task_make_orog") %}staged_orog{% endif %}'
+            right: '{% if not wflow_manage.get("tasks", {}).get("task_make_orog") %}staged_orog{% endif %}'
         or_sfc_climo:
           datadep_sfc_climo:
             attrs:
@@ -114,7 +114,7 @@ metatask_run_ensemble:
             text: '{{ task_make_sfc_climo.SFC_CLIMO_DIR }}/make_sfc_climo_task_complete.txt'
           streq:
             left: staged_sfc_climo
-            right: '{% if not rocoto.get("tasks", {}).get("task_make_sfc_climo") %}staged_sfc_climo{% endif %}'
+            right: '{% if not wflow_manage.get("tasks", {}).get("task_make_sfc_climo") %}staged_sfc_climo{% endif %}'
 
   task_make_lbcs_mem#mem#:
     <<: *default_task
