@@ -62,7 +62,17 @@ def create_ecflow_scripts(global_var_defns_fp):
     task_list = list(wmgn["tasks"].keys())
     task_single = [ tsk for tsk in task_list if tsk.startswith('task_') ]
     task_meta = [ tsk for tsk in task_list if tsk.startswith('metatask_') ]
-    task_all = task_single + task_meta
+    # Split run_ensemble into sub-tasks
+    if 'metatask_run_ensemble' in task_meta:
+        task_meta.remove('metatask_run_ensemble')
+        task_ensemble_raw = list(wmgn["tasks"]["metatask_run_ensemble"].keys())
+        task_ensemble = [ tsk.replace('task_','enstask_') for tsk in task_ensemble_raw if tsk.startswith('task_') ]
+        if len(task_meta) == 0:
+            task_all = task_single + task_ensemble
+        else:
+            task_all = task_single + task_meta + task_ensemble
+    else:
+        task_all = task_single + task_meta
 
     #
     #-----------------------------------------------------------------------
@@ -82,9 +92,7 @@ def create_ecflow_scripts(global_var_defns_fp):
             wmgn_task = wmgn["tasks"][tsk]
         elif tsk.startswith('metatask_'):
             task_name_n0 = tsk.replace('metatask_',"")
-            if task_name_n0 == "run_ensemble":
-                task_name_orgi = task_tn
-            elif task_name_n0 == "run_ens_post":
+            if task_name_n0 == "run_ens_post":
                 task_name_n1_orgi = list(wmgn["tasks"][tsk].keys())[1]
                 task_name_n1 = task_name_n1_orgi.replace('metatask_',"")
                 task_name_n2_orgi = list(wmgn["tasks"][tsk][task_name_n1_orgi].keys())[1]
@@ -95,6 +103,12 @@ def create_ecflow_scripts(global_var_defns_fp):
                 task_name_n2_orgi = list(wmgn["tasks"][tsk].keys())[1]
                 task_name_n2 = task_name_n2_orgi.replace('task_',"").replace('#','%')
                 wmgn_task = wmgn["tasks"][tsk][task_name_n2_orgi]
+        elif tsk.startswith('enstask_'):
+            task_name_n0 = "metatask_run_ensemble"
+            task_name_n1_orig = tsk.replace('enstask_','task_')
+            task_name_n1 = tsk.replace('enstask_',"").replace('_mem#mem#',"")
+            task_name_n2 = tsk.replace('enstask_',"").replace('#','%')
+            wmgn_task = wmgn["tasks"][task_name_n0][task_name_n1_orig]
 
         task_nnodes = wmgn_task["nnodes"]
         task_ppn = wmgn_task["ppn"]
@@ -117,7 +131,6 @@ def create_ecflow_scripts(global_var_defns_fp):
         task_select = f"select={task_nnodes}:mpiprocs={task_ppn}:ompthreads={task_omp}:ncpus={task_ncpus}"
        
         settings = {
-          "ecf_task_name_n0": task_name_n0,
           "ecf_task_name_n1": task_name_n1,
           "ecf_task_name_n2": task_name_n2,
           "ecf_task_walltime": task_walltime,
