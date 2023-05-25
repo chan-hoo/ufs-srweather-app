@@ -5,6 +5,9 @@ import sys
 import argparse
 from datetime import datetime
 from textwrap import dedent
+import jinja2 as j2
+from jinja2 import meta
+import yaml
 
 from python_utils import (
     import_vars, 
@@ -21,21 +24,14 @@ from python_utils import (
 
 from fill_jinja_template import fill_jinja_template
 
-def create_ecflow_scripts(exptdir):
+def create_ecflow_scripts(global_var_defns_fp):
     """ Creates ecFlow job cards and definition script in the specific
-    experiment directory
+    experiment directory."""
 
-    Args:
-        exptdir: experiment directory
-    Returns:
-        Boolean
-    """
+    cfg = load_shell_config(global_var_defns_fp)
+    cfg = flatten_dict(cfg)
+    import_vars(dictionary=cfg)
 
-    print_input_args(locals())
-
-    #import all environment variables
-    import_vars()
-    
     #
     #-----------------------------------------------------------------------
     #
@@ -45,39 +41,45 @@ def create_ecflow_scripts(exptdir):
     #
     print_info_msg(f"""
         Creating ecFlow job cards and definition scripts in the specified 
-        experiment directory (exptdir):
-          exptdir = '{exptdir}'""", verbose=VERBOSE)
+        experiment directory (EXPTDIR):
+          EXPTDIR = '{EXPTDIR}'""", verbose=VERBOSE)
     #
     # Set template file path
     #
     ecflow_script_tmpl_fn = "job_card_template.ecf"
-    ecflow_script_tmpl_fp = os.path.join(PARMdir, "ecflow/job_cards", ecflow_script_tmpl_fn)
+    ecflow_script_tmpl_fp = os.path.join(PARMdir, "wflow/ecflow/job_cards", ecflow_script_tmpl_fn)
 
     #
-    # Create list of tasks from task groups
-    task_aqm_prep = ["nexus_gfs_sfc", "nexus_emission", "nexus_post_split", "fire_emission", "point_source", "aqm_ics_ext", "aqm_ics", "aqm_lbcs"]
-    task_aqm_post = ["pre_post_stat", "post_stat_o3", "post_stat_pm25", "bias_correction_o3", "bias_correction_pm25"]
-    task_coldstart = ["get_extrn_ics", "get_extrn_lbcs", "make_ics", "make_lbcs", "run_fcst"]
-    task_post = ["run_post"]
+    #-----------------------------------------------------------------------
+    #
+    # Load WFLOW_MANAGE_YAML file (wflow_manage_defns.yaml) into a dictionary
+    #
+    #-----------------------------------------------------------------------
+    #
+    with open(WFLOW_MANAGE_YAML_FP, "r") as fn:
+        wmgn = yaml.load(fn, Loader=yaml.SafeLoader)
 
-
-
-
+    task_list = list(wmgn["tasks"].keys())
+    task_single = [ tsk for tsk in task_list if tsk.startswith('task_') ]
+    task_meta = [ tsk for tsk in task_list if tsk.startswith('metatask_') ]
+   
+    #
+    #-----------------------------------------------------------------------
+    #
+    # create job cards for single tasks
+    #
+    #-----------------------------------------------------------------------
+    #
+    for tsk in task_single:
 
         ecflow_script_fp = os.path.join(exptdir, ecflow_script_fn)
-    #
-    #-----------------------------------------------------------------------
-    #
-    # Create a multiline variable that consists of a yaml-compliant string
-    # specifying the values that the jinja variables in the template file.
-    #
-    #-----------------------------------------------------------------------
-    #
+        
         settings = {
-          "dt_atmos": DT_ATMOS,
-          "print_esmf": PRINT_ESMF,
-          "cpl_aqm": CPL_AQM,
-          "atm_omp_num_threads": OMP_NUM_THREADS_RUN_FCST,
+          "ecf_task_name": DT_ATMOS,
+          "ecf_task_walltime": PRINT_ESMF,
+          "ecf_task_select": CPL_AQM,
+          "sched_native_cmd": SCHED_NATIVE_CMD,
+          "exptdir": exptdir,
         }
         settings_str = cfg_to_yaml_str(settings)
     
@@ -91,61 +93,36 @@ def create_ecflow_scripts(exptdir):
             + settings_str, 
             verbose=VERBOSE,
         )
-    #
-    #-----------------------------------------------------------------------
-    #
-    # Call a python script to generate the experiment's actual NEMS_CONFIG_FN
-    # file from the template file.
-    #
-    #-----------------------------------------------------------------------
-    #
+        
+        # Call a python script to generate the ecFlow job card.
+        args = ["-o", ecflow_script_fp,
+                "-t", ecflow_script_tmpl_fp,
+                "-u", settings_str ]
+        if not debug:
+            args.append("-q")
+
         try:
-            fill_jinja_template(["-q", "-u", settings_str, "-t", ecflow_script_tmpl_fp, "-o", ecflow_script_fp])
+            fill_jinja_template(args)
         except:
-            print_err_msg_exit(
+            raise Exception(
                 dedent(
                 f"""
             Call to python script fill_jinja_template.py to create the ecFlow job cards
-            and definition scripts from a jinja2 template failed.  Parameters passed to 
+            and definition scripts from a jinja2 template failed.  Parameters passed to
             this script are:
               Full path to template file:
                 ecflow_script_tmpl_fp = '{ecflow_script_tmpl_fp}'
               Full path to output script:
                 ecflow_script_fp = '{ecflow_script_fp}'
-              Namelist settings specified on command line:\n
-                settings =\n\n"""
+                """
                 )
-                + settings_str
             )
-            return False
+
+
+
 
     return True
 
-def parse_args(argv):
-    """ Parse command line arguments"""
-    parser = argparse.ArgumentParser(
-        description='Creates ecFlow job cards and definition script.'
-    )
-
-    parser.add_argument("-r", "--exptdir",
-                        dest="exptdir",
-                        required=True,
-                        help="Experiment directory.")
-
-    parser.add_argument("-p", "--path-to-defns",
-                        dest="path_to_defns",
-                        required=True,
-                        help="Path to var_defns file.")
-
-    return parser.parse_args(argv)
 
 if __name__ == "__main__":
-    args = parse_args(sys.argv[1:])
-    cfg = load_shell_config(args.path_to_defns)
-    cfg = flatten_dict(cfg)
-    import_vars(dictionary=cfg)
-    create_ecflow_scripts(
-        exptdir=args.exptdir,
-    )
-
-
+    create_ecflow_scripts(global_var_defns_fp)

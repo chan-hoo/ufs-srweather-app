@@ -10,7 +10,7 @@
 
 %include <head.h>
 
-. {{ ecf_expt_dir }}/var_denfs.sh
+. {{ exptdir }}/var_denfs.sh
 . ${USHdir}/load_modules_run_task.sh {{ ecf_task_name }} "${JOBSdir}/JREGIONAL_{{ ecf_task_name | upper }}"
 
 %include <tail.h>

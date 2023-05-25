@@ -37,7 +37,7 @@ from get_crontab_contents import add_crontab_line
 from fill_jinja_template import fill_jinja_template
 from set_namelist import set_namelist
 from check_python_version import check_python_version
-
+from create_ecflow_scripts import create_ecflow_scripts
 
 def generate_FV3LAM_wflow(ushdir, logfile: str = "log.generate_FV3LAM_wflow", debug: bool = False) -> str:
     """Function to setup a forecast experiment and create a workflow
@@ -172,12 +172,17 @@ def generate_FV3LAM_wflow(ushdir, logfile: str = "log.generate_FV3LAM_wflow", de
             add_crontab_line()
 
     elif expt_config["platform"]["WORKFLOW_MANAGER"] == "ecflow":
+        # create directoies for ecflow in EXPTDIR
+        global_var_defns_fp = expt_config["workflow"]["GLOBAL_VAR_DEFNS_FP"]
         exptdir = expt_config["workflow"]["EXPTDIR"]
         mkdir_vrfy("-p", os.path.join(exptdir, "ecf"))
         mkdir_vrfy("-p", os.path.join(exptdir, "ecf/scripts"))
         mkdir_vrfy("-p", os.path.join(exptdir, "ecf/def"))
-        
 
+        # create ecflow definition file and job cards
+        create_ecflow_scripts(global_var_defns_fp)
+
+    exit()
     #
     # Copy or symlink fix files
     #
