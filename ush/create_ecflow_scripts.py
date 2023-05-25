@@ -2,21 +2,15 @@
 
 import os
 import sys
-import argparse
-from datetime import datetime
 from textwrap import dedent
 import jinja2 as j2
 from jinja2 import meta
 import yaml
 
 from python_utils import (
-    import_vars, 
-    set_env_var, 
-    print_input_args, 
-    str_to_type,
+    import_vars,  
     print_info_msg, 
-    print_err_msg_exit, 
-    lowercase, 
+    print_err_msg_exit,
     cfg_to_yaml_str,
     load_shell_config,
     flatten_dict,
