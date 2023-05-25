@@ -1,4 +1,4 @@
-#PBS -N {{ ecf_task_name }}
+#PBS -N {{ ecf_task_name_n2 }}
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
@@ -11,7 +11,7 @@
 %include <head.h>
 
 . {{ exptdir }}/var_denfs.sh
-. ${USHdir}/load_modules_run_task.sh {{ ecf_task_name }} "${JOBSdir}/JREGIONAL_{{ ecf_task_name | upper }}"
+. ${USHdir}/load_modules_run_task.sh {{ ecf_task_name_n1 }} "${JOBSdir}/JREGIONAL_{{ ecf_task_name_n1 | upper }}"
 
 %include <tail.h>
 

@@ -62,31 +62,52 @@ def create_ecflow_scripts(global_var_defns_fp):
     task_list = list(wmgn["tasks"].keys())
     task_single = [ tsk for tsk in task_list if tsk.startswith('task_') ]
     task_meta = [ tsk for tsk in task_list if tsk.startswith('metatask_') ]
-   
+    task_all = task_single + task_meta
+
     #
     #-----------------------------------------------------------------------
     #
-    # create job cards for single tasks
+    # create job cards for tasks
     #
     #-----------------------------------------------------------------------
     #
-    for tsk in task_single:
+    for tsk in task_all:
+        print_info_msg(f"""Creating ecFlow job card for '{tsk}'...""")
+        wmgn_task = {}
+        if tsk.startswith('task_'):
+            # tast names of top level (n0), first (n1) and second (n2) nests
+            task_name_n0 = tsk.replace('task_',"")
+            task_name_n1 = task_name_n0
+            task_name_n2 = task_name_n0
+            wmgn_task = wmgn["tasks"][tsk]
+        elif tsk.startswith('metatask_'):
+            task_name_n0 = tsk.replace('metatask_',"")
+            if task_name_n0 == "run_ensemble":
+                task_name_orgi = task_tn
+            elif task_name_n0 == "run_ens_post":
+                task_name_n1_orgi = list(wmgn["tasks"][tsk].keys())[1]
+                task_name_n1 = task_name_n1_orgi.replace('metatask_',"")
+                task_name_n2_orgi = list(wmgn["tasks"][tsk][task_name_n1_orgi].keys())[1]
+                task_name_n2 = task_name_n2_orgi.replace('task_',"").replace('#','%')
+                wmgn_task = wmgn["tasks"][tsk][task_name_n1_orgi][task_name_n2_orgi]
+            else:
+                task_name_n1 = task_name_n0
+                task_name_n2_orgi = list(wmgn["tasks"][tsk].keys())[1]
+                task_name_n2 = task_name_n2_orgi.replace('task_',"").replace('#','%')
+                wmgn_task = wmgn["tasks"][tsk][task_name_n2_orgi]
 
-        task_name = tsk.replace('task_',"")
-        print_info_msg(f"""Creating ecFlow job card for '{task_name}'...""")
-        ecflow_script_fn = f"j{task_name}.ecf"
-        ecflow_script_fp = os.path.join(EXPTDIR, "ecf/scripts", ecflow_script_fn)
-
-        task_nnodes = wmgn["tasks"][tsk]["nnodes"]
-        task_ppn = wmgn["tasks"][tsk]["ppn"]
-        task_walltime = wmgn["tasks"][tsk]["walltime"]
-
-        if "memory" in list(wmgn["tasks"][tsk].keys()):
-            task_memory = wmgn["tasks"][tsk]["memory"]
+        task_nnodes = wmgn_task["nnodes"]
+        task_ppn = wmgn_task["ppn"]
+        task_walltime = wmgn_task["walltime"]
+        if "memory" in list(wmgn_task.keys()):
+            task_memory = wmgn_task["memory"]
         else:
             task_memory = "2G"
 
-        task_omp_vn = f"OMP_NUM_THREADS_{task_name.upper()}"
+        ecflow_script_fn = f"j{task_name_n1}.ecf"
+        ecflow_script_fp = os.path.join(EXPTDIR, "ecf/scripts", ecflow_script_fn)
+
+        task_omp_vn = f"OMP_NUM_THREADS_{task_name_n1.upper()}"
         if task_omp_vn in cfg:
             task_omp = cfg[task_omp_vn]
         else:
@@ -96,7 +117,9 @@ def create_ecflow_scripts(global_var_defns_fp):
         task_select = f"select={task_nnodes}:mpiprocs={task_ppn}:ompthreads={task_omp}:ncpus={task_ncpus}"
        
         settings = {
-          "ecf_task_name": task_name,
+          "ecf_task_name_n0": task_name_n0,
+          "ecf_task_name_n1": task_name_n1,
+          "ecf_task_name_n2": task_name_n2,
           "ecf_task_walltime": task_walltime,
           "ecf_task_select": task_select,
           "ecf_task_memory": task_memory,
@@ -119,9 +142,6 @@ def create_ecflow_scripts(global_var_defns_fp):
                 f"""Call to create the ecFlow job card for '{task_name}' failed."""
                 )
             )
-
-
-
 
     return True
 
