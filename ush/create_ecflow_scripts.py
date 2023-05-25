@@ -72,10 +72,13 @@ def create_ecflow_scripts(global_var_defns_fp):
     #
     for tsk in task_single:
 
-        ecflow_script_fp = os.path.join(exptdir, ecflow_script_fn)
+        task_name = tsk.replace('task_',"")
+        print_info_msg(f"""Creating ecFlow job card for '{task_name}'...""")
+        ecflow_script_fn = f"j{task_name}.ecf"
+        ecflow_script_fp = os.path.join(EXPTDIR, ecflow_script_fn)
         
         settings = {
-          "ecf_task_name": DT_ATMOS,
+          "ecf_task_name": task_name,
           "ecf_task_walltime": PRINT_ESMF,
           "ecf_task_select": CPL_AQM,
           "sched_native_cmd": SCHED_NATIVE_CMD,
