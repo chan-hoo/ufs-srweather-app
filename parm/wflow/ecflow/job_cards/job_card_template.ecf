@@ -3,9 +3,9 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l {{ ecf_task_walltime }}
+#PBS -l walltime={{ ecf_task_walltime }}
 #PBS -l {{ ecf_task_select }}
-#PBS -l {{ sched_native_cmd }}
+#PBS {{ sched_native_cmd }}
 #PBS -l debug=true
 
 %include <head.h>

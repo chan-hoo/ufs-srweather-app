@@ -75,49 +75,48 @@ def create_ecflow_scripts(global_var_defns_fp):
         task_name = tsk.replace('task_',"")
         print_info_msg(f"""Creating ecFlow job card for '{task_name}'...""")
         ecflow_script_fn = f"j{task_name}.ecf"
-        ecflow_script_fp = os.path.join(EXPTDIR, ecflow_script_fn)
-        
+        ecflow_script_fp = os.path.join(EXPTDIR, "ecf/scripts", ecflow_script_fn)
+
+        task_nnodes = wmgn["tasks"][tsk]["nnodes"]
+        task_ppn = wmgn["tasks"][tsk]["ppn"]
+        task_walltime = wmgn["tasks"][tsk]["walltime"]
+
+        if "memory" in list(wmgn["tasks"][tsk].keys()):
+            task_memory = wmgn["tasks"][tsk]["memory"]
+        else:
+            task_memory = "2G"
+
+        task_omp_vn = f"OMP_NUM_THREADS_{task_name.upper()}"
+        if task_omp_vn in cfg:
+            task_omp = cfg[task_omp_vn]
+        else:
+            task_omp = "1"
+
+        task_ncpus = str(int(task_omp)*int(task_ppn))
+        task_select = f"select={task_nnodes}:mpiprocs={task_ppn}:ompthreads={task_omp}:ncpus={task_ncpus}"
+       
         settings = {
           "ecf_task_name": task_name,
-          "ecf_task_walltime": PRINT_ESMF,
-          "ecf_task_select": CPL_AQM,
+          "ecf_task_walltime": task_walltime,
+          "ecf_task_select": task_select,
+          "ecf_task_memory": task_memory,
           "sched_native_cmd": SCHED_NATIVE_CMD,
-          "exptdir": exptdir,
+          "exptdir": EXPTDIR,
         }
         settings_str = cfg_to_yaml_str(settings)
-    
-        print_info_msg(
-            dedent(
-                f"""
-                The variable 'settings' specifying values to be used in the 
-            '{ecflow_script_fp}' file has been set as follows:\n
-            settings =\n\n"""
-            ) 
-            + settings_str, 
-            verbose=VERBOSE,
-        )
-        
+            
         # Call a python script to generate the ecFlow job card.
-        args = ["-o", ecflow_script_fp,
+        args = ["-q",
+                "-o", ecflow_script_fp,
                 "-t", ecflow_script_tmpl_fp,
                 "-u", settings_str ]
-        if not debug:
-            args.append("-q")
 
         try:
             fill_jinja_template(args)
         except:
             raise Exception(
                 dedent(
-                f"""
-            Call to python script fill_jinja_template.py to create the ecFlow job cards
-            and definition scripts from a jinja2 template failed.  Parameters passed to
-            this script are:
-              Full path to template file:
-                ecflow_script_tmpl_fp = '{ecflow_script_tmpl_fp}'
-              Full path to output script:
-                ecflow_script_fp = '{ecflow_script_fp}'
-                """
+                f"""Call to create the ecFlow job card for '{task_name}' failed."""
                 )
             )
 
