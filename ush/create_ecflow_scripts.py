@@ -6,6 +6,7 @@ from textwrap import dedent
 import jinja2 as j2
 from jinja2 import meta
 import yaml
+import re
 
 from python_utils import (
     import_vars,  
@@ -14,6 +15,7 @@ from python_utils import (
     cfg_to_yaml_str,
     load_shell_config,
     flatten_dict,
+    mkdir_vrfy
 )
 
 from fill_jinja_template import fill_jinja_template
@@ -53,25 +55,66 @@ def create_ecflow_scripts(global_var_defns_fp):
     with open(WFLOW_MANAGE_YAML_FP, "r") as fn:
         wmgn = yaml.load(fn, Loader=yaml.SafeLoader)
 
-    task_list = list(wmgn["tasks"].keys())
-    task_single = [ tsk for tsk in task_list if tsk.startswith('task_') ]
-    task_meta = [ tsk for tsk in task_list if tsk.startswith('metatask_') ]
-    # Split run_ensemble into sub-tasks
-    if 'metatask_run_ensemble' in task_meta:
-        task_meta.remove('metatask_run_ensemble')
-        task_ensemble_raw = list(wmgn["tasks"]["metatask_run_ensemble"].keys())
-        task_ensemble = [ tsk.replace('task_','enstask_') for tsk in task_ensemble_raw if tsk.startswith('task_') ]
-        if len(task_meta) == 0:
-            task_all = task_single + task_ensemble
-        else:
-            task_all = task_single + task_meta + task_ensemble
-    else:
-        task_all = task_single + task_meta
-
     #
     #-----------------------------------------------------------------------
     #
-    # create job cards for tasks
+    # Set up task groups from configuration yaml files
+    #
+    #-----------------------------------------------------------------------
+    #
+    task_group_str = wmgn["tasks"]["taskgroups"]
+    task_group_ini = re.findall('"([^"]*)"', task_group_str)
+    task_group_srt = [ tsk.replace('parm/',"") for tsk in task_group_ini ]
+    task_group_orgi = {}
+    task_group = {}
+    task_all = []
+    for tgrp in task_group_srt:
+        tgrp_key = tgrp.replace('wflow/',"").replace('.yaml',"")
+        task_group_fp = os.path.join(PARMdir,tgrp)
+        with open(task_group_fp, "r") as fn:
+            tgrp_data = yaml.load(fn, Loader=yaml.SafeLoader)
+        tgrp_list_raw = list(tgrp_data.keys())
+        if CPL_AQM and COLDSTART:
+            if "task_aqm_ics_ext" in tgrp_list_raw:
+                tgrp_list_raw.remove("task_aqm_ics_ext")
+        tgrp_single_orgi = [ tsk for tsk in tgrp_list_raw if tsk.startswith('task_') ]
+        tgrp_single = [ tsk.replace('task_',"") for tsk in tgrp_single_orgi ]
+        tgrp_meta_orgi = [ tsk for tsk in tgrp_list_raw if tsk.startswith('metatask_') ]
+        tgrp_meta = [ tsk.replace('metatask_',"") for tsk in tgrp_meta_orgi ]
+        if "run_ensemble" in tgrp_meta:
+            tgrp_meta.remove('run_ensemble')
+            tgrp_ensemble_raw = list(tgrp_data["metatask_run_ensemble"].keys())
+            tgrp_ensemble_orgi = [ tsk.replace('task_','enstask_') for tsk in tgrp_ensemble_raw if tsk.startswith('task_') ]
+            tgrp_ensemble = [ tsk.replace('enstask_',"").replace('_mem#mem#',"") for tsk in tgrp_ensemble_orgi ]
+            if len(tgrp_meta) == 0:
+                tgrp_orgi_value = tgrp_single_orgi + tgrp_ensemble_orgi
+                tgrp_value = tgrp_single + tgrp_ensemble
+            else:
+                tgrp_orgi_value = tgrp_single_orgi + tgrp_meta_orgi + tgrp_ensemble_orgi
+                tgrp_value = tgrp_single + tgrp_meta + tgrp_ensemble
+        else:
+            tgrp_orgi_value = tgrp_single_orgi + tgrp_meta_orgi
+            tgrp_value = tgrp_single + tgrp_meta
+
+        task_group_orgi[tgrp_key] = tgrp_orgi_value
+        task_group[tgrp_key] = tgrp_value
+        task_all.extend(tgrp_orgi_value)
+
+    print(task_group_orgi)
+    print(task_group)
+    #
+    #-----------------------------------------------------------------------
+    #
+    # Create group directories for job cards
+    #
+    #-----------------------------------------------------------------------
+    #
+    for tgrp in list(task_group.keys()):
+        mkdir_vrfy("-p", os.path.join(EXPTDIR,"ecf/scripts",tgrp))
+    #
+    #-----------------------------------------------------------------------
+    #
+    # Create job cards for tasks
     #
     #-----------------------------------------------------------------------
     #
@@ -112,8 +155,9 @@ def create_ecflow_scripts(global_var_defns_fp):
         else:
             task_memory = "2G"
 
+        tsk_grp = [key for key, val in task_group_orgi.items() if tsk in val][0]
         ecflow_script_fn = f"j{task_name_n1}.ecf"
-        ecflow_script_fp = os.path.join(EXPTDIR, "ecf/scripts", ecflow_script_fn)
+        ecflow_script_fp = os.path.join(EXPTDIR, "ecf/scripts", tsk_grp, ecflow_script_fn)
 
         task_omp_vn = f"OMP_NUM_THREADS_{task_name_n1.upper()}"
         if task_omp_vn in cfg:
