@@ -1,0 +1,5 @@
+extrn /totality_limit:TOTALITY
+extrn
+
+suite prod_{{ NET }}
+  inlimit /totality_limit:TOTALITY

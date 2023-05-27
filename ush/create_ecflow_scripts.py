@@ -15,6 +15,7 @@ from python_utils import (
     cfg_to_yaml_str,
     load_shell_config,
     flatten_dict,
+    cp_vrfy,
     mkdir_vrfy
 )
 
@@ -28,6 +29,14 @@ def create_ecflow_scripts(global_var_defns_fp):
     cfg = flatten_dict(cfg)
     import_vars(dictionary=cfg)
 
+    #
+    #-----------------------------------------------------------------------
+    #
+    # Copy include directory into experiment directory.
+    #
+    #-----------------------------------------------------------------------
+    #
+    cp_vrfy("-r", os.path.join(PARMdir,"wflow/ecflow/include"), os.path.join(EXPTDIR, "ecf"))
     #
     #-----------------------------------------------------------------------
     #
@@ -100,8 +109,6 @@ def create_ecflow_scripts(global_var_defns_fp):
         task_group[tgrp_key] = tgrp_value
         task_all.extend(tgrp_orgi_value)
 
-    print(task_group_orgi)
-    print(task_group)
     #
     #-----------------------------------------------------------------------
     #
