@@ -141,6 +141,14 @@ def generate_FV3LAM_wflow(
         create_symlink_to_file(
             wflow_launch_script_fp, os.path.join(exptdir, wflow_launch_script_fn), False
         )
+
+    elif expt_config["platform"]["WORKFLOW_MANAGER"] == "ecflow":
+        
+        global_var_defns_fp = expt_config["workflow"]["GLOBAL_VAR_DEFNS_FP"]
+
+        # create ecflow definition file and job cards
+        create_ecflow_scripts(global_var_defns_fp)
+
     #
     # -----------------------------------------------------------------------
     #
@@ -154,23 +162,14 @@ def generate_FV3LAM_wflow(
     # in the flattened expt_config dictionary
     # TODO: Reference all these variables in their respective
     # dictionaries, instead.
-        import_vars(dictionary=flatten_dict(expt_config))
-        export_vars(source_dict=flatten_dict(expt_config))
+    import_vars(dictionary=flatten_dict(expt_config))
+    export_vars(source_dict=flatten_dict(expt_config))
 
+    if expt_config["platform"]["WORKFLOW_MANAGER"] == "rocoto":
         # pylint: disable=undefined-variable
         if USE_CRON_TO_RELAUNCH:
             add_crontab_line()
 
-    elif expt_config["platform"]["WORKFLOW_MANAGER"] == "ecflow":
-        # create directoies for ecflow in EXPTDIR
-        global_var_defns_fp = expt_config["workflow"]["GLOBAL_VAR_DEFNS_FP"]
-        exptdir = expt_config["workflow"]["EXPTDIR"]
-        mkdir_vrfy("-p", os.path.join(exptdir, "ecf"))
-        mkdir_vrfy("-p", os.path.join(exptdir, "ecf/scripts"))
-        mkdir_vrfy("-p", os.path.join(exptdir, "ecf/def"))
-
-        # create ecflow definition file and job cards
-        create_ecflow_scripts(global_var_defns_fp)
 
     exit()
     #

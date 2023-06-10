@@ -3,6 +3,7 @@
 import os
 import sys
 from textwrap import dedent
+import tempfile
 import jinja2 as j2
 from jinja2 import meta
 import yaml
@@ -16,10 +17,12 @@ from python_utils import (
     load_shell_config,
     flatten_dict,
     cp_vrfy,
-    mkdir_vrfy
+    ln_vrfy,
+    mkdir_vrfy,
+    rm_vrfy,
 )
 
-from fill_jinja_template import fill_jinja_template
+from scripts.templater import set_template
 
 def create_ecflow_scripts(global_var_defns_fp):
     """ Creates ecFlow job cards and definition script in the specific
@@ -29,6 +32,23 @@ def create_ecflow_scripts(global_var_defns_fp):
     cfg = flatten_dict(cfg)
     import_vars(dictionary=cfg)
 
+    print_info_msg(f"""
+        Creating ecFlow job cards and definition scripts in the home directory (HOMEdir):
+          HOMEdir = '{HOMEdir}'""", verbose=VERBOSE)
+
+    #
+    #-----------------------------------------------------------------------
+    #
+    # Create ecFlow directories in the home directory.
+    #
+    #-----------------------------------------------------------------------
+    #
+    home_ecf = f"{HOMEdir}/ecf"
+    rm_vrfy("-rf", home_ecf)
+    mkdir_vrfy("-p", home_ecf)
+    mkdir_vrfy("-p", os.path.join(home_ecf, "scripts"))
+    mkdir_vrfy("-p", os.path.join(home_ecf, "defs"))
+
     #
     #-----------------------------------------------------------------------
     #
@@ -36,18 +56,14 @@ def create_ecflow_scripts(global_var_defns_fp):
     #
     #-----------------------------------------------------------------------
     #
-    cp_vrfy("-r", os.path.join(PARMdir,"wflow/ecflow/include"), os.path.join(EXPTDIR, "ecf"))
+    cp_vrfy("-r", os.path.join(PARMdir,"wflow/ecflow/include_tmpl"), os.path.join(home_ecf, "include"))
+
     #
     #-----------------------------------------------------------------------
     #
-    # Create ecFlow job cards and definition script in the experiment directory.
+    # Create ecFlow job cards and definition script in the ecFlow directory.
     #
     #-----------------------------------------------------------------------
-    #
-    print_info_msg(f"""
-        Creating ecFlow job cards and definition scripts in the specified 
-        experiment directory (EXPTDIR):
-          EXPTDIR = '{EXPTDIR}'""", verbose=VERBOSE)
     #
     # Set template file path
     #
@@ -117,7 +133,7 @@ def create_ecflow_scripts(global_var_defns_fp):
     #-----------------------------------------------------------------------
     #
     for tgrp in list(task_group.keys()):
-        mkdir_vrfy("-p", os.path.join(EXPTDIR,"ecf/scripts",tgrp))
+        mkdir_vrfy("-p", os.path.join(home_ecf,"scripts",tgrp))
     #
     #-----------------------------------------------------------------------
     #
@@ -164,7 +180,7 @@ def create_ecflow_scripts(global_var_defns_fp):
 
         tsk_grp = [key for key, val in task_group_orgi.items() if tsk in val][0]
         ecflow_script_fn = f"j{task_name_n1}.ecf"
-        ecflow_script_fp = os.path.join(EXPTDIR, "ecf/scripts", tsk_grp, ecflow_script_fn)
+        ecflow_script_fp = os.path.join(home_ecf, "scripts", tsk_grp, ecflow_script_fn)
 
         task_omp_vn = f"OMP_NUM_THREADS_{task_name_n1.upper()}"
         if task_omp_vn in cfg:
@@ -182,24 +198,52 @@ def create_ecflow_scripts(global_var_defns_fp):
           "ecf_task_select": task_select,
           "ecf_task_memory": task_memory,
           "sched_native_cmd": SCHED_NATIVE_CMD,
-          "exptdir": EXPTDIR,
+          "global_var_defns_fp": GLOBAL_VAR_DEFNS_FP,
+          "ushdir": USHdir,
+          "jobsdir": JOBSdir,
+          "cpl_aqm": CPL_AQM,
         }
         settings_str = cfg_to_yaml_str(settings)
-            
-        # Call a python script to generate the ecFlow job card.
-        args = ["-q",
-                "-o", ecflow_script_fp,
-                "-t", ecflow_script_tmpl_fp,
-                "-u", settings_str ]
 
-        try:
-            fill_jinja_template(args)
-        except:
-            raise Exception(
-                dedent(
-                f"""Call to create the ecFlow job card for '{task_name}' failed."""
-                )
+        with tempfile.NamedTemporaryFile(
+                dir="./",
+                mode="w+t",
+                prefix="ecf_jobcard_settings",
+                suffix=".yaml") as tmpfile:
+            tmpfile.write(settings_str)
+            tmpfile.seek(0)
+            set_template(
+                [
+                    "-q",
+                    "-c",
+                    tmpfile.name,
+                    "-i",
+                    ecflow_script_tmpl_fp,
+                    "-o",
+                    ecflow_script_fp,
+                ]
             )
+
+    #
+    #-----------------------------------------------------------------------
+    #
+    # Create soft-link for mulitple scripts
+    #
+    #-----------------------------------------------------------------------
+    #
+#    max_fcst_len = max(FCST_LEN_CYCL)+1
+#    for itsk in range(0, max_fcst_len):
+#        ecf_script_orgi = os.path.join(home_ecf, "scripts/post", "jpost.ecf")
+#        ecf_script_link_fn = f"jpost_f{itsk:03d}.ecf"
+#        ecf_script_link = os.path.join(home_ecf, "scripts/post", ecf_script_link_fn)
+#        ln_vrfy(f"""-fsn '{ecf_script_orgi}' '{ecf_script_link}'""")
+
+#    for itsk in range(0, NUM_SPLIT_NEXUS):
+#        ecf_script_orgi = os.path.join(home_ecf, "scripts/nexus", "jnexus_emission.ecf")
+#        ecf_script_link_fn = f"jnexus_emission_{itsk:02d}.ecf"
+#        ecf_script_link = os.path.join(home_ecf, "scripts/nexus", ecf_script_link_fn)
+#        ln_vrfy(f"""-fsn '{ecf_script_orgi}' '{ecf_script_link}'""")
+
 
     return True
 

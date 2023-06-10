@@ -8,9 +8,18 @@
 #PBS {{ sched_native_cmd }}
 #PBS -l debug=true
 
-%include <head.h>
+export cyc="%CYC%"
+export subcyc=0
 
-. {{ exptdir }}/var_denfs.sh
+%include <head.h>
+{%- if cpl_aqm %}
+%include <envir-aqm.h>
+{%- endif %}
+
+export GLOBAL_VAR_DEFNS_FP="{{ global_var_defns_fp }}"
+export USHdir="{{ ushdir }}"
+JOBSdir="{{ jobsdir }}"
+
 . ${USHdir}/load_modules_run_task.sh {{ ecf_task_name_n1 }} "${JOBSdir}/JREGIONAL_{{ ecf_task_name_n1 | upper }}"
 
 %include <tail.h>

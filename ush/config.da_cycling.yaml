@@ -33,7 +33,7 @@ task_run_fcst:
   QUILTING: true
 task_plot_allvars:
   COMOUT_REF: ""
-rocoto:
+wflow_manage:
   entities:
     START_TIME_NSSLMOSAIC: 00:45:00
     START_TIME_LIGHTNING: 00:45:00

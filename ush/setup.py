@@ -568,7 +568,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
     # for all observation types.
     if not vx_fields_config:
         metatask = "metatask_check_post_output_all_mems"
-        rocoto_config['tasks'].pop(metatask)
+        wflow_manage_config['tasks'].pop(metatask)
 
     # If for a given obstype no fields are specified, remove all vx metatasks
     # for that obstype.
@@ -576,7 +576,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
         vx_fields_obstype = [field for field in vx_fields_config if field in vx_fields_all[obstype]]
         if not vx_fields_obstype:
             for metatask in vx_metatasks_all[obstype]:
-                if metatask in rocoto_config['tasks']:
+                if metatask in wflow_manage_config['tasks']:
                     logging.info(dedent(
                         f"""
                         Removing verification [meta]task
@@ -584,7 +584,7 @@ def setup(USHdir, user_config_fn="config.yaml", debug: bool = False):
                         from workflow since no fields belonging to observation type "{obstype}"
                         are specified for verification."""
                     ))
-                    rocoto_config['tasks'].pop(metatask)
+                    wflow_manage_config['tasks'].pop(metatask)
 
     #
     # -----------------------------------------------------------------------
