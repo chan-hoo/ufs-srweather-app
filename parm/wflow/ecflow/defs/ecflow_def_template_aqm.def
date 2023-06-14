@@ -16,7 +16,7 @@ suite {{ envir }}_{{ net }}
     edit OUTPUTDIR '{{ logbasedir }}'
     edit ECF_FILES '{{ homedir }}/ecf/scripts'
     family {{ model_ver }}
-{% for icyc in cycles_1d %}
+{%- for icyc in cycles_1d %}
       family {{ icyc }}
         edit CYC '{{ icyc }}'
   {%- for itsk_grp in task_group.keys() %}
