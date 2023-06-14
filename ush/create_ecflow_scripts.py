@@ -256,7 +256,7 @@ def create_ecflow_scripts(global_var_defns_fp):
     fcst_len_min_list = [ f"{inspt:03d}" for inspt in range(0, fcst_len_min) ]
 
     # Set paths of definition file and its template
-    ecflow_def_tmpl_fn = "ecflow_def_template_{NET}.def"
+    ecflow_def_tmpl_fn = f"ecflow_def_template_{NET}.def"
     ecflow_def_tmpl_fp = os.path.join(PARMdir, "wflow/ecflow/defs", ecflow_def_tmpl_fn)
     ecflow_def_fn = f"{envir}_{NET}.def"
     ecflow_def_fp = os.path.join(HOMEdir, "ecf/defs", ecflow_def_fn)
