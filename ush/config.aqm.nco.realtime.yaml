@@ -12,8 +12,8 @@ workflow:
   EXPT_SUBDIR: aqm_nco_aqmna13km
   PREDEF_GRID_NAME: AQM_NA_13km
   CCPP_PHYS_SUITE: FV3_GFS_v16
-  DATE_FIRST_CYCL: '2023051900'
-  DATE_LAST_CYCL: '2023051918'
+  DATE_FIRST_CYCL: '2023061200'
+  DATE_LAST_CYCL: '2023061218'
   INCR_CYCL_FREQ: 6
   FCST_LEN_HRS: -1
   FCST_LEN_CYCL:
@@ -39,7 +39,7 @@ nco:
   KEEPDATA: true
 wflow_manage:
   tasks:
-    taskgroups: '{{ ["parm/wflow/aqm_all.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml"]|include }}'
+    taskgroups: '{{ ["parm/wflow/aqm_prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/aqm_post.yaml"]|include }}'
     task_get_extrn_lbcs:
       walltime: 02:00:00
     metatask_run_ensemble:

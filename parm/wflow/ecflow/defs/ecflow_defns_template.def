@@ -1,0 +1,34 @@
+extrn /totality_limit:TOTALITY
+
+suite {{ envir }}_{{ net }}
+  inlimit /totality_limit:TOTALITY
+  family {{ net }}
+    edit PACKAGEHOME '{{ homedir  }}'
+    edit NET '{{ net }}'
+    edit model_ver '{{ model_ver }}'
+    edit RUN '{{ run }}'
+    edit PROJ '{{ net }}'
+    edit PROJENVIR 'DEV'
+    edit MACHINE_SITE 'development'
+    edit ENVIR '{{ envir  }}'
+    edit QUEUE '{{ queue_default }}'
+    edit QUEUE_ARCH '{{ queue_hpss }}'
+    edit OUTPUTDIR '{{ logbasedir }}'
+    edit ECF_FILES '{{ homedir }}/ecf/scripts'
+    family {{ model_ver }}
+{%- for icyc in cycles_1d %}
+      family {{ icyc }}
+        edit CYC '{{ icyc }}'
+{%- for itsk_grp in task_group.keys() %}
+        family {{ itsk_grp }}
+{%- for itsk in task_group[itsk_grp] %}
+          task {{ itsk }}
+            trigger
+{%- endfor %}
+        endfamily # task_group
+{%- endfor %}
+      endfamily # cyc
+{%- endfor %}
+    endfamily # model_ver
+  endfamily  # NET
+endsuite

@@ -23,6 +23,7 @@ from python_utils import (
 )
 
 from scripts.templater import set_template
+from set_cycle_dates import set_cycle_dates
 
 def create_ecflow_scripts(global_var_defns_fp):
     """ Creates ecFlow job cards and definition script in the specific
@@ -154,7 +155,7 @@ def create_ecflow_scripts(global_var_defns_fp):
             task_name_n0 = tsk.replace('metatask_',"")
             if task_name_n0 == "run_ens_post":
                 task_name_n1_orgi = list(wmgn["tasks"][tsk].keys())[1]
-                task_name_n1 = task_name_n1_orgi.replace('metatask_',"")
+                task_name_n1 = task_name_n1_orgi.replace('metatask_',"").replace('_mem#mem#_all_fhrs',"")
                 task_name_n2_orgi = list(wmgn["tasks"][tsk][task_name_n1_orgi].keys())[1]
                 task_name_n2 = task_name_n2_orgi.replace('task_',"").replace('#','%')
                 wmgn_task = wmgn["tasks"][tsk][task_name_n1_orgi][task_name_n2_orgi]
@@ -224,27 +225,70 @@ def create_ecflow_scripts(global_var_defns_fp):
                 ]
             )
 
+        # Create soft-link for mulitple scripts
+        if task_name_n1 == "run_post":
+            max_fcst_len = max(FCST_LEN_CYCL)+1
+            for itsk in range(0, max_fcst_len):
+                ecf_script_link_fn = f"j{task_name_n1}_f{itsk:03d}.ecf"
+                ecf_script_link = os.path.join(home_ecf, "scripts", tsk_grp, ecf_script_link_fn)
+                ln_vrfy(f"""-fsn '{ecflow_script_fp}' '{ecf_script_link}'""")
+        elif task_name_n1 == "nexus_emission":
+            for itsk in range(0, NUM_SPLIT_NEXUS):
+                ecf_script_link_fn = f"j{task_name_n1}_{itsk:02d}.ecf"
+                ecf_script_link = os.path.join(home_ecf, "scripts", tsk_grp, ecf_script_link_fn)
+                ln_vrfy(f"""-fsn '{ecflow_script_fp}' '{ecf_script_link}'""")
+
     #
     #-----------------------------------------------------------------------
     #
-    # Create soft-link for mulitple scripts
+    # Create ecFlow definition file
     #
     #-----------------------------------------------------------------------
     #
-#    max_fcst_len = max(FCST_LEN_CYCL)+1
-#    for itsk in range(0, max_fcst_len):
-#        ecf_script_orgi = os.path.join(home_ecf, "scripts/post", "jpost.ecf")
-#        ecf_script_link_fn = f"jpost_f{itsk:03d}.ecf"
-#        ecf_script_link = os.path.join(home_ecf, "scripts/post", ecf_script_link_fn)
-#        ln_vrfy(f"""-fsn '{ecf_script_orgi}' '{ecf_script_link}'""")
+    # Set cycles in one day long
+    cdates_all = set_cycle_dates(DATE_FIRST_CYCL, DATE_LAST_CYCL, INCR_CYCL_FREQ)
+    cycles_all = [icdate[-2:] for icdate in cdates_all]
+    cycles_1d = sorted(list(set(cycles_all)))
 
-#    for itsk in range(0, NUM_SPLIT_NEXUS):
-#        ecf_script_orgi = os.path.join(home_ecf, "scripts/nexus", "jnexus_emission.ecf")
-#        ecf_script_link_fn = f"jnexus_emission_{itsk:02d}.ecf"
-#        ecf_script_link = os.path.join(home_ecf, "scripts/nexus", ecf_script_link_fn)
-#        ln_vrfy(f"""-fsn '{ecf_script_orgi}' '{ecf_script_link}'""")
+    # Set paths of definition file and its template
+    ecflow_def_tmpl_fn = "ecflow_defns_template.def"
+    ecflow_def_tmpl_fp = os.path.join(PARMdir, "wflow/ecflow/defs", ecflow_def_tmpl_fn)
+    ecflow_def_fn = f"{envir}_{NET}.def"
+    ecflow_def_fp = os.path.join(HOMEdir, "ecf/defs", ecflow_def_fn)
 
+    settings = {
+          "homedir": HOMEdir,
+          "envir": envir,
+          "net": NET,
+          "model_ver": model_ver,
+          "run": RUN,
+          "logbasedir": LOGBASEDIR,
+          "queue_default": QUEUE_DEFAULT,
+          "queue_hpss": QUEUE_HPSS,
+          "cycles_1d": cycles_1d,
+          "task_group": task_group,
+    }
+    settings_str = cfg_to_yaml_str(settings)
 
+    with tempfile.NamedTemporaryFile(
+            dir="./",
+            mode="w+t",
+            prefix="ecf_def_settings",
+            suffix=".yaml") as tmpfile:
+            tmpfile.write(settings_str)
+            tmpfile.seek(0)
+            set_template(
+                [
+                    "-q",
+                    "-c",
+                    tmpfile.name,
+                    "-i",
+                    ecflow_def_tmpl_fp,
+                    "-o",
+                    ecflow_def_fp,
+                ]
+            )
+    
     return True
 
 
