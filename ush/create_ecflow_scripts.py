@@ -233,8 +233,9 @@ def create_ecflow_scripts(global_var_defns_fp):
                 ecf_script_link = os.path.join(home_ecf, "scripts", tsk_grp, ecf_script_link_fn)
                 ln_vrfy(f"""-fsn '{ecflow_script_fp}' '{ecf_script_link}'""")
         elif task_name_n1 == "nexus_emission":
-            for itsk in range(0, NUM_SPLIT_NEXUS):
-                ecf_script_link_fn = f"j{task_name_n1}_{itsk:02d}.ecf"
+            nspt_list = [ f"{inspt:02d}" for inspt in range(0, NUM_SPLIT_NEXUS) ]
+            for itsk in nspt_list:
+                ecf_script_link_fn = f"j{task_name_n1}_{itsk}.ecf"
                 ecf_script_link = os.path.join(home_ecf, "scripts", tsk_grp, ecf_script_link_fn)
                 ln_vrfy(f"""-fsn '{ecflow_script_fp}' '{ecf_script_link}'""")
 
@@ -251,7 +252,7 @@ def create_ecflow_scripts(global_var_defns_fp):
     cycles_1d = sorted(list(set(cycles_all)))
 
     # Set paths of definition file and its template
-    ecflow_def_tmpl_fn = "ecflow_defns_template.def"
+    ecflow_def_tmpl_fn = "ecflow_def_template_aqm.def"
     ecflow_def_tmpl_fp = os.path.join(PARMdir, "wflow/ecflow/defs", ecflow_def_tmpl_fn)
     ecflow_def_fn = f"{envir}_{NET}.def"
     ecflow_def_fp = os.path.join(HOMEdir, "ecf/defs", ecflow_def_fn)
@@ -267,6 +268,7 @@ def create_ecflow_scripts(global_var_defns_fp):
           "queue_hpss": QUEUE_HPSS,
           "cycles_1d": cycles_1d,
           "task_group": task_group,
+          "nspt_list": nspt_list,
     }
     settings_str = cfg_to_yaml_str(settings)
 

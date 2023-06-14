@@ -16,18 +16,26 @@ suite {{ envir }}_{{ net }}
     edit OUTPUTDIR '{{ logbasedir }}'
     edit ECF_FILES '{{ homedir }}/ecf/scripts'
     family {{ model_ver }}
-{%- for icyc in cycles_1d %}
+{% for icyc in cycles_1d %}
       family {{ icyc }}
         edit CYC '{{ icyc }}'
 {%- for itsk_grp in task_group.keys() %}
         family {{ itsk_grp }}
 {%- for itsk in task_group[itsk_grp] %}
+{%- if itsk == 'nexus_emission' %}
+{%- for inspt in nspt_list %}
+          task {{ itsk }}_{{ inspt }}
+          edit NSPT {{ inspt }}
+          triger
+{%- endfor %}
+{%- else %}
           task {{ itsk }}
-            trigger
+          triger
+{%- endif %}
 {%- endfor %}
         endfamily # task_group
 {%- endfor %}
-      endfamily # cyc
+      endfamily # cyc=00
 {%- endfor %}
     endfamily # model_ver
   endfamily  # NET
