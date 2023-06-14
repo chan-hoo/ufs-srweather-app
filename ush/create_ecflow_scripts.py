@@ -227,8 +227,8 @@ def create_ecflow_scripts(global_var_defns_fp):
 
         # Create soft-link for mulitple scripts
         if task_name_n1 == "run_post":
-            max_fcst_len = max(FCST_LEN_CYCL)+1
-            for itsk in range(0, max_fcst_len):
+            fcst_len_max = max(FCST_LEN_CYCL)+1
+            for itsk in range(0, fcst_len_max):
                 ecf_script_link_fn = f"j{task_name_n1}_f{itsk:03d}.ecf"
                 ecf_script_link = os.path.join(home_ecf, "scripts", tsk_grp, ecf_script_link_fn)
                 ln_vrfy(f"""-fsn '{ecflow_script_fp}' '{ecf_script_link}'""")
@@ -250,6 +250,10 @@ def create_ecflow_scripts(global_var_defns_fp):
     cdates_all = set_cycle_dates(DATE_FIRST_CYCL, DATE_LAST_CYCL, INCR_CYCL_FREQ)
     cycles_all = [icdate[-2:] for icdate in cdates_all]
     cycles_1d = sorted(list(set(cycles_all)))
+    fcst_len_max = max(FCST_LEN_CYCL)+1
+    fcst_len_min = min(FCST_LEN_CYCL)+1
+    fcst_len_max_list = [ f"{inspt:03d}" for inspt in range(0, fcst_len_max) ]
+    fcst_len_min_list = [ f"{inspt:03d}" for inspt in range(0, fcst_len_min) ]
 
     # Set paths of definition file and its template
     ecflow_def_tmpl_fn = "ecflow_def_template_aqm.def"
@@ -269,6 +273,8 @@ def create_ecflow_scripts(global_var_defns_fp):
           "cycles_1d": cycles_1d,
           "task_group": task_group,
           "nspt_list": nspt_list,
+          "fcst_len_max_list": fcst_len_max_list,
+          "fcst_len_min_list": fcst_len_min_list,
     }
     settings_str = cfg_to_yaml_str(settings)
 

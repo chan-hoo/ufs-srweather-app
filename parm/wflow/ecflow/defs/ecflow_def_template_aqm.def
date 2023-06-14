@@ -19,22 +19,34 @@ suite {{ envir }}_{{ net }}
 {% for icyc in cycles_1d %}
       family {{ icyc }}
         edit CYC '{{ icyc }}'
-{%- for itsk_grp in task_group.keys() %}
+  {%- for itsk_grp in task_group.keys() %}
         family {{ itsk_grp }}
-{%- for itsk in task_group[itsk_grp] %}
-{%- if itsk == 'nexus_emission' %}
-{%- for inspt in nspt_list %}
+    {%- for itsk in task_group[itsk_grp] %}
+      {%- if itsk == 'nexus_emission' %}
+        {%- for inspt in nspt_list %}
           task {{ itsk }}_{{ inspt }}
           edit NSPT {{ inspt }}
           triger
-{%- endfor %}
-{%- else %}
+        {%- endfor %}
+      {%- elif itsk == 'run_ens_post' %}
+        {%- if icyc == '06' or icyc == '12' %}
+          {%- for ifct in fcst_len_max_list %}
+          task {{ itsk }}_f{{ ifct }}
+          triger
+          {%- endfor %}
+        {%- else %}
+          {%- for ifct in fcst_len_min_list %}
+          task {{ itsk }}_f{{ ifct }}
+          triger
+          {%- endfor %}
+        {%- endif %}
+      {%- else %}
           task {{ itsk }}
           triger
-{%- endif %}
-{%- endfor %}
+      {%- endif %}
+    {%- endfor %}
         endfamily # task_group
-{%- endfor %}
+  {%- endfor %}
       endfamily # cyc=00
 {%- endfor %}
     endfamily # model_ver
