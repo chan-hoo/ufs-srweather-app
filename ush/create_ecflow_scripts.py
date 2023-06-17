@@ -254,6 +254,7 @@ def create_ecflow_scripts(global_var_defns_fp):
     fcst_len_min = min(FCST_LEN_CYCL)+1
     fcst_len_max_list = [ f"{inspt:03d}" for inspt in range(0, fcst_len_max) ]
     fcst_len_min_list = [ f"{inspt:03d}" for inspt in range(0, fcst_len_min) ]
+    num_split_nexus_m1 = f"{(NUM_SPLIT_NEXUS-1):02d}"
 
     # Set paths of definition file and its template
     ecflow_def_tmpl_fn = f"ecflow_def_template_{NET}.def"
@@ -275,6 +276,7 @@ def create_ecflow_scripts(global_var_defns_fp):
           "nspt_list": nspt_list,
           "fcst_len_max_list": fcst_len_max_list,
           "fcst_len_min_list": fcst_len_min_list,
+          "num_split_nexus_m1": num_split_nexus_m1,
     }
     settings_str = cfg_to_yaml_str(settings)
 

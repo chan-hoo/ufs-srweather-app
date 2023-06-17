@@ -24,30 +24,52 @@ suite {{ envir }}_{{ net }}
     {%- for itsk in task_group[itsk_grp] %}
       {%- if itsk == 'nexus_emission' %}
         {%- for inspt in nspt_list %}
-          task {{ itsk }}_{{ inspt }}
-          edit NSPT {{ inspt }}
-          triger
+          task j{{ itsk }}_{{ inspt }}
+            edit NSPT {{ inspt }}
+            trigger ./jnexus_gfs_sfc==complete
         {%- endfor %}
       {%- elif itsk == 'run_ens_post' %}
         {%- if icyc == '06' or icyc == '12' %}
           {%- for ifct in fcst_len_max_list %}
-          task {{ itsk }}_f{{ ifct }}
-          triger
+          task j{{ itsk }}_f{{ ifct }}
+            trigger ../coldstart/jrun_fcst==complete 
           {%- endfor %}
         {%- else %}
           {%- for ifct in fcst_len_min_list %}
-          task {{ itsk }}_f{{ ifct }}
-          triger
+          task j{{ itsk }}_f{{ ifct }}
+            trigger ../coldstart/jrun_fcst==complete
           {%- endfor %}
         {%- endif %}
       {%- else %}
-          task {{ itsk }}
-          triger
+          task j{{ itsk }}
+        {%- if itsk == 'make_orog' %}
+            trigger ./jmake_grid==complete
+        {%- elif itsk == 'make_sfc_climo' %}
+            trigger ./jmake_orog==complete
+        {%- elif itsk == 'make_ics' %}
+            trigger ./jget_extrn_ics==complete
+        {%- elif itsk == 'make_lbcs' %}
+            trigger ./jget_extrn_lbcs==complete
+        {%- elif itsk == 'run_fcst' %}
+            trigger ../aqm_prep==complete and ./jmake_ics==complete and ./jmake_lbcs==complete
+        {%- elif itsk == 'nexus_post_split' %}
+            trigger ./jnexus_emission_{{ num_split_nexus_m1 }}
+        {%- elif itsk == 'fire_emission' or itsk == 'point_source' or itsk == 'make_grid' or itsk == 'get_extrn_ics' or itsk == 'get_extrn_lbcs' %}
+            trigger ./jnexus_gfs_sfc==active or ./jnexus_gfs_sfc==complete
+        {%- elif itsk == 'aqm_ics' %}
+            trigger ../coldstart/jmake_ics==complete
+        {%- elif itsk == 'aqm_lbcs' %}
+            trigger ../coldstart/jmake_lbcs==complete
+        {%- elif itsk == 'pre_post_stat' %}
+            trigger ../coldstart/jrun_fcst==complete
+        {%- elif itsk == 'post_stat_o3' or itsk == 'post_stat_pm25' or itsk == 'bias_correction_o3' or itsk == 'bias_correction_pm25' %}
+            trigger ./jpre_post_stat==complete
+        {%- endif %}
       {%- endif %}
     {%- endfor %}
         endfamily # task_group
   {%- endfor %}
-      endfamily # cyc=00
+      endfamily # cyc
 {%- endfor %}
     endfamily # model_ver
   endfamily  # NET
