@@ -7,7 +7,7 @@ suite {{ envir }}_{{ net }}
     edit NET '{{ net }}'
     edit model_ver '{{ model_ver }}'
     edit RUN '{{ run }}'
-    edit PROJ '{{ net }}'
+    edit PROJ '{{ net | upper }}'
     edit PROJENVIR 'DEV'
     edit MACHINE_SITE 'development'
     edit ENVIR '{{ envir  }}'
