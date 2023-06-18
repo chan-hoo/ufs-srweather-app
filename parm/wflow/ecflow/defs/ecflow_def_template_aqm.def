@@ -69,6 +69,11 @@ suite {{ envir }}_{{ net }}
     {%- endfor %}
         endfamily # task_group
   {%- endfor %}
+        family ecf_manager
+          task jecflow_manager
+            trigger ../nexus/jnexus_gfs_sfc==active or ../nexus/jnexus_gfs_sfc==complete
+            event 1 release_next_cycle
+            event 2 requeue_cycle      
       endfamily # cyc
 {%- endfor %}
     endfamily # model_ver

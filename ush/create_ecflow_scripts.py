@@ -177,7 +177,7 @@ def create_ecflow_scripts(global_var_defns_fp):
         if "memory" in list(wmgn_task.keys()):
             task_memory = wmgn_task["memory"]
         else:
-            task_memory = "2G"
+            task_memory = None
 
         tsk_grp = [key for key, val in task_group_orgi.items() if tsk in val][0]
         ecflow_script_fn = f"j{task_name_n1}.ecf"
@@ -190,14 +190,16 @@ def create_ecflow_scripts(global_var_defns_fp):
             task_omp = "1"
 
         task_ncpus = str(int(task_omp)*int(task_ppn))
-        task_select = f"select={task_nnodes}:mpiprocs={task_ppn}:ompthreads={task_omp}:ncpus={task_ncpus}"
+        if task_memory:
+            task_select = f"select={task_nnodes}:mpiprocs={task_ppn}:ompthreads={task_omp}:ncpus={task_ncpus}:mem={task_memory}"
+        else:
+            task_select = f"select={task_nnodes}:mpiprocs={task_ppn}:ompthreads={task_omp}:ncpus={task_ncpus}"
        
         settings = {
           "ecf_task_name_n1": task_name_n1,
           "ecf_task_name_n2": task_name_n2,
           "ecf_task_walltime": task_walltime,
           "ecf_task_select": task_select,
-          "ecf_task_memory": task_memory,
           "sched_native_cmd": SCHED_NATIVE_CMD,
           "global_var_defns_fp": GLOBAL_VAR_DEFNS_FP,
           "ushdir": USHdir,
@@ -238,6 +240,49 @@ def create_ecflow_scripts(global_var_defns_fp):
                 ecf_script_link_fn = f"j{task_name_n1}_{itsk}.ecf"
                 ecf_script_link = os.path.join(home_ecf, "scripts", tsk_grp, ecf_script_link_fn)
                 ln_vrfy(f"""-fsn '{ecflow_script_fp}' '{ecf_script_link}'""")
+
+    #
+    #-----------------------------------------------------------------------
+    #
+    # Create job card for ecFlow manager
+    #
+    #-----------------------------------------------------------------------
+    #
+    ecflow_script_fn = "jecflow_manager.ecf"
+    ecflow_script_fp = os.path.join(home_ecf, "scripts/ecf_manager", ecflow_script_fn)
+    mkdir_vrfy("-p", os.path.join(home_ecf,"scripts/ecf_manager"))
+
+    settings = {
+        "ecf_task_name_n1": "ecflow_manager",
+        "ecf_task_name_n2": "ecf_manager_%CYC%",
+        "ecf_task_walltime": "06:00:00",
+        "ecf_task_select": "select=1:ncpus=1:mem=1G",
+        "sched_native_cmd": SCHED_NATIVE_CMD,
+        "global_var_defns_fp": GLOBAL_VAR_DEFNS_FP,
+        "ushdir": USHdir,
+        "jobsdir": JOBSdir,
+        "cpl_aqm": CPL_AQM,
+    }
+    settings_str = cfg_to_yaml_str(settings)
+
+    with tempfile.NamedTemporaryFile(
+            dir="./",
+            mode="w+t",
+            prefix="ecf_jobcard_settings",
+            suffix=".yaml") as tmpfile:
+        tmpfile.write(settings_str)
+        tmpfile.seek(0)
+        set_template(
+            [
+                "-q",
+                "-c",
+                tmpfile.name,
+                "-i",
+                ecflow_script_tmpl_fp,
+                "-o",
+                ecflow_script_fp,
+            ]
+        )
 
     #
     #-----------------------------------------------------------------------
