@@ -51,11 +51,13 @@ suite {{ envir }}_{{ net }}
         {%- elif itsk == 'make_lbcs' %}
             trigger ./jget_extrn_lbcs==complete
         {%- elif itsk == 'run_fcst' %}
-            trigger ../aqm_prep==complete and ./jmake_ics==complete and ./jmake_lbcs==complete
+            trigger ../aqm_prep==complete
         {%- elif itsk == 'nexus_post_split' %}
             trigger ./jnexus_emission_{{ num_split_nexus_m1 }}
-        {%- elif itsk == 'fire_emission' or itsk == 'point_source' or itsk == 'make_grid' or itsk == 'get_extrn_ics' or itsk == 'get_extrn_lbcs' %}
+        {%- elif itsk == 'fire_emission' or itsk == 'point_source' %}
             trigger ./jnexus_gfs_sfc==active or ./jnexus_gfs_sfc==complete
+        {%- elif itsk == 'make_grid' or itsk == 'get_extrn_ics' or itsk == 'get_extrn_lbcs' %}
+            trigger ../aqm_prep/jnexus_gfs_sfc==active or ../aqm_prep/jnexus_gfs_sfc==complete
         {%- elif itsk == 'aqm_ics' %}
             trigger ../coldstart/jmake_ics==complete
         {%- elif itsk == 'aqm_lbcs' %}
@@ -71,7 +73,7 @@ suite {{ envir }}_{{ net }}
   {%- endfor %}
         family ecf_manager
           task jecflow_manager
-            trigger ../nexus/jnexus_gfs_sfc==active or ../nexus/jnexus_gfs_sfc==complete
+            trigger ../aqm_prep/jnexus_gfs_sfc==active or ../aqm_prep/jnexus_gfs_sfc==complete
             event 1 release_next_cycle
             event 2 requeue_cycle      
       endfamily # cyc
