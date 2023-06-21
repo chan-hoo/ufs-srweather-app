@@ -57,7 +57,7 @@ class Testing(unittest.TestCase):
             "user": {
                 "MACHINE": "linux",
             },
-            "rocoto": {
+            "wflow_manage": {
                 "tasks": {
                     "taskgroups": \
                         """'{{ ["parm/wflow/prep.yaml",
