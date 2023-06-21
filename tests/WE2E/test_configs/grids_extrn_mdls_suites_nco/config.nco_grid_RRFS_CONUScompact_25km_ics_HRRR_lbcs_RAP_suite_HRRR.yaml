@@ -12,7 +12,7 @@ workflow:
   DATE_LAST_CYCL: '2020081000'
   FCST_LEN_HRS: 6
   PREEXISTING_DIR_METHOD: rename
-rocoto:
+wflow_manage:
   tasks:
     taskgroups: '{{ ["parm/wflow/coldstart.yaml", "parm/wflow/post.yaml"]|include }}'
 task_get_extrn_ics:

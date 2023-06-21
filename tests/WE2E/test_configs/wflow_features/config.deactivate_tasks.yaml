@@ -25,7 +25,7 @@ workflow:
   DATE_LAST_CYCL: '2019070100'
   FCST_LEN_HRS: 6
   PREEXISTING_DIR_METHOD: rename
-rocoto:
+wflow_manage:
   tasks:
     task_get_extrn_ics:
     task_get_extrn_lbcs:

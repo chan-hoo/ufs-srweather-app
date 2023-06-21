@@ -18,7 +18,7 @@ task_get_extrn_lbcs:
   EXTRN_MDL_NAME_LBCS: FV3GFS
   LBC_SPEC_INTVL_HRS: 3
   USE_USER_STAGED_EXTRN_FILES: true
-rocoto:
+wflow_manage:
   tasks:
     task_make_grid:
     task_make_orog:

@@ -29,6 +29,6 @@ task_get_extrn_lbcs:
 global:
   DO_ENSEMBLE: true
   NUM_ENS_MEMBERS: 2
-rocoto:
+wflow_manage:
   tasks:
     taskgroups: '{{ ["parm/wflow/coldstart.yaml", "parm/wflow/post.yaml"]|include }}'
