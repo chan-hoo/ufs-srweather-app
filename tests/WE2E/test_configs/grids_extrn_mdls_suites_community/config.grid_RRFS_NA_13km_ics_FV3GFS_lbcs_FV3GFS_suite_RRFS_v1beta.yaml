@@ -26,7 +26,7 @@ task_make_ics:
   OMP_STACKSIZE_MAKE_ICS: 2048m
 task_run_fcst:
   OMP_STACKSIZE_RUN_FCST: 2048m
-rocoto:
+wflow_manage:
   tasks:
     metatask_run_ensemble:
       task_make_ics_mem#mem#:

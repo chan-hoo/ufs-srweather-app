@@ -149,11 +149,11 @@ In the ``workflow:`` section of ``config.yaml``, update ``EXPT_SUBDIR`` and ``PR
 For a detailed description of other ``workflow:`` variables, see :numref:`Section %s <workflow>`.
 
 To turn on the plotting for the experiment, the YAML configuration file
-should be included in the ``rocoto:taskgroups:`` section, like this:
+should be included in the ``wflow_manage:taskgroups:`` section, like this:
 
 .. code-block:: console
 
-  rocoto:
+  wflow_manage:
     tasks:
       taskgroups: '{{ ["parm/wflow/prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/plot.yaml"]|include }}'
 

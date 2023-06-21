@@ -458,11 +458,11 @@ The Python plotting tasks require a path to the directory where the Cartopy Natu
 Task Configuration
 `````````````````````
 
-Users will need to add or modify certain variables in ``config.yaml`` to run the plotting task(s). At a minimum, to activate the ``plot_allvars`` tasks, users must add it to the default list of ``taskgroups`` under the ``rocoto: tasks:`` section.
+Users will need to add or modify certain variables in ``config.yaml`` to run the plotting task(s). At a minimum, to activate the ``plot_allvars`` tasks, users must add it to the default list of ``taskgroups`` under the ``wflow_manage: tasks:`` section.
 
 .. code-block:: console
 
-   rocoto:
+   wflow_manage:
      tasks:
        taskgroups: '{{ ["parm/wflow/prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/plot.yaml"]|include }}'
 
@@ -693,7 +693,7 @@ To turn on verification tasks in the workflow, include the ``parm/wflow/verify.y
 
 .. code-block:: console
 
-   rocoto:
+   wflow_manage:
      tasks:
        taskgroups: '{{ ["parm/wflow/prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/verify.yaml"]|include }}'
 
@@ -703,14 +703,14 @@ To turn off a task, simply include its entry from ``verify.yaml`` as an empty YA
 
 .. code-block:: console
 
-   rocoto:
+   wflow_manage:
      tasks:
        taskgroups: '{{ ["parm/wflow/prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/verify.yaml"]|include }}'
      metatask_vx_ens_member:
        metatask_PointStat_mem#mem#:
 
 
-More information about configuring the ``rocoto:`` section can be found in :numref:`Section %s <DefineWorkflow>`.
+More information about configuring the ``wflow_manage:`` section can be found in :numref:`Section %s <DefineWorkflow>`.
 
 If users have access to NOAA :term:`HPSS` but have not pre-staged the data, the default ``verify.yaml`` taskgroup will activate the tasks, and the workflow will attempt to download the appropriate data from NOAA HPSS. In this case, the ``*_OBS_DIR`` paths must be set to the location where users want the downloaded data to reside. 
 
@@ -724,7 +724,7 @@ Users who have already staged the observation data needed for METplus (i.e., the
       CCPA_OBS_DIR: /path/to/UFS_SRW_App/develop/obs_data/ccpa/proc
       MRMS_OBS_DIR: /path/to/UFS_SRW_App/develop/obs_data/mrms/proc
       NDAS_OBS_DIR: /path/to/UFS_SRW_App/develop/obs_data/ndas/proc
-   rocoto:
+   wflow_manage:
      tasks:
        taskgroups: '{{ ["parm/wflow/prep.yaml", "parm/wflow/coldstart.yaml", "parm/wflow/post.yaml", "parm/wflow/verify.yaml"]|include }}'
        task_get_obs_ccpa:
@@ -771,7 +771,7 @@ Description of Workflow Tasks
 
 .. code-block:: console
 
-   rocoto:
+   wflow_manage:
      tasks:
        taskgroups: '{{ ["parm/wflow/coldstart.yaml", "parm/wflow/post.yaml"]|include }}'
 

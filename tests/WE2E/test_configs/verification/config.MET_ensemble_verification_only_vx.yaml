@@ -15,7 +15,7 @@ workflow:
   FCST_LEN_HRS: 6
   PREEXISTING_DIR_METHOD: rename
 
-rocoto:
+wflow_manage:
   tasks:
     taskgroups: '{{ ["parm/wflow/verify_pre.yaml", "parm/wflow/verify_det.yaml", "parm/wflow/verify_ens.yaml"]|include }}'
     task_get_obs_ccpa:
