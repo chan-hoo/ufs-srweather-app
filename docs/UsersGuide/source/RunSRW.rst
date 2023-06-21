@@ -689,7 +689,7 @@ To use METplus verification, the path to the MET and METplus directories must be
       METPLUS_PATH: </path/to/METplus/METplus-4.1.0>
       MET_INSTALL_DIR: </path/to/met/10.1.0>
 
-To turn on verification tasks in the workflow, include the ``parm/wflow/verify.yaml`` file in the ``rocoto: tasks: taskgroups:`` section of ``config.yaml``.
+To turn on verification tasks in the workflow, include the ``parm/wflow/verify.yaml`` file in the ``wflow_manage: tasks: taskgroups:`` section of ``config.yaml``.
 
 .. code-block:: console
 
