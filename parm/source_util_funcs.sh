@@ -205,21 +205,11 @@ function source_util_funcs() {
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that evaluates a METplus time
-# string template.
-#
-#-----------------------------------------------------------------------
-#
-  . ${bashutils_dir}/eval_METplus_timestr_tmpl.sh
-
-#
-#-----------------------------------------------------------------------
-#
 # Source the file that sources YAML files as if they were bash
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/source_yaml.sh
+  . ${bashutils_dir}/source_config.sh
 }
 source_util_funcs
 

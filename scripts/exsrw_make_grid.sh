@@ -98,7 +98,7 @@
 #
 . ${PARMsrw}/source_util_funcs.sh
 for sect in user nco platform workflow constants grid_params task_make_grid ; do
-  source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
+  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -321,25 +321,18 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   # namelist file.
   #
   settings="
-'regional_grid_nml':
-  'plon': ${LON_CTR}
-  'plat': ${LAT_CTR}
-  'delx': ${DEL_ANGLE_X_SG}
-  'dely': ${DEL_ANGLE_Y_SG}
-  'lx': ${NEG_NX_OF_DOM_WITH_WIDE_HALO}
-  'ly': ${NEG_NY_OF_DOM_WITH_WIDE_HALO}
-  'pazi': ${PAZI}
+'regional_grid_nml': {
+    'plon': ${LON_CTR},
+    'plat': ${LAT_CTR},
+    'delx': ${DEL_ANGLE_X_SG},
+    'dely': ${DEL_ANGLE_Y_SG},
+    'lx': ${NEG_NX_OF_DOM_WITH_WIDE_HALO},
+    'ly': ${NEG_NY_OF_DOM_WITH_WIDE_HALO},
+    'pazi': ${PAZI},
+}
 "
 
-  # UW takes input from stdin when no -i/--input-config flag is provided
-  (cat << EOF
-$settings
-EOF
-) | uw config realize \
-    --input-format yaml \
-    -o ${rgnl_grid_nml_fp} \
-    -v \
-
+  ${USHsrw}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp}
   err=$?
   if [ $err -ne 0 ]; then
       print_err_msg_exit "\
@@ -420,15 +413,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   CRES="C${res_equiv}"
 fi
-
-# UW takes the update values from stdin when no --update-file flag is
-# provided. It needs --update-format to do it correctly, though.
-echo "workflow: {CRES: ${CRES}}" | uw config realize \
-  --input-file $GLOBAL_VAR_DEFNS_FP \
-  --update-format yaml \
-  --output-file $GLOBAL_VAR_DEFNS_FP \
-  --verbose
-
+set_file_param "${GLOBAL_VAR_DEFNS_FP}" "CRES" "'$CRES'"
 #
 #-----------------------------------------------------------------------
 #

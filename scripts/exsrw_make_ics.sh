@@ -84,7 +84,7 @@
 . ${PARMsrw}/source_util_funcs.sh
 for sect in user nco platform workflow global cpl_aqm_parm \
    smoke_dust_parm constants task_get_extrn_ics task_make_ics ; do
-  source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
+  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------

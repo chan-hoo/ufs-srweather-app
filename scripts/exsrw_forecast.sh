@@ -114,7 +114,7 @@
 for sect in user nco platform workflow global cpl_aqm_parm \
   smoke_dust_parm constants fixed_files \
   task_get_extrn_lbcs task_run_fcst task_run_post ; do
-  source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
+  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------

@@ -10,39 +10,11 @@ function set_file_param() {
 #
 #-----------------------------------------------------------------------
 #
-# Save current shell options (in a global array).  Then set new options
-# for this script/function.
-#
-#-----------------------------------------------------------------------
-#
-  { save_shell_opts; . ${PARMsrw}/preamble.sh; } > /dev/null 2>&1
-#
-#-----------------------------------------------------------------------
-#
-# Get the full path to the file in which this script/function is located 
-# (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
-# which the file is located (scrfunc_dir).
-#
-#-----------------------------------------------------------------------
-#
-  local scrfunc_fp=$( $READLINK -f "${BASH_SOURCE[0]}" )
-  local scrfunc_fn=$( basename "${scrfunc_fp}" )
-  local scrfunc_dir=$( dirname "${scrfunc_fp}" )
-#
-#-----------------------------------------------------------------------
-#
-# Get the name of this function.
-#
-#-----------------------------------------------------------------------
-#
-  local func_name="${FUNCNAME[0]}"
-#
-#-----------------------------------------------------------------------
-#
 # Check arguments.
 #
 #-----------------------------------------------------------------------
 #
+set -x
   if [ "$#" -ne 3 ]; then
 
     print_err_msg_exit "
@@ -162,34 +134,10 @@ specified for this file:
 #
 #-----------------------------------------------------------------------
 #
-# Use grep to determine whether regex_search exists in the specified 
-# file.  If so, perform the regex replacement using sed.  If not, print
-# out an error message and exit.
+# Perform the regex replacement using sed.
 #
 #-----------------------------------------------------------------------
 #
-  grep -q -E "${regex_search}" "${file_fp}"
-
-  if [ $? -eq 0 ]; then
-    $SED -i -r -e "s%${regex_search}%${regex_replace}%" "${file_fp}"
-  else
-    print_err_msg_exit "\
-The specified file (file_fp) does not contain the searched-for regular 
-expression (regex_search):
-  file_fp = \"${file_fp}\"
-  param = \"$param\"
-  value = \"$value\"
-  regex_search = ${regex_search}"
-  fi
-#
-#-----------------------------------------------------------------------
-#
-# Restore the shell options saved at the beginning of this script/func-
-# tion.
-#
-#-----------------------------------------------------------------------
-#
-  { restore_shell_opts; } > /dev/null 2>&1
-
+  $SED -i -r -e "s%${regex_search}%${regex_replace}%" "${file_fp}"
 }
 

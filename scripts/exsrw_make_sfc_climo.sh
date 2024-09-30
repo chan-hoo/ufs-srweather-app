@@ -52,7 +52,7 @@
 #
 . ${PARMsrw}/source_util_funcs.sh
 for sect in user nco platform workflow constants task_make_sfc_climo ; do
-  source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
+  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------

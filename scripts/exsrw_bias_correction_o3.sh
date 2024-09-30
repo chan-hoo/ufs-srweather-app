@@ -11,7 +11,7 @@
 for sect in user nco platform workflow global verification cpl_aqm_parm \
   constants fixed_files grid_params \
   task_bias_correction_o3 ; do
-  source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
+  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------

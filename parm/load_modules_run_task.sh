@@ -141,7 +141,7 @@ fi
 
 # Source the necessary blocks of the experiment config YAML
 for sect in platform workflow ; do
-  source_yaml ${GLOBAL_VAR_DEFNS_FP} ${sect}
+  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
 done
 
 if [ "${machine}" != "wcoss2" ]; then
