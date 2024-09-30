@@ -28,7 +28,6 @@ from python_utils import (
     import_vars,
     get_env_var,
     load_config_file,
-    cfg_to_shell_str,
     cfg_to_yaml_str,
     load_ini_config,
     get_ini_value,
@@ -730,6 +729,9 @@ def setup(PARMsrw, user_config_fn="config.yaml", debug: bool = False):
     date_first_cycl = workflow_config.get("DATE_FIRST_CYCL")
     date_last_cycl = workflow_config.get("DATE_LAST_CYCL")
     incr_cycl_freq = int(workflow_config.get("INCR_CYCL_FREQ"))
+
+    print("DATE_FIRST_CYCL:",date_first_cycl)
+    print("DATE_LAST_CYCL:",date_last_cycl)
 
     # set varying forecast lengths only when fcst_len_hrs=-1
     if fcst_len_hrs == -1:
@@ -1440,14 +1442,14 @@ def setup(PARMsrw, user_config_fn="config.yaml", debug: bool = False):
         yaml.dump(expt_config.get("rocoto"), f, sort_keys=False)
 
     var_defns_cfg = copy.deepcopy(expt_config)
-    del var_defns_cfg["rocoto"]
-    with open(global_var_defns_fp, "a") as f:
-        f.write(cfg_to_shell_str(var_defns_cfg))
 
     # Fixup a couple of data types:
-#    for dates in ("DATE_FIRST_CYCL", "DATE_LAST_CYCL"):
-#        var_defns_cfg["workflow"][dates] = date_to_str(var_defns_cfg["workflow"][dates])
-#    var_defns_cfg.dump(global_var_defns_fp)
+    for dates in ("DATE_FIRST_CYCL", "DATE_LAST_CYCL"):
+        var_defns_cfg["workflow"][dates] = date_to_str(var_defns_cfg["workflow"][dates])
+
+    del var_defns_cfg["rocoto"]
+    with open(global_var_defns_fp, "a") as f:
+        f.write(yaml.safe_dump(var_defns_cfg, sort_keys=False, default_flow_style=False))
 
     # Generate a flag file for cold start
     if expt_config["workflow"].get("COLDSTART"):
