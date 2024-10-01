@@ -6,7 +6,7 @@ rocoto:
     ACCOUNT: '{{ user.ACCOUNT }}'
     HOMEdir: '{{ user.HOMEdir }}'
     COLDSTART: '{{ workflow.COLDSTART }}'
-    GLOBAL_VAR_DEFNS_FP: '{{ workflow.GLOBAL_VAR_DEFNS_FP }}'
+    GLOBAL_VAR_DEFNS_FP: '{{ workflow.GLOBAL_VAR_DEFNS_SHELL_FP }}'
     LOAD_MODULES_RUN_TASK: '{{ workflow.LOAD_MODULES_RUN_TASK_FP }} {{ user.MACHINE }}'
     WARMSTART_CYCLE_DIR: '{{ workflow.WARMSTART_CYCLE_DIR }}'
     WORKFLOW_ID: '{{ workflow.WORKFLOW_ID }}'

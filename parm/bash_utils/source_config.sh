@@ -40,6 +40,7 @@ function source_config() {
   source <( config_to_shell_str "$@" )
 
 }
+
 #
 #-----------------------------------------------------------------------
 # Source partial contents of a config file to shell script.
@@ -48,6 +49,12 @@ function source_config() {
 #
 function source_config_for_task() {
 
-  source <( config_to_shell_str "${@:2}" -k "(^(?!task_)|$1).*" )
+  var_defn_file=$2
+  var=$1
+
+  line=$(grep -E "^\s*$var=" "$var_defn_file")
+  value=$(echo "$line" | sed -E "s/^\s*$var=(.*)/\1/")
+
+  source <( echo "export $var=$value" )
 
 }

@@ -110,7 +110,7 @@ Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
     regex_replace="\1$value"
     ;;
 #
-  "${GLOBAL_VAR_DEFNS_FN}")
+  "${GLOBAL_VAR_DEFNS_SHELL_FN}")
     regex_search="(^\s*$param=)(\".*\")?([^ \"]*)?(\(.*\))?(\s*[#].*)?"
     regex_replace="\1$value\5"
 #    set_bash_param "${file_fp}" "$param" "$value"
