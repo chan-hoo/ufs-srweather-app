@@ -6,73 +6,8 @@
 # The ex-scrtipt that sets up and runs chgres_cube for preparing lateral
 # boundary conditions for the FV3 forecast
 #
-# Run-time environment variables:
-#
-#    COMIN
-#    COMOUT
-#    COMROOT
-#    DATA
-#    DATAROOT
-#    DATA_SHARE
-#    EXTRN_MDL_CDATE
-#    INPUT_DATA
-#    GLOBAL_VAR_DEFNS_FP
-#    NET
-#    PDY
-#    REDIRECT_OUT_ERR
-#    SLASH_ENSMEM_SUBDIR
-#
-# Experiment variables
-#
-#  user:
-#    MACHINE
-#
-#  platform:
-#    FIXgsm
-#    PRE_TASK_CMDS
-#    RUN_CMD_UTILS
-#
-#  workflow:
-#    CCPP_PHYS_SUITE
-#    COLDSTART
-#    CRES
-#    DATE_FIRST_CYCL
-#    DOT_OR_USCORE
-#    EXTRN_MDL_VAR_DEFNS_FN
-#    FIXlam
-#    SDF_USES_RUC_LSM
-#    SDF_USES_THOMPSON_MP
-#    THOMPSON_MP_CLIMO_FP
-#    VERBOSE
-#
-#  task_get_extrn_lbcs:
-#    EXTRN_MDL_NAME_LBCS
-#    FV3GFS_FILE_FMT_LBCS
-#
-#  task_make_lbcs:
-#    FVCOM_DIR
-#    FVCOM_FILE
-#    FVCOM_WCSTART
-#    KMP_AFFINITY_MAKE_LBCS
-#    OMP_NUM_THREADS_MAKE_LBCS
-#    OMP_STACKSIZE_MAKE_LBCS
-#    USE_FVCOM
-#    VCOORD_FILE
-#
-#  global:
-#    HALO_BLEND
-#
-#  cpl_aqm_parm:
-#    CPL_AQM
-#
-#  constants:
-#    NH0
-#    NH4
-#    TILE_RGNL
-#
 #-----------------------------------------------------------------------
 #
-
 
 #
 #-----------------------------------------------------------------------
@@ -82,9 +17,14 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform  workflow global cpl_aqm_parm \
-  smoke_dust_parm constants task_get_extrn_lbcs task_make_lbcs ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "KMP_AFFINITY_MAKE_LBCS" "OMP_NUM_THREADS_MAKE_LBCS" \
+  "OMP_STACKSIZE_MAKE_LBCS" "PRE_TASK_CMDS" "RUN_CMD_UTILS" \
+  "EXTRN_MDL_VAR_DEFNS_FN" "CCPP_PHYS_SUITE" "EXTRN_MDL_NAME_LBCS" \
+  "SDF_USES_THOMPSON_MP" "THOMPSON_MP_CLIMO_FP" "FV3GFS_FILE_FMT_LBCS" \
+  "EXTRN_MDL_FNS" "FIXlam" "HALO_BLEND" "CRES" "DOT_OR_USCORE" \
+  "TILE_RGNL" "NH4" "VCOORD_FILE" "CPL_AQM" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -147,8 +87,7 @@ if [ -z "${RUN_CMD_UTILS:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_UTILS for your platform"
 else
-  print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_UTILS}\'."
+  print_info_msg "All executables will be submitted with \'${RUN_CMD_UTILS}\'."
 fi
 #
 #-----------------------------------------------------------------------

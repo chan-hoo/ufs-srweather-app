@@ -29,54 +29,6 @@
 #   - Run the shave executable for the 0- and 4-cell halo orography
 #     files
 #
-# Run-time environment variables:
-#
-#   DATA
-#   GLOBAL_VAR_DEFNS_FP
-#   REDIRECT_OUT_ERR
-#
-# Experiment variables
-#
-#  platform:
-#    FIXorg
-#    PRE_TASK_CMDS
-#    RUN_CMD_SERIAL
-#
-#  workflow:
-#    CCPP_PHYS_SUITE
-#    CRES
-#    DOT_OR_USCORE
-#    FIXam
-#    FIXlam
-#    GRID_GEN_METHOD
-#    PREEXISTING_DIR_METHOD
-#    VERBOSE
-#
-#  task_make_orog:
-#    KMP_AFFINITY_MAKE_OROG
-#    OMP_NUM_THREADS_MAKE_OROG
-#    OMP_STACKSIZE_MAKE_OROG
-#    OROG_DIR
-#
-#  task_make_grid:
-#    GFDLgrid_NUM_CELLS
-#    GFDLgrid_STRETCH_FAC
-#    GFDLgrid_REFINE_RATIO
-#
-#  constants:
-#    NH0
-#    NH4
-#    TILE_RGNL
-#
-#  grid_params:
-#    NHW
-#    NX
-#    NY
-#    STRETCH_FAC
-#
-#  smoke_dust_parm:
-#    DO_SMOKE_DUST
-#
 #-----------------------------------------------------------------------
 #
 
@@ -88,11 +40,14 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform workflow constants grid_params \
-  task_make_grid task_make_orog task_make_grid smoke_dust_parm ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "KMP_AFFINITY_MAKE_OROG" "OMP_NUM_THREADS_MAKE_OROG" \
+  "OMP_STACKSIZE_MAKE_OROG" "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
+  "CRES" "DOT_OR_USCORE" "FIXlam" "DO_SMOKE_DUST" "FIXorg" "TILE_RGNL" \
+  "NHW" "CCPP_PHYS_SUITE" "NH0" "OROG_DIR" "GRID_GEN_METHOD" \
+  "STRETCH_FAC" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
-
 #
 #-----------------------------------------------------------------------
 #
@@ -140,8 +95,7 @@ if [ -z "${RUN_CMD_SERIAL:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_SERIAL for your platform"
 else
-  print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_SERIAL}\'."
+  print_info_msg "All executables will be submitted with \'${RUN_CMD_SERIAL}\'."
 fi
 #
 #-----------------------------------------------------------------------
@@ -246,7 +200,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "Starting orography file generation..."
+print_info_msg "Starting orography file generation..."
 
 export pgm="orog"
 . prep_step
@@ -301,7 +255,7 @@ ${CRES:1}
 ${NH4}
 EOF
 
-  print_info_msg "$VERBOSE" "Starting orography file generation..."
+  print_info_msg "Starting orography file generation..."
 
   export pgm="orog_gsl"
   . prep_step
@@ -415,7 +369,7 @@ cd "${filter_dir}"
 #
 # Run the orography filtering executable.
 #
-print_info_msg "$VERBOSE" "Starting filtering of orography..."
+print_info_msg "Starting filtering of orography..."
 
 export pgm="filter_topo"
 . prep_step
@@ -438,7 +392,7 @@ cp "${filtered_orog_fp}" "${OROG_DIR}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE
 #
 cd ${DATA}
 
-print_info_msg "$VERBOSE" "Filtering of orography complete."
+print_info_msg "Filtering of orography complete."
 #
 #-----------------------------------------------------------------------
 #

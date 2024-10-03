@@ -8,9 +8,13 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform workflow global cpl_aqm_parm smoke_dust_parm \
-  task_run_fcst task_run_post ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "KMP_AFFINITY_RUN_POST" "OMP_NUM_THREADS_RUN_POST" \
+  "OMP_STACKSIZE_RUN_POST" "PRE_TASK_CMDS" "RUN_CMD_POST" \
+  "SUB_HOURLY_POST" "USE_CUSTOM_POST_CONFIG_FILE" "CUSTOM_POST_CONFIG_FP" \
+  "CPL_AQM" "DO_SMOKE_DUST" "USE_CRTM" "DT_ATMOS" "POST_OUTPUT_DOMAIN_NAME" \
+  "PREDEF_GRID_NAME" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -72,8 +76,7 @@ if [ -z "${RUN_CMD_POST:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_POST for your platform"
 else
-  print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_POST}\'."
+  print_info_msg "All executables will be submitted with \'${RUN_CMD_POST}\'."
 fi
 #
 #-----------------------------------------------------------------------

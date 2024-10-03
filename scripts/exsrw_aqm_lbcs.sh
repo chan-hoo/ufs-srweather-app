@@ -8,10 +8,13 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform workflow global verification cpl_aqm_parm \
-  constants fixed_files grid_params \
-  task_get_extrn_lbcs task_make_lbcs task_make_orog ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "KMP_AFFINITY_MAKE_LBCS" "OMP_NUM_THREADS_MAKE_LBCS" \
+  "OMP_STACKSIZE_MAKE_LBCS" "PRE_TASK_CMDS" "RUN_CMD_AQMLBC" \
+  "EXTRN_MDL_LBCS_OFFSET_HRS" "FCST_LEN_CYCL" "LBC_SPEC_INTVL_HRS" \
+  "DO_AQM_CHEM_LBCS" "AQM_LBCS_FILES" "FIXaqm" "DO_AQM_GEFS_LBCS" \
+  "DO_REAL_TIME" "COMINgefs" "MACHINE" "OROG_DIR" "CRES" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -71,8 +74,7 @@ if [ -z "${RUN_CMD_AQMLBC:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_AQM_LBC for your platform"
 else
-  print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_AQMLBC}\'."
+  print_info_msg "All executables will be submitted with \'${RUN_CMD_AQMLBC}\'."
 fi
 #
 #-----------------------------------------------------------------------

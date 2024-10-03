@@ -6,70 +6,6 @@
 # The ex-scrtipt that sets up and runs chgres_cube for preparing initial
 # conditions for the FV3 forecast
 #
-# Run-time environment variables:
-#
-#    COMIN
-#    COMOUT
-#    COMROOT
-#    DATA
-#    DATAROOT
-#    DATA_SHARE
-#    EXTRN_MDL_CDATE
-#    GLOBAL_VAR_DEFNS_FP
-#    INPUT_DATA
-#    NET
-#    PDY
-#    REDIRECT_OUT_ERR
-#    SLASH_ENSMEM_SUBDIR
-#
-# Experiment variables
-#
-#  user:
-#    MACHINE
-#
-#  platform:
-#    FIXgsm
-#    PRE_TASK_CMDS
-#    RUN_CMD_UTILS
-#
-#  workflow:
-#    CCPP_PHYS_SUITE
-#    COLDSTART
-#    CRES
-#    DATE_FIRST_CYCL
-#    DOT_OR_USCORE
-#    EXTRN_MDL_VAR_DEFNS_FN
-#    FIXlam
-#    SDF_USES_RUC_LSM
-#    SDF_USES_THOMPSON_MP
-#    THOMPSON_MP_CLIMO_FP
-#    VERBOSE
-#
-#  task_make_ics:
-#    FVCOM_DIR
-#    FVCOM_FILE
-#    FVCOM_WCSTART
-#    KMP_AFFINITY_MAKE_ICS
-#    OMP_NUM_THREADS_MAKE_ICS
-#    OMP_STACKSIZE_MAKE_ICS
-#    USE_FVCOM
-#    VCOORD_FILE
-#
-#  task_get_extrn_ics:
-#    EXTRN_MDL_NAME_ICS
-#    FV3GFS_FILE_FMT_ICS
-#
-#  global:
-#    HALO_BLEND
-#
-#  cpl_aqm_parm:
-#    CPL_AQM
-#
-#  constants:
-#    NH0
-#    NH4
-#    TILE_RGNL
-#
 #-----------------------------------------------------------------------
 #
 
@@ -82,9 +18,16 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform workflow global cpl_aqm_parm \
-   smoke_dust_parm constants task_get_extrn_ics task_make_ics ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "KMP_AFFINITY_MAKE_ICS" "OMP_NUM_THREADS_MAKE_ICS" \
+  "OMP_STACKSIZE_MAKE_ICS" "PRE_TASK_CMDS" "RUN_CMD_UTILS" \
+  "EXTRN_MDL_VAR_DEFNS_FN" "CCPP_PHYS_SUITE" "EXTRN_MDL_NAME_ICS" \
+  "DO_SMOKE_DUST" "SDF_USES_RUC_LSM" "SDF_USES_THOMPSON_MP" \
+  "THOMPSON_MP_CLIMO_FP" "FV3GFS_FILE_FMT_ICS" "EXTRN_MDL_FNS" \
+  "FIXlam" "HALO_BLEND" "CRES" "DOT_OR_USCORE" "TILE_RGNL" "NH4" \
+  "VCOORD_FILE" "CPL_AQM" "COLDSTART" "DATE_FIRST_CYCL" "USE_FVCOM" \
+  "FVCOM_DIR" "FVCOM_FILE" "FVCOM_WCSTART" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -147,8 +90,7 @@ if [ -z "${RUN_CMD_UTILS:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_UTILS for your platform"
 else
-  print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_UTILS}\'."
+  print_info_msg "All executables will be submitted with \'${RUN_CMD_UTILS}\'."
 fi
 #
 #-----------------------------------------------------------------------

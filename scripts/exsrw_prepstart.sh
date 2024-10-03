@@ -5,34 +5,13 @@
 #
 # Source the variable definitions file and the bash utility functions.
 #
-#  platform:
-#    PRE_TASK_CMDS
-#
-#  workflow:
-#    COLDSTART
-#    DATE_FIRST_CYCL
-#    INCR_CYCL_FREQ
-#    VERBOSE
-#
-#  nco:
-#    NCO variables
-#
-#  constants:
-#    TILE_RGNL
-#    NH0
-#
-#  task_run_fcst:
-#    IO_LAYOUT_Y
-#
-#  smoke_dust_parm:
-#    DO_SMOKE_DUST
-#
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in platform workflow nco constants task_run_fcst \
-  smoke_dust_parm ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "COLDSTART" "DATE_FIRST_CYCL" "PRE_TASK_CMDS" \
+  "DO_SMOKE_DUST" "TILE_RGNL" "NH0" "INCR_CYCL_FREQ" "IO_LAYOUT_Y" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -104,7 +83,7 @@ else
         fi
         if [ -r "${checkfile}" ] && [ "${bkpath_find}" = "missing" ]; then
           bkpath_find=${path_restart}
-          print_info_msg "$VERBOSE" "Found ${checkfile}; Use it for smoke/dust cycle "
+          print_info_msg "Found ${checkfile}; Use it for smoke/dust cycle "
           break
         fi
         n=$((n + ${INCR_CYCL_FREQ}))
@@ -112,7 +91,7 @@ else
         PDYprev=${CDATEprev:0:8}
         cycprev=${CDATEprev:8:2}
         path_restart=${COMIN}/${RUN}.${PDYprev}/${cycprev}${SLASH_ENSMEM_SUBDIR}/RESTART
-        print_info_msg "$VERBOSE" "Trying this path: ${path_restart}"
+        print_info_msg "Trying this path: ${path_restart}"
       done
     fi
 

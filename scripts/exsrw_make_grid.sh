@@ -39,53 +39,6 @@
 #   - Use the shave executable to reduce the halo to 3 and 4 cells
 #   - Call an ush script that runs the make_solo_mosaic executable
 #
-# Run-time environment variables:
-#
-#    DATA
-#    GLOBAL_VAR_DEFNS_FP
-#    REDIRECT_OUT_ERR
-#
-# Experiment variables
-#
-#  platform:
-#    PRE_TASK_CMDS
-#    RUN_CMD_SERIAL
-
-#  workflow:
-#    DOT_OR_USCORE
-#    GRID_GEN_METHOD
-#    RES_IN_FIXLAM_FILENAMES
-#    RGNL_GRID_NML_FN
-#    VERBOSE
-#
-#  task_make_grid:
-#    GFDLgrid_NUM_CELLS
-#    GFDLgrid_USE_NUM_CELLS_IN_FILENAMES
-#    GRID_DIR
-#
-#  constants:
-#    NH3
-#    NH4
-#    TILE_RGNL
-#
-#  grid_params:
-#    DEL_ANGLE_X_SG
-#    DEL_ANGLE_Y_SG
-#    GFDLgrid_REFINE_RATIO
-#    IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG
-#    ISTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG
-#    JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG
-#    JSTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG
-#    LAT_CTR
-#    LON_CTR
-#    NEG_NX_OF_DOM_WITH_WIDE_HALO
-#    NEG_NY_OF_DOM_WITH_WIDE_HALO
-#    NHW
-#    NX
-#    NY
-#    PAZI
-#    STRETCH_FAC
-#
 #-----------------------------------------------------------------------
 #
 
@@ -97,8 +50,14 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform workflow constants grid_params task_make_grid ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
+  "GRID_GEN_METHOD" "GFDLgrid_NUM_CELLS" "RGNL_GRID_NML_FN" \
+  "LON_CTR" "LAT_CTR" "DEL_ANGLE_X_SG" "DEL_ANGLE_Y_SG" \
+  "NEG_NX_OF_DOM_WITH_WIDE_HALO" "NEG_NY_OF_DOM_WITH_WIDE_HALO" \
+  "PAZI" "DOT_OR_USCORE" "TILE_RGNL" "NHW" "GRID_DIR" "NX" "NY" \
+  "RES_IN_FIXLAM_FILENAMES" "GLOBAL_VAR_DEFNS_YAML_FP" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------
@@ -150,8 +109,7 @@ if [ -z "${RUN_CMD_SERIAL:-}" ] ; then
   Run command was not set in machine file. \
   Please set RUN_CMD_SERIAL for your platform"
 else
-  print_info_msg "$VERBOSE" "
-  All executables will be submitted with command \'${RUN_CMD_SERIAL}\'."
+  print_info_msg "All executables will be submitted with \'${RUN_CMD_SERIAL}\'."
 fi
 
 #
@@ -260,7 +218,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "Starting grid file generation..."
+print_info_msg "Starting grid file generation..."
 #
 # Generate a GFDLgrid-type of grid.
 #
@@ -361,7 +319,7 @@ fi
 #
 grid_fp="$DATA/${grid_fn}"
 
-print_info_msg "$VERBOSE" "Grid file generation completed successfully."
+print_info_msg "Grid file generation completed successfully."
 #
 #-----------------------------------------------------------------------
 #
@@ -522,7 +480,7 @@ done
 #-----------------------------------------------------------------------
 #
 ${PARMsrw}/link_fix.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_YAML_FP} \
   --file-group "grid" || \
 print_err_msg_exit "\
 Call to function to create symlinks to the various grid and mosaic files
@@ -540,7 +498,7 @@ failed."
 #-----------------------------------------------------------------------
 #
 ${PARMsrw}/set_fv3nml_sfc_climo_filenames.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_YAML_FP} \
     || print_err_msg_exit "\
 Call to function to set surface climatology file names in the FV3 namelist
 file failed."

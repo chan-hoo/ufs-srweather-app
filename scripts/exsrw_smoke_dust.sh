@@ -8,9 +8,10 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-for sect in user nco platform workflow global smoke_dust_parm \
-  constants fixed_files grid_params task_run_fcst ; do
-  source_config_for_task ${sect} ${GLOBAL_VAR_DEFNS_FP}
+task_global_vars=( "SMOKE_DUST_FILE_PREFIX" "PRE_TASK_CMDS" \
+  "INCR_CYCL_FREQ" "EBB_DCYCLE" "PREDEF_GRID_NAME" "RESTART_INTERVAL" )
+for var in ${task_global_vars[@]}; do
+  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
 #
 #-----------------------------------------------------------------------

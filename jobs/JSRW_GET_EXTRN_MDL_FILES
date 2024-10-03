@@ -32,7 +32,7 @@ export SCRIPTSsrw="${HOMEdir}/scripts"
 #
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "MACHINE" "WORKFLOW_MANAGER" "SCHED" "NET_default" \
-  "RUN_default" "ICS_OR_LBCS" "DO_ENSEMBLE" "EXTRN_MDL_ICS_OFFSET_HRS" \
+  "RUN_default" "DO_ENSEMBLE" "EXTRN_MDL_ICS_OFFSET_HRS" \
   "EXTRN_MDL_NALE_ICS" "FV3GFS_FILE_FMT_ICS" "EXTRN_MDL_LBCS_OFFSET_HRS" \
   "EXTRN_MDL_NAME_LBCS" "FV3GFS_FILE_FMT_LBCS" )
 for var in ${task_global_vars[@]}; do

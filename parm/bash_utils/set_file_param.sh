@@ -14,7 +14,6 @@ function set_file_param() {
 #
 #-----------------------------------------------------------------------
 #
-set -x
   if [ "$#" -ne 3 ]; then
 
     print_err_msg_exit "
@@ -66,8 +65,7 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-  print_info_msg "$DEBUG" "\
-Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
+  print_info_msg "Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
 #
 #-----------------------------------------------------------------------
 #
@@ -80,41 +78,41 @@ Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
 #
 #-----------------------------------------------------------------------
 #
-  local regex_search=""
-  local regex_replace=""
+#  local regex_search=""
+#  local regex_replace=""
 
-  case $file in
+#  case $file in
 #
-  "${WFLOW_XML_FN}")
-    regex_search="(^\s*<!ENTITY\s+$param\s*\")(.*)(\">.*)"
-    regex_replace="\1$value\3"
-    ;;
+#  "${WFLOW_XML_FN}")
+#    regex_search="(^\s*<!ENTITY\s+$param\s*\")(.*)(\">.*)"
+#    regex_replace="\1$value\3"
+#    ;;
 #
-  "${RGNL_GRID_NML_FN}")
-    regex_search="^(\s*$param\s*=)(.*)"
-    regex_replace="\1 $value"
-    ;;
+#  "${RGNL_GRID_NML_FN}")
+#    regex_search="^(\s*$param\s*=)(.*)"
+#    regex_replace="\1 $value"
+#    ;;
 #
-  "${FV3_NML_FN}")
-    regex_search="^(\s*$param\s*=)(.*)"
-    regex_replace="\1 $value"
-    ;;
+#  "${FV3_NML_FN}")
+#    regex_search="^(\s*$param\s*=)(.*)"
+#    regex_replace="\1 $value"
+#    ;;
 #
-  "${DIAG_TABLE_FN}")
-    regex_search="(.*)(<$param>)(.*)"
-    regex_replace="\1$value\3"
-    ;;
+#  "${DIAG_TABLE_FN}")
+#    regex_search="(.*)(<$param>)(.*)"
+#    regex_replace="\1$value\3"
+#    ;;
 #
-  "${MODEL_CONFIG_FN}")
-    regex_search="^(\s*$param:\s*)(.*)"
-    regex_replace="\1$value"
-    ;;
+#  "${MODEL_CONFIG_FN}")
+#    regex_search="^(\s*$param:\s*)(.*)"
+#    regex_replace="\1$value"
+#    ;;
 #
-  "${GLOBAL_VAR_DEFNS_SHELL_FN}")
+#  "${GLOBAL_VAR_DEFNS_FN}")
     regex_search="(^\s*$param=)(\".*\")?([^ \"]*)?(\(.*\))?(\s*[#].*)?"
     regex_replace="\1$value\5"
-#    set_bash_param "${file_fp}" "$param" "$value"
-    ;;
+###    set_bash_param "${file_fp}" "$param" "$value"
+#    ;;
 #
 #-----------------------------------------------------------------------
 #
@@ -123,14 +121,14 @@ Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
 #
 #-----------------------------------------------------------------------
 #
-  *)
-    print_err_msg_exit "\
-The regular expressions for performing search and replace have not been 
-specified for this file:
-  file = \"$file\""
-    ;;
+#  *)
+#    print_err_msg_exit "\
+#The regular expressions for performing search and replace have not been 
+#specified for this file:
+#  file = \"$file\""
+#    ;;
 #
-  esac
+#  esac
 #
 #-----------------------------------------------------------------------
 #
