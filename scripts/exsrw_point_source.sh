@@ -8,8 +8,8 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-task_global_vars=( "PRE_TASK_CMDS" "FCST_LEN_CYCL" "DATE_FIRST_CYCL" \
-  "INCR_CYCL_FREQ" "FIXemis" "PT_SRC_SUBDIR" )
+task_global_vars=( "PRE_TASK_CMDS" "FCST_LEN_CYCL" "FCST_LEN_HRS" \
+  "DATE_FIRST_CYCL" "INCR_CYCL_FREQ" "FIXemis" "PT_SRC_SUBDIR" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -21,7 +21,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -48,6 +48,9 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs PT_SOURCE.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -107,4 +110,4 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1

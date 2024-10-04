@@ -10,7 +10,6 @@
 #
 date
 export PS4='+ $SECONDS + '
-set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -31,7 +30,7 @@ export SCRIPTSsrw="${HOMEdir}/scripts"
 #
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "MACHINE" "WORKFLOW_MANAGER" "SCHED" "NET_default" \
-  "RUN_default" "OROG_DIR" "PREEXISTING_DIR_METHOD" "DO_ENSEMBLE" )
+  "RUN_default" "OROG_DIR" "PREEXISTING_DIR_METHOD" "DO_ENSEMBLE" "VERBOSE" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -61,6 +60,9 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the J-job script for the task that generates orography files.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #

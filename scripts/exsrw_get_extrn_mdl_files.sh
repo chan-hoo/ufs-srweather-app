@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 #
 #-----------------------------------------------------------------------
 #
@@ -20,11 +19,11 @@
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "EXTRN_MDL_FILES_ICS" "FV3GFS_FILE_FMT_ICS" \
   "EXTRN_MDL_SOURCE_BASEDIR_ICS" "EXTRN_MDL_SYSBASEDIR_ICS" \
-  "FCST_LEN_CYCL" "LBC_SPEC_INTVL_HRS" "EXTRN_MDL_FILES_LBCS" \
-  "FV3GFS_FILE_FMT_LBCS" "EXTRN_MDL_SOURCE_BASEDIR_LBCS" \
-  "EXTRN_MDL_SYSBASEDIR_LBCS" "EXTRN_MDL_DATA_STORES" \
-  "SYMLINK_FIX_FILES" "NUM_ENS_MEMBERS" "EXTRN_MDL_STAGING_DIR" \
-  "EXTRN_MDL_VAR_DEFNS_FN" "EXTRN_MDL_NAME" )
+  "FCST_LEN_CYCL" "DATE_FIRST_CYCL" "INCR_CYCL_FREQ" "FCST_LEN_HRS" \
+  "LBC_SPEC_INTVL_HRS" "EXTRN_MDL_FILES_LBCS" "FV3GFS_FILE_FMT_LBCS" \
+  "EXTRN_MDL_SOURCE_BASEDIR_LBCS" "EXTRN_MDL_SYSBASEDIR_LBCS" \
+  "EXTRN_MDL_DATA_STORES" "SYMLINK_FIX_FILES" "DO_ENSEMBLE" \
+  "NUM_ENS_MEMBERS" "EXTRN_MDL_VAR_DEFNS_FN" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -36,7 +35,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -66,6 +65,9 @@ input data from disk, HPSS, or a URL, and stages them to the
 workflow-specified location so that they may be used to generate initial
 or lateral boundary conditions for the FV3.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -318,5 +320,5 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1
 

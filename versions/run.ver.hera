@@ -3,6 +3,7 @@
 export modulepath_spack_stack="/scratch1/NCEPDEV/nems/role.epic/spack-stack/spack-stack-1.6.0/envs/fms-2024.01/install/modulefiles/Core"
 
 export hdf5_ver="1.14.0"
+export nco_ver="5.1.6"
 export netcdf_c_ver="4.9.2"
 export netcdf_fortran_ver="4.6.1"
 export prod_util_ver="2.1.1"

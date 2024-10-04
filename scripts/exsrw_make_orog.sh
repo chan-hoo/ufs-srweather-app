@@ -43,8 +43,8 @@
 task_global_vars=( "KMP_AFFINITY_MAKE_OROG" "OMP_NUM_THREADS_MAKE_OROG" \
   "OMP_STACKSIZE_MAKE_OROG" "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
   "CRES" "DOT_OR_USCORE" "FIXlam" "DO_SMOKE_DUST" "FIXorg" "TILE_RGNL" \
-  "NHW" "CCPP_PHYS_SUITE" "NH0" "OROG_DIR" "GRID_GEN_METHOD" \
-  "STRETCH_FAC" )
+  "NHW" "CCPP_PHYS_SUITE" "NH0" "NX" "NY" "OROG_DIR" "GRID_GEN_METHOD" \
+  "STRETCH_FAC" "GLOBAL_VAR_DEFNS_YAML_FP" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -56,7 +56,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -77,6 +77,9 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that generates orography files.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -422,7 +425,6 @@ export pgm="shave"
 halo_num_list=('0' '4')
 halo_num_list[${#halo_num_list[@]}]="${NHW}"
 for halo_num in "${halo_num_list[@]}"; do
-
   print_info_msg "Shaving filtered orography file with ${halo_num}-cell-wide halo..."
   nml_fn="input.shave.orog.halo${halo_num}"
   shaved_fp="${shave_dir}/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${halo_num}.nc"
@@ -452,7 +454,7 @@ cd ${OROG_DIR}
 #-----------------------------------------------------------------------
 #
 ${PARMsrw}/link_fix.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_YAML_FP} \
   --file-group "orog" || \
 print_err_msg_exit "\
 Call to function to create links to orography files failed."
@@ -472,5 +474,5 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1
 

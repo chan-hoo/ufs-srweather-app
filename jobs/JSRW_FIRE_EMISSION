@@ -9,7 +9,6 @@
 #
 date
 export PS4='+ $SECONDS + '
-set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -61,6 +60,9 @@ In directory:     \"${scrfunc_dir}\"
 This is the J-job script for the task that copies or fetches RAVE fire
 emission data files from disk, or HPSS.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #

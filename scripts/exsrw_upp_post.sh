@@ -24,7 +24,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -52,6 +52,9 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs the post-processor (UPP) on
 the output files corresponding to a specified forecast hour.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -375,4 +378,4 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1

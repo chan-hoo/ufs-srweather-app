@@ -21,7 +21,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -50,6 +50,9 @@ This is the ex-script for the task that fetches fire emission
 data files from disk or generates model-ready RAVE emission file from raw
 data files.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -168,4 +171,4 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1

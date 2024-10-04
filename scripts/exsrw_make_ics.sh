@@ -9,7 +9,6 @@
 #-----------------------------------------------------------------------
 #
 
-
 #
 #-----------------------------------------------------------------------
 #
@@ -22,10 +21,10 @@ task_global_vars=( "KMP_AFFINITY_MAKE_ICS" "OMP_NUM_THREADS_MAKE_ICS" \
   "OMP_STACKSIZE_MAKE_ICS" "PRE_TASK_CMDS" "RUN_CMD_UTILS" \
   "EXTRN_MDL_VAR_DEFNS_FN" "CCPP_PHYS_SUITE" "EXTRN_MDL_NAME_ICS" \
   "DO_SMOKE_DUST" "SDF_USES_RUC_LSM" "SDF_USES_THOMPSON_MP" \
-  "THOMPSON_MP_CLIMO_FP" "FV3GFS_FILE_FMT_ICS" "EXTRN_MDL_FNS" \
-  "FIXlam" "HALO_BLEND" "CRES" "DOT_OR_USCORE" "TILE_RGNL" "NH4" \
-  "VCOORD_FILE" "CPL_AQM" "COLDSTART" "DATE_FIRST_CYCL" "USE_FVCOM" \
-  "FVCOM_DIR" "FVCOM_FILE" "FVCOM_WCSTART" )
+  "THOMPSON_MP_CLIMO_FP" "FV3GFS_FILE_FMT_ICS" "FIXlam" "HALO_BLEND" \
+  "CRES" "DOT_OR_USCORE" "TILE_RGNL" "NH4" "NH0" "VCOORD_FILE" \
+  "CPL_AQM" "COLDSTART" "DATE_FIRST_CYCL" "USE_FVCOM" "FVCOM_DIR" \
+  "FVCOM_FILE" "FVCOM_WCSTART" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -37,7 +36,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -66,6 +65,9 @@ This is the ex-script for the task that generates initial condition
 (IC), surface, and zeroth hour lateral boundary condition (LBC0) files
 (in NetCDF format) for the FV3-LAM.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -574,15 +576,7 @@ settings="
 
 nml_fn="fort.41"
 
-(cat << EOF
-$settings
-EOF
-) |  uw config realize \
- --input-format yaml \
- -o ${nml_fn} \
- --output-format nml\
- -v \
-
+${USHsrw}/set_namelist.py -q -u "$settings" -o ${nml_fn}
 err=$?
 if [ $err -ne 0 ]; then
   message_txt="Error creating namelist read by ${exec_fn} failed.
@@ -686,4 +680,4 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1

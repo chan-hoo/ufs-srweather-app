@@ -56,5 +56,5 @@ cpl_aqm_parm:
 
 smoke_dust_parm:
   COMINsmoke_default: /work/noaa/epic/SRW-AQM_DATA/data_smoke_dust/RAVE_smoke_dust
-  COMINfire_default: /work/noaa/epic/SRW-AQM_DATA/data_smoke_dust/RAVE_fire
+  COMINrave_default: /work/noaa/epic/SRW-AQM_DATA/data_smoke_dust/RAVE_fire
 

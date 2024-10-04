@@ -8,8 +8,8 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-task_global_vars=( "FCST_LEN_CYCL" "DATE_FIRST_CYCL" "INCR_CYCL_FREQ" \
-  "NEXUS_GFS_SFC_ARCHV_DIR" "DO_REAL_TIME" "COMINgfs" \
+task_global_vars=( "FCST_LEN_CYCL" "FCST_LEN_HRS" "DATE_FIRST_CYCL" \
+  "INCR_CYCL_FREQ" "NEXUS_GFS_SFC_ARCHV_DIR" "DO_REAL_TIME" "COMINgfs" \
   "GFS_SFC_TAR_SUB_DIR" "NEXUS_GFS_SFC_DIR" "GFS_SFC_DATA_INTVL" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
@@ -22,7 +22,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -50,6 +50,9 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that copies or fetches GFS surface
 data files from disk or HPSS.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -171,4 +174,4 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1

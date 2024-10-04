@@ -21,8 +21,8 @@ task_global_vars=( "KMP_AFFINITY_MAKE_LBCS" "OMP_NUM_THREADS_MAKE_LBCS" \
   "OMP_STACKSIZE_MAKE_LBCS" "PRE_TASK_CMDS" "RUN_CMD_UTILS" \
   "EXTRN_MDL_VAR_DEFNS_FN" "CCPP_PHYS_SUITE" "EXTRN_MDL_NAME_LBCS" \
   "SDF_USES_THOMPSON_MP" "THOMPSON_MP_CLIMO_FP" "FV3GFS_FILE_FMT_LBCS" \
-  "EXTRN_MDL_FNS" "FIXlam" "HALO_BLEND" "CRES" "DOT_OR_USCORE" \
-  "TILE_RGNL" "NH4" "VCOORD_FILE" "CPL_AQM" )
+  "FIXlam" "HALO_BLEND" "CRES" "DOT_OR_USCORE" "TILE_RGNL" "NH4" \
+  "VCOORD_FILE" "EXTRN_MDL_LBCS_OFFSET_HRS" "CPL_AQM" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -34,7 +34,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-{ save_shell_opts; set -xue; } > /dev/null 2>&1
+#{ save_shell_opts; set -xue; } > /dev/null 2>&1
 #
 #-----------------------------------------------------------------------
 #
@@ -63,6 +63,9 @@ This is the ex-script for the task that generates lateral boundary con-
 dition (LBC) files (in NetCDF format) for all LBC update hours (except
 hour zero).
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -484,16 +487,7 @@ FORTRAN namelist file has not specified for this external LBC model (EXTRN_MDL_N
 "
 
     nml_fn="fort.41"
-    # UW takes input from stdin when no -i/--input-config flag is provided
-    (cat << EOF
-$settings
-EOF
-) | uw config realize \
-    --input-format yaml \
-    -o ${nml_fn} \
-     --output-format nml \
-    -v \
-
+    ${USHsrw}/set_namelist.py -q -u "$settings" -o ${nml_fn}
     export err=$?
     if [ $err -ne 0 ]; then
       message_txt="Error creating namelist read by ${exec_fn} failed.
@@ -553,4 +547,4 @@ In directory:    \"${scrfunc_dir}\"
 #
 #-----------------------------------------------------------------------
 #
-{ restore_shell_opts; } > /dev/null 2>&1
+#{ restore_shell_opts; } > /dev/null 2>&1

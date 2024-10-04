@@ -55,5 +55,5 @@ cpl_aqm_parm:
 
 smoke_dust_parm:
   COMINsmoke_default: /glade/work/chanhooj/SRW-AQM_DATA/data_smoke_dust/RAVE_smoke_dust
-  COMINfire_default: /glade/work/chanhooj/SRW-AQM_DATA/data_smoke_dust/RAVE_fire
+  COMINrave_default: /glade/work/chanhooj/SRW-AQM_DATA/data_smoke_dust/RAVE_fire
 

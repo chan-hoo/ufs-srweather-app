@@ -55,6 +55,7 @@ function source_config_for_task() {
   line=$(grep -E "^\s*$var=" "$var_defn_file")
   value=$(echo "$line" | sed -E "s/^\s*$var=(.*)/\1/")
 
-  source <( echo "export $var=$value" )
+#  source <( echo "export $var=$value" )
+  eval "$var=$value"
 
 }

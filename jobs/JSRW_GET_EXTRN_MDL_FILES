@@ -11,7 +11,6 @@
 #
 date
 export PS4='+ $SECONDS + '
-set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -33,7 +32,7 @@ export SCRIPTSsrw="${HOMEdir}/scripts"
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "MACHINE" "WORKFLOW_MANAGER" "SCHED" "NET_default" \
   "RUN_default" "DO_ENSEMBLE" "EXTRN_MDL_ICS_OFFSET_HRS" \
-  "EXTRN_MDL_NALE_ICS" "FV3GFS_FILE_FMT_ICS" "EXTRN_MDL_LBCS_OFFSET_HRS" \
+  "EXTRN_MDL_NAME_ICS" "FV3GFS_FILE_FMT_ICS" "EXTRN_MDL_LBCS_OFFSET_HRS" \
   "EXTRN_MDL_NAME_LBCS" "FV3GFS_FILE_FMT_LBCS" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
@@ -66,6 +65,9 @@ This is the J-job script for the task that copies or fetches external
 model files from disk, HPSS, or URL, and stages them for downstream use
 to generate initial or lateral boundary conditions for the FV3 model.
 ========================================================================"
+#####################
+set -xue
+#####################
 #
 #-----------------------------------------------------------------------
 #

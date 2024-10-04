@@ -49,7 +49,7 @@ cpl_aqm_parm:
 
 smoke_dust_parm:
   COMINsmoke_default: /scratch2/NAGAPE/epic/SRW-AQM_DATA/data_smoke_dust/RAVE_smoke_dust
-  COMINfire_default: /scratch2/NAGAPE/epic/SRW-AQM_DATA/data_smoke_dust/RAVE_fire
+  COMINrave_default: /scratch2/NAGAPE/epic/SRW-AQM_DATA/data_smoke_dust/RAVE_fire
 
 rocoto:
   tasks:
