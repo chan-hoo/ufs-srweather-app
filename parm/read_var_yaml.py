@@ -43,8 +43,7 @@ def change_to_shell(var_values):
     elif isinstance(var_values, int):
         values_sh = f'"{var_values}"'
     elif isinstance(var_values, list):
-#        values_sh = f"({ ' '.join(var_values) })"
-        values_sh = "({})".format(" ".join(map(str, var_values)))
+        values_sh = f'''({ ' '.join(f'"{value}"' for value in var_values) })'''
     else:
         values_sh = var_values
 
