@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -9,7 +10,7 @@
 #
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "PRE_TASK_CMDS" "NUM_SPLIT_NEXUS" "FCST_LEN_CYCL" \
-  "DATE_FIRST_CYCL" "INCR_CYCL_FREQ" )
+  "FCST_LEN_HRS" "DATE_FIRST_CYCL" "INCR_CYCL_FREQ" "FIXaqm" "NEXUS_GRID_FN" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -48,9 +49,6 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs NEXUS POST SPLIT.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

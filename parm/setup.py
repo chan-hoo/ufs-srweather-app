@@ -1423,14 +1423,13 @@ def setup(PARMsrw, user_config_fn="config.yaml", debug: bool = False):
     all_lines = cfg_to_yaml_str(expt_config)
     log_info(all_lines, verbose=debug)
 
-    global_var_defns_yaml_fp = workflow_config["GLOBAL_VAR_DEFNS_YAML_FP"]
-    global_var_defns_shell_fp = workflow_config["GLOBAL_VAR_DEFNS_SHELL_FP"]
+    global_var_defns_fp = workflow_config["GLOBAL_VAR_DEFNS_FP"]
+
     # print info message
     log_info(
         f"""
         Generating the global experiment variable definitions file here:
-          GLOBAL_VAR_DEFNS_YAML_FP = '{global_var_defns_yaml_fp}'
-          GLOBAL_VAR_DEFNS_SHELL_FP = '{global_var_defns_shell_fp}'
+          GLOBAL_VAR_DEFNS_FP = '{global_var_defns_fp}'
         For more detailed information, set DEBUG to 'TRUE' in the experiment
         configuration file ('{user_config_fn}')."""
     )
@@ -1452,13 +1451,9 @@ def setup(PARMsrw, user_config_fn="config.yaml", debug: bool = False):
 
     del var_defns_cfg["rocoto"]
    
-    # global variable YSML file
-    with open(global_var_defns_yaml_fp, "a") as f:
+    # global variable file
+    with open(global_var_defns_fp, "a") as f:
         f.write(yaml.safe_dump(var_defns_cfg, sort_keys=False, default_flow_style=False))
-
-    # global variable bash file
-    with open(global_var_defns_shell_fp, "a") as f:
-        f.write(cfg_to_shell_str(var_defns_cfg))
 
     # Generate a flag file for cold start
     if expt_config["workflow"].get("COLDSTART"):

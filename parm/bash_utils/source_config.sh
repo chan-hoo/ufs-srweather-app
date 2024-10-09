@@ -48,14 +48,11 @@ function source_config() {
 #-----------------------------------------------------------------------
 #
 function source_config_for_task() {
-
   var_defn_file=$2
   var=$1
 
-  line=$(grep -E "^\s*$var=" "$var_defn_file")
-  value=$(echo "$line" | sed -E "s/^\s*$var=(.*)/\1/")
+  value=$( ${PARMsrw}/read_var_yaml.py -i $var -f $var_defn_file )
 
-#  source <( echo "export $var=$value" )
   eval "$var=$value"
 
 }

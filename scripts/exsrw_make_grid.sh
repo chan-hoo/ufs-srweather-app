@@ -41,7 +41,7 @@
 #
 #-----------------------------------------------------------------------
 #
-
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -55,7 +55,7 @@ task_global_vars=( "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
   "LON_CTR" "LAT_CTR" "DEL_ANGLE_X_SG" "DEL_ANGLE_Y_SG" \
   "NEG_NX_OF_DOM_WITH_WIDE_HALO" "NEG_NY_OF_DOM_WITH_WIDE_HALO" \
   "PAZI" "DOT_OR_USCORE" "TILE_RGNL" "NHW" "GRID_DIR" "NX" "NY" \
-  "RES_IN_FIXLAM_FILENAMES" "GLOBAL_VAR_DEFNS_YAML_FP" )
+  "RES_IN_FIXLAM_FILENAMES" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -94,9 +94,6 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that generates grid files.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -374,7 +371,7 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   CRES="C${res_equiv}"
 fi
-set_file_param "${GLOBAL_VAR_DEFNS_FP}" "CRES" "'$CRES'"
+${USHsrw}/set_file_param.py -i "CRES" -n "${CRES}" -f "${GLOBAL_VAR_DEFNS_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -483,7 +480,7 @@ done
 #-----------------------------------------------------------------------
 #
 ${PARMsrw}/link_fix.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_YAML_FP} \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --file-group "grid" || \
 print_err_msg_exit "\
 Call to function to create symlinks to the various grid and mosaic files
@@ -501,7 +498,7 @@ failed."
 #-----------------------------------------------------------------------
 #
 ${PARMsrw}/set_fv3nml_sfc_climo_filenames.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_YAML_FP} \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
     || print_err_msg_exit "\
 Call to function to set surface climatology file names in the FV3 namelist
 file failed."

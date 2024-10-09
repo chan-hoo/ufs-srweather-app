@@ -11,6 +11,7 @@
 #
 date
 export PS4='+ $SECONDS + '
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -65,9 +66,6 @@ This is the J-job script for the task that copies or fetches external
 model files from disk, HPSS, or URL, and stages them for downstream use
 to generate initial or lateral boundary conditions for the FV3 model.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

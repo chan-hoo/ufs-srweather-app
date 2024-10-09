@@ -7,7 +7,7 @@
 #
 #-----------------------------------------------------------------------
 #
-
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -17,19 +17,19 @@
 #
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "KMP_AFFINITY_RUN_FCST" "OMP_NUM_THREADS_RUN_FCST" \
-  "OMP_STACKSIZE_RUN_FCST" "PRINT_ESMF" "PRE_TASK_CMDS" \
-  "RUN_CMD_FCST" "FCST_LEN_CYCL" "FIXlam" "CRES" "TILE_RGNL" "NH4" \
-  "DOT_OR_USCORE" "NH0" "CCPP_PHYS_SUITE" "LBC_SPEC_INTVL_HRS" \
-  "FCST_LEN_HRS" "CPL_AQM" "DO_SMOKE_DUST" "FIXsmoke" "PREDEF_GRID_NAME" \
-  "SMOKE_DUST_FILE_PREFIX" "CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING" \
-  "USE_MERRA_CLIMO" "FIXclim" "DATA_TABLE_FP" "DATA_TABLE_FN" \
-  "FIELD_TABLE_FP" "FIELD_TABLE_FN" "FIELD_DICT_FP" "FIELD_DICT_FN" \
-  "WRITE_DOPOST" "USE_CUSTOM_POST_CONFIG_FILE" "CUSTOM_POST_CONFIG_FP" \
-  "CCPP_PHYS_DIR" "DO_SPP" "DO_SPPT" "DO_SHUM" "DO_SKEB" "DO_LSM_SPP" \
-  "FV3_NML_STOCH_FP" "FV3_NML_FN" "FV3_NML_FP" "DO_ENSEMBLE" \
-  "DO_FCST_RESTART" "RESTART_INTERVAL" "COLDSTART" "DATE_FIRST_CYCL" \
-  "FHROT" "SUB_HOURLY_POST" "DT_SUBHOURLY_POST_MNTS" "DT_ATMOS" \
-  "FV3_EXEC_FN" "POST_OUTPUT_DOMAIN_NAME" "AQM_RC_PRODUCT_FN" )
+  "OMP_STACKSIZE_RUN_FCST" "AQM_RC_PRODUCT_FN" "CCPP_PHYS_DIR" \
+  "CCPP_PHYS_SUITE" "COLDSTART" "CPL_AQM" "CRES" "CUSTOM_POST_CONFIG_FP" \
+  "CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING" "DATE_FIRST_CYCL" "DATA_TABLE_FN" \
+  "DATA_TABLE_FP" "DOT_OR_USCORE" "DO_ENSEMBLE" "DO_FCST_RESTART" \
+  "DO_LSM_SPP" "DO_SHUM" "DO_SKEB" "DO_SMOKE_DUST" "DO_SPP" "DO_SPPT" \
+  "DT_ATMOS" "DT_SUBHOURLY_POST_MNTS" "FCST_LEN_CYCL" "FCST_LEN_HRS" \
+  "FHROT" "FIELD_DICT_FN" "FIELD_DICT_FP" "FIELD_TABLE_FN" "FIELD_TABLE_FP" \
+  "FIXam" "FIXclim" "FIXlam" "FIXsmoke" "FV3_EXEC_FN" "FV3_NML_FN" \
+  "FV3_NML_FP" "FV3_NML_STOCH_FP" "INCR_CYCL_FREQ" "LBC_SPEC_INTVL_HRS" \
+  "NH0" "NH3" "NH4" "PRINT_ESMF" "PREDEF_GRID_NAME" "PRE_TASK_CMDS" \
+  "POST_OUTPUT_DOMAIN_NAME" "RESTART_INTERVAL" "RUN_CMD_FCST" \
+  "SMOKE_DUST_FILE_PREFIX" "SUB_HOURLY_POST" "TILE_RGNL" \
+  "USE_CUSTOM_POST_CONFIG_FILE" "USE_MERRA_CLIMO" "WRITE_DOPOST" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -69,9 +69,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that runs a forecast with FV3 for the
 specified cycle.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

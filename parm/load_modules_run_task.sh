@@ -97,7 +97,7 @@ modules_dir="${HOMEdir}/modulefiles/tasks/$machine"
 module use "${modules_dir}"
 
 # source version file only if it exists in the versions directory
-version_file="${HOMEdir}/versions/run.ver.${machine}"
+version_file="${HOMEdir}/versions/run.ver_${machine}"
 if [ -f ${version_file} ]; then
   source ${version_file}
 fi

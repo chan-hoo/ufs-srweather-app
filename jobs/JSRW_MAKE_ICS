@@ -10,6 +10,7 @@
 #
 date
 export PS4='+ $SECONDS + '
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -62,9 +63,6 @@ This is the J-job script for the task that generates initial condition
 (IC), surface, and zeroth-hour lateral boundary condition (LBC0) files 
 for the FV3 (in NetCDF format).
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

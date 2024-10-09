@@ -10,6 +10,7 @@
 #
 date
 export PS4='+ $SECONDS + '
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -62,9 +63,6 @@ This is the J-job script for the task that generates lateral boundary
 condition (LBC) files (in NetCDF format) for all LBC update hours (except 
 hour zero). 
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

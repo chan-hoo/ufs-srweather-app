@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -50,9 +51,6 @@ This is the ex-script for the task that copies/fetches to a local direc-
 tory (either from disk or HPSS) the external model files from which ini-
 tial or boundary condition files for the FV3 will be generated.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 if [ $(boolify "${COLDSTART}") = "TRUE" ] && [ "${PDY}${cyc}" = "${DATE_FIRST_CYCL:0:10}" ]; then
   echo "This step is skipped for the first cycle of COLDSTART."

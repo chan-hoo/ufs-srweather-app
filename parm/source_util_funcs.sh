@@ -69,16 +69,6 @@ function source_util_funcs() {
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that replaces variable values
-# (or value placeholders) in several types of files (e.g. Fortran name-
-# list files) with actual values.
-#
-#-----------------------------------------------------------------------
-#
-  . ${bashutils_dir}/set_file_param.sh
-#
-#-----------------------------------------------------------------------
-#
 #
 #
 #-----------------------------------------------------------------------

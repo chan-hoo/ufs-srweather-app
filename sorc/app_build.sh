@@ -350,7 +350,7 @@ if [ "${VERBOSE}" = true ] ; then
 fi
 
 # source version file only if it is specified in versions directory
-BUILD_VERSION_FILE="${HOME_DIR}/versions/build.ver.${PLATFORM}"
+BUILD_VERSION_FILE="${HOME_DIR}/versions/build.ver_${PLATFORM}"
 if [ -f ${BUILD_VERSION_FILE} ]; then
   . ${BUILD_VERSION_FILE}
 fi

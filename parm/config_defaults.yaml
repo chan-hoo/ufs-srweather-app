@@ -718,15 +718,13 @@ workflow:
 
   FCST_MODEL: "ufs-weather-model"
   WFLOW_XML_FN: "FV3LAM_wflow.xml"
-  GLOBAL_VAR_DEFNS_YAML_FN: "var_defns.yaml"
-  GLOBAL_VAR_DEFNS_SHELL_FN: "var_defns.sh"
+  GLOBAL_VAR_DEFNS_FN: "var_defns.yaml"
   ROCOTO_YAML_FN: "rocoto_defns.yaml"
   EXTRN_MDL_VAR_DEFNS_FN: "extrn_mdl_var_defns"
   WFLOW_LAUNCH_SCRIPT_FN: "launch_FV3LAM_wflow.sh"
   WFLOW_LAUNCH_LOG_FN: "log.launch_FV3LAM_wflow"
 
-  GLOBAL_VAR_DEFNS_YAML_FP: '{{ [EXPTDIR, GLOBAL_VAR_DEFNS_YAML_FN ] |path_join }}'
-  GLOBAL_VAR_DEFNS_SHELL_FP: '{{ [EXPTDIR, GLOBAL_VAR_DEFNS_SHELL_FN ] |path_join }}'
+  GLOBAL_VAR_DEFNS_FP: '{{ [EXPTDIR, GLOBAL_VAR_DEFNS_FN ] |path_join }}'
   ROCOTO_YAML_FP: '{{ [EXPTDIR, ROCOTO_YAML_FN] |path_join }}'
   WFLOW_LAUNCH_SCRIPT_FP: '{{ [user.HOMEdir, "parm", WFLOW_LAUNCH_SCRIPT_FN] |path_join }}'
   WFLOW_LAUNCH_LOG_FP: '{{ [EXPTDIR, WFLOW_LAUNCH_LOG_FN] |path_join }}'

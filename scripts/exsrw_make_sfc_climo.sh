@@ -11,7 +11,7 @@
 #
 #-----------------------------------------------------------------------
 #
-
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -24,7 +24,7 @@ task_global_vars=( "KMP_AFFINITY_MAKE_SFC_CLIMO" \
   "OMP_NUM_THREADS_MAKE_SFC_CLIMO" "OMP_STACKSIZE_MAKE_SFC_CLIMO" \
   "PREDEF_GRID_NAME" "FIXsfc" "FIXlam" "CRES" "DOT_OR_USCORE" "NH4" \
   "TILE_RGNL" "PRE_TASK_CMDS" "RUN_CMD_UTILS" "GTYPE" "SFC_CLIMO_DIR" \
-  "NH0" "GLOBAL_VAR_DEFNS_YAML_FP" )
+  "NH0" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -64,9 +64,6 @@ In directory:     \"${scrfunc_dir}\"
 This is the ex-script for the task that generates surface fields from
 climatology.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #
@@ -212,7 +209,7 @@ esac
 #-----------------------------------------------------------------------
 #
 ${PARMsrw}/link_fix.py \
-  --path-to-defns ${GLOBAL_VAR_DEFNS_YAML_FP} \
+  --path-to-defns ${GLOBAL_VAR_DEFNS_FP} \
   --file-group "sfc_climo" || \
 print_err_msg_exit "\
 Call to function to create links to surface climatology files failed."

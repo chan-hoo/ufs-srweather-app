@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -8,8 +9,7 @@
 #-----------------------------------------------------------------------
 #
 . ${PARMsrw}/source_util_funcs.sh
-task_global_vars=( "AQM_FIRE_FILE_PREFIX" "AQM_FIRE_FILE_SUFFIX" \
-  "COMINfire" "FIXaqm" )
+task_global_vars=( "AQM_FIRE_FILE_PREFIX" "AQM_FIRE_FILE_SUFFIX" "FIXaqm" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -50,9 +50,6 @@ This is the ex-script for the task that fetches fire emission
 data files from disk or generates model-ready RAVE emission file from raw
 data files.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

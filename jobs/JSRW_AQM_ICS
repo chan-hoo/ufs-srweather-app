@@ -10,6 +10,7 @@
 #
 date
 export PS4='+ $SECONDS + '
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -62,9 +63,6 @@ This is the J-job script for the task that copies/fetches to a local
 directory (either from disk or HPSS) the aqm boundary conditions from 
 which the model needs.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 #-----------------------------------------------------------------------
 #

@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -48,9 +49,6 @@ In directory:     \"${scrfunc_dir}\"
 
 This is the ex-script for the task that runs Smoke and Dust.
 ========================================================================"
-#####################
-set -xue
-#####################
 #
 # Set CDATE used in the fire emission generation python script
 #
