@@ -12,8 +12,8 @@ set -xue
 task_global_vars=( "KMP_AFFINITY_RUN_POST" "OMP_NUM_THREADS_RUN_POST" \
   "OMP_STACKSIZE_RUN_POST" "PRE_TASK_CMDS" "RUN_CMD_POST" \
   "SUB_HOURLY_POST" "USE_CUSTOM_POST_CONFIG_FILE" "CUSTOM_POST_CONFIG_FP" \
-  "CPL_AQM" "DO_SMOKE_DUST" "USE_CRTM" "DT_ATMOS" "POST_OUTPUT_DOMAIN_NAME" \
-  "PREDEF_GRID_NAME" )
+  "CPL_AQM" "DO_SMOKE_DUST" "NUMX" "USE_CRTM" "DT_ATMOS" \
+  "POST_OUTPUT_DOMAIN_NAME" "PREDEF_GRID_NAME" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -103,7 +103,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cp ${PARMsrw}/upp_parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
+cp -p ${PARMsrw}/upp_parm/nam_micro_lookup.dat ./eta_micro_lookup.dat
 if [ $(boolify ${USE_CUSTOM_POST_CONFIG_FILE}) = "TRUE" ]; then
   post_config_fp="${CUSTOM_POST_CONFIG_FP}"
   print_info_msg "
@@ -123,8 +123,8 @@ Copying the default post flat file specified by post_config_fp:
   post_config_fp = \"${post_config_fp}\"
 ===================================================================="
 fi
-cp ${post_config_fp} ./postxconfig-NT.txt
-cp ${PARMsrw}/upp_parm/params_grib2_tbl_new .
+cp -p ${post_config_fp} ./postxconfig-NT.txt
+cp -p ${PARMsrw}/upp_parm/params_grib2_tbl_new .
 
 if [ $(boolify ${DO_SMOKE_DUST}) = "TRUE" ] || [ $(boolify ${USE_CRTM}) = "TRUE" ]; then
   ln -nsf ${FIXcrtm}/Nalli.IRwater.EmisCoeff.bin .
