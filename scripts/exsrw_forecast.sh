@@ -356,8 +356,8 @@ if ([ $(boolify "${DO_SPP}") = "TRUE" ] || \
 fi
 if [ "${STOCH}" = "TRUE" ]; then
   cp -p ${FV3_NML_STOCH_FP} ${DATA}/${FV3_NML_FN}
- else
-  ln -nsf ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
+else
+  cp -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
 fi
 #
 #-----------------------------------------------------------------------
