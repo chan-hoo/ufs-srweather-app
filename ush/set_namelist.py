@@ -334,7 +334,7 @@ def set_namelist(argv):
     # Write the resulting file
     with open(cla.outfile, "w") as fn:
         if cla.type == "nml":
-            nml.write(fn, sort=True)
+            nml.write(fn, sort=False)
 
         if cla.type == "yaml":
             if cla.input_nml:
