@@ -43,7 +43,7 @@ set -xue
 task_global_vars=( "KMP_AFFINITY_MAKE_OROG" "OMP_NUM_THREADS_MAKE_OROG" \
   "OMP_STACKSIZE_MAKE_OROG" "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
   "CRES" "DOT_OR_USCORE" "FIXlam" "DO_SMOKE_DUST" "FIXorg" "TILE_RGNL" \
-  "NHW" "CCPP_PHYS_SUITE" "NH0" "NX" "NY" "OROG_DIR" "GRID_GEN_METHOD" \
+  "CCPP_PHYS_SUITE" "NHW" "NH0" "NH4" "NX" "NY" "OROG_DIR" "GRID_GEN_METHOD" \
   "STRETCH_FAC" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
