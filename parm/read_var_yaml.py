@@ -35,17 +35,19 @@ def read_var_yaml(var_name, file_path):
 # =================================================================== CHJ =====
 def change_to_shell(var_values):
 # =================================================================== CHJ =====
-
     if isinstance(var_values, bool):
         values_sh = str(var_values).upper()
-    elif isinstance(var_values, str) or isinstance(var_values, int):
+    elif isinstance(var_values, str):
         values_sh = f'"{var_values}"'
     elif isinstance(var_values, int):
         values_sh = f'"{var_values}"'
     elif isinstance(var_values, list):
         values_sh = f'''({ ' '.join(f'"{value}"' for value in var_values) })'''
     else:
-        values_sh = var_values
+        if var_values == None:
+            values_sh = ""
+        else:
+            values_sh = var_values
 
     return values_sh
 

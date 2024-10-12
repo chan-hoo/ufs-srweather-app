@@ -1457,7 +1457,7 @@ def setup(PARMsrw, user_config_fn="config.yaml", debug: bool = False):
 
     # Generate a flag file for cold start
     if expt_config["workflow"].get("COLDSTART"):
-        coldstart_date=workflow_config["DATE_FIRST_CYCL"]
+        coldstart_date=date_to_str(workflow_config["DATE_FIRST_CYCL"])
         fn_pass=f"task_skip_coldstart_{coldstart_date}.txt"
         open(os.path.join(exptdir,fn_pass), 'a').close()
     #

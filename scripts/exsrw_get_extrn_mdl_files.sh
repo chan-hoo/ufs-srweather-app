@@ -16,6 +16,8 @@ set -xue
 #
 #-----------------------------------------------------------------------
 #
+yyyymmddhh=${EXTRN_MDL_CDATE:0:10}
+#
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "EXTRN_MDL_FILES_ICS" "FV3GFS_FILE_FMT_ICS" \
   "EXTRN_MDL_SOURCE_BASEDIR_ICS" "EXTRN_MDL_SYSBASEDIR_ICS" \
@@ -111,7 +113,6 @@ fi
 
 data_stores="${EXTRN_MDL_DATA_STORES}"
 
-yyyymmddhh=${EXTRN_MDL_CDATE:0:10}
 yyyy=${yyyymmddhh:0:4}
 yyyymm=${yyyymmddhh:0:6}
 yyyymmdd=${yyyymmddhh:0:8}
