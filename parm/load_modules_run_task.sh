@@ -25,7 +25,6 @@ source ${PARMsrw}/source_util_funcs.sh
 #-----------------------------------------------------------------------
 #
 #{ save_shell_opts; set -xue; } > /dev/null 2>&1
-set -xue
 #
 #-----------------------------------------------------------------------
 #
@@ -70,12 +69,6 @@ fi
 machine=$(echo_lowercase $1)
 task_name="$2"
 jjob_fp="$3"
-
-# Source the necessary blocks of the experiment config YAML
-#task_global_vars=( "BUILD_MOD_FN" "VERBOSE" "RUN_VER_FN" )
-#for var in ${task_global_vars[@]}; do
-#  source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
-#done
 #
 #-----------------------------------------------------------------------
 #
@@ -114,6 +107,19 @@ specified task (task_name) failed:
   modulefile_local = \"${modulefile_local}\"
   modules_dir = \"${modules_dir}\""
 fi
+# temporary solution for esmpy
+if [ "${task_name}" = "smoke_dust" ]; then
+  set +u
+  if [ "${machine}" = "hera" ]; then
+    module unload python
+    module use /contrib/miniconda3/modulefiles
+    module load miniconda3/4.12.0
+    export ESMFMKFILE="/home/Chan-hoo.Jeon/.conda/envs/esmpy/lib/esmf.mk"
+    source /scratch2/NCEPDEV/naqfc/Chan-hoo.Jeon/PyVENV/main_aqm_pyenv/bin/activate
+  fi
+  set -u
+fi
+
 module list
 #
 #-----------------------------------------------------------------------

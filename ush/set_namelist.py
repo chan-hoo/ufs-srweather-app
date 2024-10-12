@@ -313,11 +313,13 @@ def set_namelist(argv):
 
     # parse argumetns
     cla = parse_args(argv)
+    print("PARSE ARGUMENTS=",cla)
     if cla.config:
         cla.config, _ = config_exists(cla.config)
 
     # Load base namelist into dict
     nml = f90nml.Namelist()
+    print("BASE NAMELIST=",nml)
     if cla.nml is not None:
         nml = f90nml.read(cla.nml)
 
@@ -325,10 +327,12 @@ def set_namelist(argv):
     cfg = {}
     if cla.config is not None:
         cfg = cla.config
+        print("CFG ITEMS=",cfg.items())
         update_dict(nml, cfg.items(), quiet=cla.quiet)
 
     # Update nml, overriding YAML if needed, with any command-line entries
     if cla.user_config:
+        print("USER_CONFIG ITEMS=",cla.user_config.items())
         update_dict(nml, cla.user_config.items(), quiet=cla.quiet)
 
     # Write the resulting file

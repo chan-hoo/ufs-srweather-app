@@ -18,13 +18,13 @@ set -xue
 #
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "KMP_AFFINITY_MAKE_ICS" "OMP_NUM_THREADS_MAKE_ICS" \
-  "OMP_STACKSIZE_MAKE_ICS" "PRE_TASK_CMDS" "RUN_CMD_UTILS" \
-  "EXTRN_MDL_VAR_DEFNS_FN" "CCPP_PHYS_SUITE" "EXTRN_MDL_NAME_ICS" \
-  "DO_SMOKE_DUST" "SDF_USES_RUC_LSM" "SDF_USES_THOMPSON_MP" \
-  "THOMPSON_MP_CLIMO_FP" "FV3GFS_FILE_FMT_ICS" "FIXlam" "HALO_BLEND" \
-  "CRES" "DOT_OR_USCORE" "TILE_RGNL" "NH4" "NH0" "VCOORD_FILE" \
-  "CPL_AQM" "COLDSTART" "DATE_FIRST_CYCL" "USE_FVCOM" "FVCOM_DIR" \
-  "FVCOM_FILE" "FVCOM_WCSTART" )
+  "OMP_STACKSIZE_MAKE_ICS" "CCPP_PHYS_SUITE" "COLDSTART" "CPL_AQM" \
+  "CRES" "DATE_FIRST_CYCL" "DO_SMOKE_DUST" "DOT_OR_USCORE" \
+  "EXTRN_MDL_NAME_ICS" "EXTRN_MDL_VAR_DEFNS_FN" "FIXgsm" "FIXlam" \
+  "FV3GFS_FILE_FMT_ICS" "FVCOM_DIR" "FVCOM_FILE" "FVCOM_WCSTART" \
+  "HALO_BLEND" "NH0" "NH4" "PRE_TASK_CMDS" "RUN_CMD_UTILS" \
+  "SDF_USES_RUC_LSM" "SDF_USES_THOMPSON_MP" "THOMPSON_MP_CLIMO_FP" \
+  "TILE_RGNL" "VCOORD_FILE" "USE_FVCOM" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
@@ -266,7 +266,7 @@ varmap_file_fp="${PARMsrw}/ufs_utils_parm/varmap_tables/${varmap_file}"
 #
 # Not sure if tracers(:) should include "cld_amt" since that is also in
 # the field_table for CDATE=2017100700 but is a non-prognostic variable.
-
+#
 external_model=""
 fn_atm=""
 fn_sfc=""
@@ -537,7 +537,6 @@ hh="${EXTRN_MDL_CDATE:8:2}"
 #
 settings="
 'config':
- 'atm_files_input_grid': ${fn_atm}
  'convert_atm': True
  'convert_nst': ${convert_nst}
  'convert_sfc': True
@@ -559,6 +558,7 @@ settings="
  'orog_dir_target_grid': ${FIXlam}
  'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc
  'regional': 1
+ 'atm_files_input_grid': ${fn_atm}
  'sfc_files_input_grid': ${fn_sfc}
  'sotyp_from_climo': ${sotyp_from_climo}
  'tg3_from_soil': ${tg3_from_soil}
@@ -572,8 +572,7 @@ settings="
 "
 
 nml_fn="fort.41"
-
-${USHsrw}/set_namelist.py -q -u "$settings" -o ${nml_fn}
+${USHsrw}/set_namelist.py -u "$settings" -o ${nml_fn}
 err=$?
 if [ $err -ne 0 ]; then
   message_txt="Error creating namelist read by ${exec_fn} failed.
