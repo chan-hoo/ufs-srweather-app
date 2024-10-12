@@ -41,10 +41,10 @@ set -xue
 #
 . ${PARMsrw}/source_util_funcs.sh
 task_global_vars=( "KMP_AFFINITY_MAKE_OROG" "OMP_NUM_THREADS_MAKE_OROG" \
-  "OMP_STACKSIZE_MAKE_OROG" "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
-  "CRES" "DOT_OR_USCORE" "FIXlam" "DO_SMOKE_DUST" "FIXorg" "TILE_RGNL" \
-  "CCPP_PHYS_SUITE" "NHW" "NH0" "NH4" "NX" "NY" "OROG_DIR" "GRID_GEN_METHOD" \
-  "STRETCH_FAC" )
+  "OMP_STACKSIZE_MAKE_OROG" "CRES" "CCPP_PHYS_SUITE" "DOT_OR_USCORE" \
+  "DO_SMOKE_DUST" "FIXam" "FIXlam" "FIXorg" "GRID_GEN_METHOD" "NHW" \
+  "NH0" "NH4" "NX" "NY" "OROG_DIR" "PRE_TASK_CMDS" "RUN_CMD_SERIAL" \
+  "STRETCH_FAC" "TILE_RGNL" )
 for var in ${task_global_vars[@]}; do
   source_config_for_task ${var} ${GLOBAL_VAR_DEFNS_FP}
 done
